@@ -1,0 +1,59 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { authClient } from "@/lib/auth/client";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+
+interface User {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+}
+
+interface UserMenuProps {
+  user: User;
+}
+
+export function UserMenu({ user }: UserMenuProps) {
+  const router = useRouter();
+
+  const initials = user.name
+    ? user.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : user.email?.charAt(0).toUpperCase() ?? "?";
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    router.push("/sign-in");
+    router.refresh();
+  };
+
+  return (
+    <div className="flex items-center gap-3">
+      <Avatar className="h-9 w-9">
+        <AvatarFallback className="bg-primary/10 text-primary">
+          {initials}
+        </AvatarFallback>
+      </Avatar>
+      <div className="flex-1 overflow-hidden">
+        <p className="truncate text-sm font-medium">{user.name ?? "User"}</p>
+        <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+      </div>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={handleSignOut}
+        className="text-muted-foreground"
+      >
+        Sign out
+      </Button>
+    </div>
+  );
+}
