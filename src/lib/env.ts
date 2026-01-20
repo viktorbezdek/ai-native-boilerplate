@@ -34,6 +34,9 @@ const serverSchema = z.object({
   SENTRY_PROJECT: z.string().optional(),
   SENTRY_AUTH_TOKEN: z.string().optional(),
 
+  // Cron jobs
+  CRON_SECRET: z.string().min(16).optional(),
+
   // Node environment
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 });
