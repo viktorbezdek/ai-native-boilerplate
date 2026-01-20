@@ -1,0 +1,53 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { GET } from "@/app/api/v1/health/route";
+import { parseJsonResponse } from "./helpers";
+
+// Mock database
+vi.mock("@/lib/db", () => ({
+  db: {
+    execute: vi.fn(),
+  },
+}));
+
+// Import mocked db
+import { db } from "@/lib/db";
+
+describe("GET /api/v1/health", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("returns healthy status when database is connected", async () => {
+    (db.execute as ReturnType<typeof vi.fn>).mockResolvedValue([{ now: new Date() }]);
+
+    const response = await GET();
+    const { status, data } = await parseJsonResponse<{
+      status: string;
+      database: string;
+      timestamp: string;
+    }>(response);
+
+    expect(status).toBe(200);
+    expect(data.status).toBe("healthy");
+    expect(data.database).toBe("connected");
+    expect(data.timestamp).toBeDefined();
+  });
+
+  it("returns unhealthy status when database fails", async () => {
+    (db.execute as ReturnType<typeof vi.fn>).mockRejectedValue(
+      new Error("Connection failed")
+    );
+
+    const response = await GET();
+    const { status, data } = await parseJsonResponse<{
+      status: string;
+      database: string;
+      error: string;
+    }>(response);
+
+    expect(status).toBe(503);
+    expect(data.status).toBe("unhealthy");
+    expect(data.database).toBe("disconnected");
+    expect(data.error).toBeDefined();
+  });
+});
