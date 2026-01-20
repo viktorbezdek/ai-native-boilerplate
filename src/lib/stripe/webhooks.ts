@@ -3,6 +3,7 @@ import { stripe } from "./client";
 import { db } from "@/lib/db";
 import { subscriptions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { trackServerEvent, identifyServerUser } from "@/lib/analytics/server";
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -63,6 +64,14 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     return;
   }
 
+  // Track checkout completion
+  trackServerEvent(userId, "checkout_completed", {
+    session_id: session.id,
+    mode: session.mode,
+    amount_total: session.amount_total,
+    currency: session.currency,
+  });
+
   if (session.mode === "subscription" && session.subscription) {
     const subscriptionId =
       typeof session.subscription === "string"
@@ -70,6 +79,23 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         : session.subscription.id;
 
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    
+    // Track subscription created
+    const priceId = subscription.items.data[0]?.price.id;
+    trackServerEvent(userId, "subscription_created", {
+      subscription_id: subscription.id,
+      price_id: priceId,
+      status: subscription.status,
+      interval: subscription.items.data[0]?.price.recurring?.interval,
+    });
+
+    // Update user properties for segmentation
+    identifyServerUser(userId, {
+      subscription_status: subscription.status,
+      subscription_price_id: priceId,
+      is_subscriber: true,
+    });
+
     await upsertSubscription(userId, subscription);
   }
 }
@@ -82,6 +108,21 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
     return;
   }
 
+  // Track subscription update
+  const priceId = subscription.items.data[0]?.price.id;
+  trackServerEvent(userId, "subscription_updated", {
+    subscription_id: subscription.id,
+    price_id: priceId,
+    status: subscription.status,
+    cancel_at_period_end: subscription.cancel_at_period_end,
+  });
+
+  // Update user properties
+  identifyServerUser(userId, {
+    subscription_status: subscription.status,
+    subscription_price_id: priceId,
+  });
+
   await upsertSubscription(userId, subscription);
 }
 
@@ -92,6 +133,19 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
     console.error("No userId in subscription metadata");
     return;
   }
+
+  // Track subscription cancellation
+  trackServerEvent(userId, "subscription_canceled", {
+    subscription_id: subscription.id,
+    price_id: subscription.items.data[0]?.price.id,
+    canceled_at: subscription.canceled_at,
+  });
+
+  // Update user properties
+  identifyServerUser(userId, {
+    subscription_status: "canceled",
+    is_subscriber: false,
+  });
 
   await db
     .update(subscriptions)
@@ -104,12 +158,50 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 }
 
 async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
-  // Update last payment date, send receipt email, etc.
+  const customerId = typeof invoice.customer === "string" 
+    ? invoice.customer 
+    : invoice.customer?.id;
+  
+  // Try to get userId from subscription metadata
+  const subscriptionId = typeof invoice.subscription === "string"
+    ? invoice.subscription
+    : invoice.subscription?.id;
+
+  if (subscriptionId) {
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    const userId = subscription.metadata?.userId;
+    
+    if (userId) {
+      trackServerEvent(userId, "payment_succeeded", {
+        invoice_id: invoice.id,
+        amount_paid: invoice.amount_paid,
+        currency: invoice.currency,
+      });
+    }
+  }
+
   console.log(`Payment succeeded for invoice ${invoice.id}`);
 }
 
 async function handlePaymentFailed(invoice: Stripe.Invoice) {
-  // Send payment failed notification, update subscription status, etc.
+  const subscriptionId = typeof invoice.subscription === "string"
+    ? invoice.subscription
+    : invoice.subscription?.id;
+
+  if (subscriptionId) {
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    const userId = subscription.metadata?.userId;
+    
+    if (userId) {
+      trackServerEvent(userId, "payment_failed", {
+        invoice_id: invoice.id,
+        amount_due: invoice.amount_due,
+        currency: invoice.currency,
+        attempt_count: invoice.attempt_count,
+      });
+    }
+  }
+
   console.log(`Payment failed for invoice ${invoice.id}`);
 }
 

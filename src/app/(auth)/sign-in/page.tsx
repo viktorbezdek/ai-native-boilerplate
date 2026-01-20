@@ -15,6 +15,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  trackEvent,
+  identifyUser,
+  ANALYTICS_EVENTS,
+} from "@/lib/analytics";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -39,6 +44,16 @@ export default function SignInPage() {
         return;
       }
 
+      // Get user session for identification
+      const session = await authClient.getSession();
+      if (session?.data?.user) {
+        identifyUser(session.data.user.id, {
+          email: session.data.user.email,
+          name: session.data.user.name,
+        });
+      }
+      trackEvent(ANALYTICS_EVENTS.USER_SIGNED_IN, { method: "email" });
+
       router.push("/dashboard");
       router.refresh();
     } catch {
@@ -51,6 +66,12 @@ export default function SignInPage() {
   const handleOAuthSignIn = async (provider: "github" | "google") => {
     setError(null);
     setIsLoading(true);
+
+    // Track OAuth attempt (actual sign-in tracked on callback)
+    trackEvent(ANALYTICS_EVENTS.USER_SIGNED_IN, {
+      method: provider,
+      oauth_initiated: true,
+    });
 
     try {
       await authClient.signIn.social({

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DashboardNav } from "@/components/features/dashboard/nav";
 import { UserMenu } from "@/components/features/dashboard/user-menu";
+import { UserIdentifier } from "@/components/features/analytics/user-identifier";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -24,6 +25,9 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-screen">
+      {/* Analytics: Identify user on dashboard load */}
+      <UserIdentifier user={session.user} />
+      
       {/* Sidebar */}
       <aside className="hidden w-64 flex-shrink-0 border-r bg-card lg:block">
         <div className="flex h-full flex-col">

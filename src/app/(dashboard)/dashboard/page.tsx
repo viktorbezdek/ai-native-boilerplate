@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { BetaFeaturesCard } from "@/components/features/dashboard/beta-features-card";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -110,6 +111,9 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Feature flag controlled beta section */}
+      <BetaFeaturesCard />
     </div>
   );
 }

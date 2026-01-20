@@ -15,6 +15,7 @@ import {
   type CreateProjectInput,
   type UpdateProjectInput,
 } from "@/lib/validations";
+import { trackServerEvent } from "@/lib/analytics/server";
 
 export type ActionResult<T = void> =
   | { success: true; data?: T }
@@ -41,6 +42,12 @@ export async function createProjectAction(
     const project = await createProjectQuery({
       ...validation.data,
       userId: session.user.id,
+    });
+
+    // Track project creation
+    trackServerEvent(session.user.id, "project_created", {
+      project_id: project.id,
+      project_name: validation.data.name,
     });
 
     revalidatePath("/dashboard");
@@ -74,6 +81,11 @@ export async function updateProjectAction(
 
     await updateProjectQuery(projectId, session.user.id, validation.data);
 
+    // Track project update
+    trackServerEvent(session.user.id, "project_updated", {
+      project_id: projectId,
+    });
+
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/projects");
     revalidatePath(`/dashboard/projects/${projectId}`);
@@ -105,6 +117,11 @@ export async function deleteProjectAction(
     }
 
     await deleteProjectQuery(projectId, session.user.id);
+
+    // Track project deletion
+    trackServerEvent(session.user.id, "project_deleted", {
+      project_id: projectId,
+    });
 
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/projects");

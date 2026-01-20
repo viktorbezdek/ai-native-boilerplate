@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { createCheckoutSession, PRICE_IDS } from "@/lib/stripe";
+import { trackServerEvent } from "@/lib/analytics/server";
 
 const checkoutSchema = z.object({
   priceId: z.string().min(1, "Price ID is required"),
@@ -34,6 +35,11 @@ export async function POST(request: Request) {
     if (!validPriceIds.includes(priceId as typeof validPriceIds[number])) {
       return NextResponse.json({ error: "Invalid price ID" }, { status: 400 });
     }
+
+    // Track checkout initiation
+    trackServerEvent(session.user.id, "checkout_started", {
+      price_id: priceId,
+    });
 
     const checkoutSession = await createCheckoutSession({
       priceId: priceId as typeof validPriceIds[number],

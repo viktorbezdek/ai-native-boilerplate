@@ -5,6 +5,7 @@ import Link from "next/link";
 import { authClient } from "@/lib/auth/client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { trackEvent, resetUser, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 interface User {
   id: string;
@@ -30,6 +31,10 @@ export function UserMenu({ user }: UserMenuProps) {
     : user.email?.charAt(0).toUpperCase() ?? "?";
 
   const handleSignOut = async () => {
+    // Track sign-out before clearing identity
+    trackEvent(ANALYTICS_EVENTS.USER_SIGNED_OUT);
+    resetUser();
+    
     await authClient.signOut();
     router.push("/sign-in");
     router.refresh();
