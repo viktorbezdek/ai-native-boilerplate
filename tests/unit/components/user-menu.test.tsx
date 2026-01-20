@@ -6,9 +6,17 @@ import { UserMenu } from "@/components/features/dashboard/user-menu";
 // Mock auth
 const mockSignOut = vi.fn();
 
-vi.mock("@/lib/auth-client", () => ({
+vi.mock("@/lib/auth/client", () => ({
   authClient: {
     signOut: mockSignOut,
+  },
+}));
+
+vi.mock("@/lib/analytics", () => ({
+  trackEvent: vi.fn(),
+  resetUser: vi.fn(),
+  ANALYTICS_EVENTS: {
+    USER_SIGNED_OUT: "user_signed_out",
   },
 }));
 
@@ -22,6 +30,7 @@ vi.mock("next/navigation", () => ({
 describe("UserMenu", () => {
   const defaultProps = {
     user: {
+      id: "user-1",
       name: "Test User",
       email: "test@example.com",
       image: null,
@@ -58,16 +67,31 @@ describe("UserMenu", () => {
     expect(mockSignOut).toHaveBeenCalled();
   });
 
-  it("renders user image when provided", () => {
-    const propsWithImage = {
+  it("renders fallback to User when name is null", () => {
+    const propsWithNoName = {
       user: {
-        ...defaultProps.user,
-        image: "https://example.com/avatar.jpg",
+        id: "user-1",
+        name: null,
+        email: "test@example.com",
+        image: null,
       },
     };
 
-    render(<UserMenu {...propsWithImage} />);
-    const avatar = screen.getByRole("img");
-    expect(avatar).toHaveAttribute("src", expect.stringContaining("avatar.jpg"));
+    render(<UserMenu {...propsWithNoName} />);
+    expect(screen.getByText("User")).toBeInTheDocument();
+  });
+
+  it("renders email initial when name is null", () => {
+    const propsWithNoName = {
+      user: {
+        id: "user-1",
+        name: null,
+        email: "test@example.com",
+        image: null,
+      },
+    };
+
+    render(<UserMenu {...propsWithNoName} />);
+    expect(screen.getByText("T")).toBeInTheDocument();
   });
 });

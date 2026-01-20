@@ -61,10 +61,23 @@ type ServerEnv = z.infer<typeof serverSchema>;
 type ClientEnv = z.infer<typeof clientSchema>;
 type Env = z.infer<typeof envSchema>;
 
+// Cache for validated env
+let cachedServerEnv: ServerEnv | null = null;
+let cachedClientEnv: ClientEnv | null = null;
+
 /**
- * Validate server environment variables
+ * Validate server environment variables (lazy)
  */
 function validateServerEnv(): ServerEnv {
+  // Skip validation during build
+  if (process.env.SKIP_ENV_VALIDATION === "true") {
+    return {} as ServerEnv;
+  }
+
+  if (cachedServerEnv) {
+    return cachedServerEnv;
+  }
+
   const parsed = serverSchema.safeParse(process.env);
 
   if (!parsed.success) {
@@ -75,13 +88,23 @@ function validateServerEnv(): ServerEnv {
     throw new Error("Invalid server environment variables");
   }
 
+  cachedServerEnv = parsed.data;
   return parsed.data;
 }
 
 /**
- * Validate client environment variables
+ * Validate client environment variables (lazy)
  */
 function validateClientEnv(): ClientEnv {
+  // Skip validation during build
+  if (process.env.SKIP_ENV_VALIDATION === "true") {
+    return {} as ClientEnv;
+  }
+
+  if (cachedClientEnv) {
+    return cachedClientEnv;
+  }
+
   const clientEnv = {
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
@@ -101,15 +124,33 @@ function validateClientEnv(): ClientEnv {
     throw new Error("Invalid client environment variables");
   }
 
+  cachedClientEnv = parsed.data;
   return parsed.data;
 }
 
-// Export validated environment variables
-export const serverEnv = validateServerEnv();
-export const clientEnv = validateClientEnv();
+/**
+ * Get server environment variables
+ * Validates on first access, caches result
+ */
+export function getServerEnv(): ServerEnv {
+  return validateServerEnv();
+}
 
-// Type-safe environment access
-export const env = {
-  ...serverEnv,
-  ...clientEnv,
-} satisfies Env;
+/**
+ * Get client environment variables
+ * Validates on first access, caches result
+ */
+export function getClientEnv(): ClientEnv {
+  return validateClientEnv();
+}
+
+/**
+ * Get all environment variables
+ * @deprecated Use getServerEnv() or getClientEnv() for better tree-shaking
+ */
+export function getEnv(): Env {
+  return {
+    ...getServerEnv(),
+    ...getClientEnv(),
+  };
+}

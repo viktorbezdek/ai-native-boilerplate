@@ -1,12 +1,35 @@
 import Stripe from "stripe";
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error("STRIPE_SECRET_KEY is not set");
+// Lazy initialization to avoid breaking during build
+let stripeInstance: Stripe | null = null;
+
+function getStripeInstance(): Stripe {
+  if (stripeInstance) {
+    return stripeInstance;
+  }
+
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error("STRIPE_SECRET_KEY is not set");
+  }
+
+  stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: "2024-12-18.acacia",
+    typescript: true,
+  });
+
+  return stripeInstance;
 }
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2024-12-18.acacia",
-  typescript: true,
+// Export as getter to lazy-initialize
+export const stripe = new Proxy({} as Stripe, {
+  get(_, prop) {
+    const instance = getStripeInstance();
+    const value = instance[prop as keyof Stripe];
+    if (typeof value === "function") {
+      return value.bind(instance);
+    }
+    return value;
+  },
 });
 
 // Price IDs from Stripe Dashboard

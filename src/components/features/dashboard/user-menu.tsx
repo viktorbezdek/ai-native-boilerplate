@@ -1,10 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { authClient } from "@/lib/auth/client";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { trackEvent, resetUser, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 interface User {
@@ -43,6 +42,7 @@ export function UserMenu({ user }: UserMenuProps) {
   return (
     <div className="flex items-center gap-3">
       <Avatar className="h-9 w-9">
+        {user.image && <AvatarImage src={user.image} alt={user.name ?? "User"} />}
         <AvatarFallback className="bg-primary/10 text-primary">
           {initials}
         </AvatarFallback>

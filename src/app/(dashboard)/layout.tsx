@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DashboardNav } from "@/components/features/dashboard/nav";
 import { UserMenu } from "@/components/features/dashboard/user-menu";
 import { UserIdentifier } from "@/components/features/analytics/user-identifier";

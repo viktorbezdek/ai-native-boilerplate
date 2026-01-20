@@ -7,7 +7,6 @@ import {
   updateProject as updateProjectQuery,
   deleteProject as deleteProjectQuery,
   getProjectByIdForUser,
-  type GetProjectsOptions,
 } from "@/lib/db/queries";
 import {
   createProjectSchema,

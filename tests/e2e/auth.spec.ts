@@ -61,11 +61,11 @@ test.describe("Authentication", () => {
     });
 
     test("should display sign up form", async ({ page }) => {
-      await expect(page.getByRole("heading", { name: /sign up/i })).toBeVisible();
+      await expect(page.getByRole("heading", { name: /create an account/i })).toBeVisible();
       await expect(page.getByLabel(/email/i)).toBeVisible();
       await expect(page.getByLabel(/^password$/i)).toBeVisible();
       await expect(page.getByLabel(/confirm password/i)).toBeVisible();
-      await expect(page.getByRole("button", { name: /sign up/i })).toBeVisible();
+      await expect(page.getByRole("button", { name: /create account/i })).toBeVisible();
     });
 
     test("should have link to sign in page", async ({ page }) => {
@@ -78,7 +78,7 @@ test.describe("Authentication", () => {
       await page.getByLabel(/email/i).fill("test@example.com");
       await page.getByLabel(/^password$/i).fill("short");
       await page.getByLabel(/confirm password/i).fill("short");
-      await page.getByRole("button", { name: /sign up/i }).click();
+      await page.getByRole("button", { name: /create account/i }).click();
 
       // Should show password length requirement error
       // The exact error depends on your validation implementation
@@ -89,7 +89,7 @@ test.describe("Authentication", () => {
       await page.getByLabel(/email/i).fill("test@example.com");
       await page.getByLabel(/^password$/i).fill("password123");
       await page.getByLabel(/confirm password/i).fill("different123");
-      await page.getByRole("button", { name: /sign up/i }).click();
+      await page.getByRole("button", { name: /create account/i }).click();
 
       // Should show password mismatch error
       await expect(page.locator("text=match")).toBeVisible();
