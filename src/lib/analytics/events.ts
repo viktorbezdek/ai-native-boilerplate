@@ -42,7 +42,9 @@ export function trackEvent(
   event: AnalyticsEvent,
   properties?: Record<string, unknown>
 ) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {
+    return;
+  }
 
   posthog.capture(event, properties);
 }
@@ -54,7 +56,9 @@ export function trackPageView(
   path: string,
   properties?: Record<string, unknown>
 ) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {
+    return;
+  }
 
   posthog.capture(ANALYTICS_EVENTS.PAGE_VIEW, {
     $current_url: window.location.href,
@@ -70,7 +74,9 @@ export function identifyUser(
   userId: string,
   properties?: Record<string, unknown>
 ) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {
+    return;
+  }
 
   posthog.identify(userId, properties);
 }
@@ -79,7 +85,9 @@ export function identifyUser(
  * Reset user identity (on logout)
  */
 export function resetUser() {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {
+    return;
+  }
 
   posthog.reset();
 }
@@ -88,7 +96,9 @@ export function resetUser() {
  * Set user properties without identifying
  */
 export function setUserProperties(properties: Record<string, unknown>) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {
+    return;
+  }
 
   posthog.setPersonProperties(properties);
 }
@@ -97,7 +107,9 @@ export function setUserProperties(properties: Record<string, unknown>) {
  * Track timing/duration
  */
 export function trackTiming(name: string, durationMs: number) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {
+    return;
+  }
 
   posthog.capture("timing", {
     name,

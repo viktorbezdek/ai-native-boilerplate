@@ -22,7 +22,9 @@ export type FeatureFlag = (typeof FEATURE_FLAGS)[keyof typeof FEATURE_FLAGS];
  * Check if a feature flag is enabled (non-hook version)
  */
 export function isFeatureEnabled(flag: FeatureFlag): boolean {
-  if (typeof window === "undefined") return false;
+  if (typeof window === "undefined") {
+    return false;
+  }
 
   return posthog.isFeatureEnabled(flag) ?? false;
 }
@@ -31,7 +33,9 @@ export function isFeatureEnabled(flag: FeatureFlag): boolean {
  * Get feature flag variant key (non-hook version)
  */
 export function getFeatureFlagVariant(flag: FeatureFlag): string | undefined {
-  if (typeof window === "undefined") return undefined;
+  if (typeof window === "undefined") {
+    return undefined;
+  }
 
   const variant = posthog.getFeatureFlag(flag);
   return typeof variant === "string" ? variant : undefined;
@@ -49,7 +53,10 @@ export function useFeatureFlag(flag: FeatureFlag): boolean {
  */
 export function useFeatureFlagVariant(flag: FeatureFlag): string | undefined {
   const variant = useFeatureFlagVariantKey(flag);
-  return variant ?? undefined;
+  if (typeof variant === "string") {
+    return variant;
+  }
+  return undefined;
 }
 
 /**
@@ -58,7 +65,9 @@ export function useFeatureFlagVariant(flag: FeatureFlag): string | undefined {
 export function overrideFeatureFlags(
   flags: Partial<Record<FeatureFlag, boolean>>
 ) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {
+    return;
+  }
 
   Object.entries(flags).forEach(([flag, enabled]) => {
     posthog.featureFlags.override({ [flag]: enabled });
@@ -69,7 +78,9 @@ export function overrideFeatureFlags(
  * Clear feature flag overrides
  */
 export function clearFeatureFlagOverrides() {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {
+    return;
+  }
 
   posthog.featureFlags.override(false);
 }
