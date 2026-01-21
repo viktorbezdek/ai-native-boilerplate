@@ -1,6 +1,6 @@
 "use client";
 
-import { useFeatureFlag, FEATURE_FLAGS, trackEvent } from "@/lib/analytics";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { FEATURE_FLAGS, trackEvent, useFeatureFlag } from "@/lib/analytics";
 
 export function BetaFeaturesCard() {
   const showBetaFeatures = useFeatureFlag(FEATURE_FLAGS.BETA_FEATURES);
@@ -54,7 +54,8 @@ export function BetaFeaturesCard() {
           <span className="ml-auto text-xs text-muted-foreground">Beta</span>
         </Button>
         <p className="text-xs text-muted-foreground">
-          These features are in beta and may change. Your feedback helps us improve!
+          These features are in beta and may change. Your feedback helps us
+          improve!
         </p>
       </CardContent>
     </Card>

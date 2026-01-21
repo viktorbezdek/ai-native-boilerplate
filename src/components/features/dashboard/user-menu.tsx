@@ -1,10 +1,10 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth/client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { trackEvent, resetUser, ANALYTICS_EVENTS } from "@/lib/analytics";
+import { ANALYTICS_EVENTS, resetUser, trackEvent } from "@/lib/analytics";
+import { authClient } from "@/lib/auth/client";
+import { useRouter } from "next/navigation";
 
 interface User {
   id: string;
@@ -27,13 +27,13 @@ export function UserMenu({ user }: UserMenuProps) {
         .join("")
         .toUpperCase()
         .slice(0, 2)
-    : user.email?.charAt(0).toUpperCase() ?? "?";
+    : (user.email?.charAt(0).toUpperCase() ?? "?");
 
   const handleSignOut = async () => {
     // Track sign-out before clearing identity
     trackEvent(ANALYTICS_EVENTS.USER_SIGNED_OUT);
     resetUser();
-    
+
     await authClient.signOut();
     router.push("/sign-in");
     router.refresh();
@@ -42,7 +42,9 @@ export function UserMenu({ user }: UserMenuProps) {
   return (
     <div className="flex items-center gap-3">
       <Avatar className="h-9 w-9">
-        {user.image && <AvatarImage src={user.image} alt={user.name ?? "User"} />}
+        {user.image && (
+          <AvatarImage src={user.image} alt={user.name ?? "User"} />
+        )}
         <AvatarFallback className="bg-primary/10 text-primary">
           {initials}
         </AvatarFallback>

@@ -1,29 +1,33 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
 
 const navItems = [
   {
     title: "Dashboard",
     href: "/dashboard",
     icon: "📊",
+    iconLabel: "Dashboard icon",
   },
   {
     title: "Projects",
     href: "/dashboard/projects",
     icon: "📁",
+    iconLabel: "Projects folder icon",
   },
   {
     title: "Analytics",
     href: "/dashboard/analytics",
     icon: "📈",
+    iconLabel: "Analytics chart icon",
   },
   {
     title: "Settings",
     href: "/settings",
     icon: "⚙️",
+    iconLabel: "Settings gear icon",
   },
 ];
 
@@ -47,8 +51,11 @@ export function DashboardNav() {
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
+              aria-current={isActive ? "page" : undefined}
             >
-              <span className="text-lg">{item.icon}</span>
+              <span className="text-lg" role="img" aria-label={item.iconLabel}>
+                {item.icon}
+              </span>
               {item.title}
             </Link>
           </li>
