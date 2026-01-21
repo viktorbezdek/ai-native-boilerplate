@@ -3,8 +3,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   experimental: {
-    ppr: true, // Partial Prerendering
-    reactCompiler: true,
+    // ppr: true, // Partial Prerendering - requires Next.js canary
+    // reactCompiler: true, // Requires babel-plugin-react-compiler
   },
   images: {
     remotePatterns: [
