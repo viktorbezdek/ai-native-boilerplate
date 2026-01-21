@@ -1,5 +1,19 @@
 ---
 name: coordinator
+description: Central orchestration agent for managing workflows, routing tasks to subagents, and handling escalations.
+model: claude-sonnet-4-20250514
+tools:
+  - Read
+  - Write
+  - Edit
+  - MultiEdit
+  - Bash
+  - Grep
+  - Glob
+  - Task
+  - TodoWrite
+  - AskUserQuestion
+  - mcp__github__*
 ---
 
 # Coordinator Agent

@@ -3,22 +3,20 @@
     "subtask": true
   },
   "hooks": {
-    "PostToolUse": [
+    "PreToolUse": [
       {
         "hooks": [
           {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/format.sh",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/telemetry.sh",
             "type": "command"
           },
           {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/run-tests.sh",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/start-timing.sh",
             "type": "command"
           }
         ],
-        "matcher": "Write|Edit|MultiEdit"
-      }
-    ],
-    "PreToolUse": [
+        "matcher": ".*"
+      },
       {
         "hooks": [
           {
@@ -38,11 +36,61 @@
         "matcher": "Write|Edit|MultiEdit|Delete"
       }
     ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/telemetry.sh",
+            "type": "command"
+          },
+          {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/track-execution.sh",
+            "type": "command"
+          }
+        ],
+        "matcher": ".*"
+      },
+      {
+        "hooks": [
+          {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/format.sh",
+            "type": "command"
+          },
+          {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/run-tests.sh",
+            "type": "command"
+          },
+          {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/track-drift.sh",
+            "type": "command"
+          }
+        ],
+        "matcher": "Write|Edit|MultiEdit"
+      },
+      {
+        "hooks": [
+          {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/track-quality.sh",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      },
+      {
+        "hooks": [
+          {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/track-drift.sh",
+            "type": "command"
+          }
+        ],
+        "matcher": "TodoWrite"
+      }
+    ],
     "Stop": [
       {
         "hooks": [
           {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/log-session.sh",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/session-summary.sh",
             "type": "command"
           }
         ]

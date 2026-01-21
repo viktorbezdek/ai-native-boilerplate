@@ -1,5 +1,21 @@
 ---
 name: responder
+description: Incident response agent for executing runbooks, applying auto-remediation, and handling production issues.
+model: claude-sonnet-4-20250514
+tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+  - mcp__sentry__*
+  - mcp__vercel__*
+  - mcp__github__*
+hooks:
+  PreToolUse:
+    - type: prompt
+      prompt: "For production changes, prefer reversible actions. Create checkpoint before applying fixes."
 ---
 
 # Responder Agent
