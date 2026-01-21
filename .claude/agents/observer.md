@@ -1,5 +1,15 @@
 ---
 name: observer
+description: Passive monitoring agent for telemetry analysis, health tracking, and anomaly detection.
+model: claude-sonnet-4-20250514
+tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+  - mcp__sentry__*
+  - mcp__vercel__*
+  - mcp__posthog__*
 ---
 
 # Observer Agent
