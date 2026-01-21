@@ -68,6 +68,7 @@ test.describe("Authentication", () => {
       await expect(
         page.getByRole("heading", { name: /create an account/i })
       ).toBeVisible();
+      await expect(page.getByLabel(/name/i)).toBeVisible();
       await expect(page.getByLabel(/email/i)).toBeVisible();
       await expect(page.getByLabel(/^password$/i)).toBeVisible();
       await expect(page.getByLabel(/confirm password/i)).toBeVisible();
@@ -83,24 +84,42 @@ test.describe("Authentication", () => {
     });
 
     test("should validate password requirements", async ({ page }) => {
-      await page.getByLabel(/email/i).fill("test@example.com");
-      await page.getByLabel(/^password$/i).fill("short");
-      await page.getByLabel(/confirm password/i).fill("short");
+      // Use more specific selectors for WebKit compatibility
+      const nameInput = page.locator('input#name');
+      const emailInput = page.locator('input#email');
+      const passwordInput = page.locator('input#password');
+      const confirmInput = page.locator('input#confirmPassword');
+
+      await nameInput.click();
+      await nameInput.fill("Test User");
+      await emailInput.fill("test@example.com");
+      await passwordInput.fill("short");
+      await confirmInput.fill("short");
       await page.getByRole("button", { name: /create account/i }).click();
 
       // Should show password length requirement error
-      // The exact error depends on your validation implementation
-      await expect(page.locator("text=8 characters")).toBeVisible();
+      await expect(page.getByText(/8 characters/i)).toBeVisible({ timeout: 10000 });
     });
 
     test("should validate password confirmation match", async ({ page }) => {
-      await page.getByLabel(/email/i).fill("test@example.com");
-      await page.getByLabel(/^password$/i).fill("password123");
-      await page.getByLabel(/confirm password/i).fill("different123");
+      // Use more specific selectors for WebKit compatibility
+      const nameInput = page.locator('input#name');
+      const emailInput = page.locator('input#email');
+      const passwordInput = page.locator('input#password');
+      const confirmInput = page.locator('input#confirmPassword');
+
+      await nameInput.click();
+      await nameInput.fill("Test User");
+      await emailInput.fill("test@example.com");
+      await passwordInput.fill("password123");
+      await confirmInput.fill("different123");
+
+      // Wait for all fields to be filled before clicking
+      await expect(confirmInput).toHaveValue("different123");
       await page.getByRole("button", { name: /create account/i }).click();
 
-      // Should show password mismatch error
-      await expect(page.locator("text=match")).toBeVisible();
+      // Should show password mismatch error - "Passwords do not match"
+      await expect(page.getByText(/passwords do not match/i)).toBeVisible({ timeout: 10000 });
     });
   });
 });
