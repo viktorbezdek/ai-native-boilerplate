@@ -234,30 +234,45 @@ export function matchesFilter(
   message: AgentMessage,
   filter: MessageFilter
 ): boolean {
-  if (filter.from && !filter.from.includes(message.from)) return false;
-  if (filter.to && !filter.to.includes(message.to as AgentType)) return false;
-  if (filter.type && !filter.type.includes(message.type)) return false;
-  if (filter.taskId && message.payload.taskId !== filter.taskId) return false;
-  if (filter.correlationId && message.correlationId !== filter.correlationId)
+  if (filter.from && !filter.from.includes(message.from)) {
     return false;
-  if (filter.priority && !filter.priority.includes(message.priority))
+  }
+  if (filter.to && !filter.to.includes(message.to as AgentType)) {
     return false;
+  }
+  if (filter.type && !filter.type.includes(message.type)) {
+    return false;
+  }
+  if (filter.taskId && message.payload.taskId !== filter.taskId) {
+    return false;
+  }
+  if (filter.correlationId && message.correlationId !== filter.correlationId) {
+    return false;
+  }
+  if (filter.priority && !filter.priority.includes(message.priority)) {
+    return false;
+  }
   if (
     filter.acknowledged !== undefined &&
     message.acknowledged !== filter.acknowledged
-  )
+  ) {
     return false;
+  }
 
   if (filter.since) {
     const sinceDate = new Date(filter.since);
     const messageDate = new Date(message.timestamp);
-    if (messageDate < sinceDate) return false;
+    if (messageDate < sinceDate) {
+      return false;
+    }
   }
 
   if (filter.until) {
     const untilDate = new Date(filter.until);
     const messageDate = new Date(message.timestamp);
-    if (messageDate > untilDate) return false;
+    if (messageDate > untilDate) {
+      return false;
+    }
   }
 
   return true;

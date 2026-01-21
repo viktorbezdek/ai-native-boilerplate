@@ -167,7 +167,9 @@ export function createWorkflowId(): string {
 
 export function calculateProgress(workflow: Workflow): number {
   const tasks = workflow.plan.tasks;
-  if (tasks.length === 0) return 0;
+  if (tasks.length === 0) {
+    return 0;
+  }
 
   const completed = tasks.filter((t) => t.status === "completed").length;
   return Math.round((completed / tasks.length) * 100);
@@ -180,7 +182,9 @@ export function getNextTasks(workflow: Workflow): Task[] {
   );
 
   return tasks.filter((task) => {
-    if (task.status !== "pending") return false;
+    if (task.status !== "pending") {
+      return false;
+    }
 
     const dependencies = task.dependencies;
     return dependencies.every((depId) => completedIds.has(depId));
@@ -188,7 +192,9 @@ export function getNextTasks(workflow: Workflow): Task[] {
 }
 
 export function canExecuteTask(task: Task, workflow: Workflow): boolean {
-  if (task.status !== "pending") return false;
+  if (task.status !== "pending") {
+    return false;
+  }
 
   const completedIds = new Set(
     workflow.plan.tasks.filter((t) => t.status === "completed").map((t) => t.id)

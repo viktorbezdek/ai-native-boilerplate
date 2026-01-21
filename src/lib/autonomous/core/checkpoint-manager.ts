@@ -114,7 +114,7 @@ export class CheckpointManager {
     let configRestored = false;
 
     // Load the checkpoint
-    const checkpoints = await this.list(
+    const _checkpoints = await this.list(
       options.checkpointId.split("_")[0] ?? ""
     );
     let checkpoint: Checkpoint | null = null;
