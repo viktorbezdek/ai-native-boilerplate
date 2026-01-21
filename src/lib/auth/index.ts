@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { headers } from "next/headers";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -51,3 +52,14 @@ export const auth = betterAuth({
 
 export type Session = typeof auth.$Infer.Session;
 export type User = typeof auth.$Infer.Session.user;
+
+/**
+ * Get the current session on the server side
+ * This is a convenience wrapper around auth.api.getSession
+ */
+export async function getSession() {
+  const headersList = await headers();
+  return auth.api.getSession({
+    headers: headersList,
+  });
+}
