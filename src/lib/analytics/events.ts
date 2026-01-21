@@ -50,7 +50,10 @@ export function trackEvent(
 /**
  * Track a page view
  */
-export function trackPageView(path: string, properties?: Record<string, unknown>) {
+export function trackPageView(
+  path: string,
+  properties?: Record<string, unknown>
+) {
   if (typeof window === "undefined") return;
 
   posthog.capture(ANALYTICS_EVENTS.PAGE_VIEW, {

@@ -1,7 +1,10 @@
 "use client";
 
 import posthog from "posthog-js";
-import { useFeatureFlagEnabled, useFeatureFlagVariantKey } from "posthog-js/react";
+import {
+  useFeatureFlagEnabled,
+  useFeatureFlagVariantKey,
+} from "posthog-js/react";
 
 // Type-safe feature flag names
 export const FEATURE_FLAGS = {
@@ -52,7 +55,9 @@ export function useFeatureFlagVariant(flag: FeatureFlag): string | undefined {
 /**
  * Override feature flags for testing
  */
-export function overrideFeatureFlags(flags: Partial<Record<FeatureFlag, boolean>>) {
+export function overrideFeatureFlags(
+  flags: Partial<Record<FeatureFlag, boolean>>
+) {
   if (typeof window === "undefined") return;
 
   Object.entries(flags).forEach(([flag, enabled]) => {
