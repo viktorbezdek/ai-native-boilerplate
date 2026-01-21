@@ -6,7 +6,33 @@ const protectedRoutes = ["/dashboard", "/settings", "/api/user"];
 // Routes that are only for unauthenticated users
 const authRoutes = ["/sign-in", "/sign-up", "/forgot-password"];
 
-export function middleware(request: NextRequest) {
+/**
+ * Validate session token format
+ * Better Auth uses format: {session_id}.{signature}
+ * This provides basic validation - full validation happens server-side
+ */
+function isValidTokenFormat(token: string): boolean {
+  // Token must exist and have reasonable length
+  if (!token || token.length < 32) {
+    return false;
+  }
+
+  // Better Auth tokens contain alphanumeric characters and some special chars
+  // Check for suspicious characters that could indicate tampering
+  const validPattern = /^[a-zA-Z0-9._-]+$/;
+  if (!validPattern.test(token)) {
+    return false;
+  }
+
+  // Token should have the signature part (contains a dot)
+  if (!token.includes(".")) {
+    return false;
+  }
+
+  return true;
+}
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Get session token from cookie
@@ -17,15 +43,27 @@ export function middleware(request: NextRequest) {
   );
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
 
+  // Validate token format for protected routes
+  const hasValidToken = sessionToken && isValidTokenFormat(sessionToken);
+
   // Redirect unauthenticated users from protected routes
-  if (isProtectedRoute && !sessionToken) {
-    const signInUrl = new URL("/sign-in", request.url);
-    signInUrl.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(signInUrl);
+  if (isProtectedRoute && !hasValidToken) {
+    // Clear any malformed session cookie
+    const response = NextResponse.redirect(
+      new URL(
+        `/sign-in?callbackUrl=${encodeURIComponent(pathname)}`,
+        request.url
+      )
+    );
+    if (sessionToken && !hasValidToken) {
+      response.cookies.delete("better-auth.session_token");
+    }
+    return response;
   }
 
   // Redirect authenticated users from auth routes
-  if (isAuthRoute && sessionToken) {
+  // For auth routes, we trust the token exists - server will validate fully
+  if (isAuthRoute && hasValidToken) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
