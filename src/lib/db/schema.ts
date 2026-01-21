@@ -1,13 +1,13 @@
+import { relations } from "drizzle-orm";
 import {
+  boolean,
+  integer,
+  pgEnum,
   pgTable,
   text,
   timestamp,
-  boolean,
-  integer,
   uuid,
-  pgEnum,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
 
 // ============================================================================
 // Enums

@@ -1,9 +1,9 @@
 import { eq } from "drizzle-orm";
 import { db } from "../index";
 import {
-  subscriptions,
-  type Subscription,
   type NewSubscription,
+  type Subscription,
+  subscriptions,
 } from "../schema";
 
 /**
