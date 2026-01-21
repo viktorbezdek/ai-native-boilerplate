@@ -1,8 +1,9 @@
+import { trackServerEvent } from "@/lib/analytics/server";
+import { applyApiMiddleware } from "@/lib/api";
+import { auth } from "@/lib/auth";
+import { PRICE_IDS, createCheckoutSession } from "@/lib/stripe";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { auth } from "@/lib/auth";
-import { createCheckoutSession, PRICE_IDS } from "@/lib/stripe";
-import { trackServerEvent } from "@/lib/analytics/server";
 
 const checkoutSchema = z.object({
   priceId: z.string().min(1, "Price ID is required"),
@@ -11,6 +12,16 @@ const checkoutSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  // Apply rate limiting and CSRF protection for checkout
+  const middleware = await applyApiMiddleware(request, {
+    rateLimit: "strict", // Stricter rate limit for checkout
+    csrf: true,
+    routePrefix: "checkout",
+  });
+  if (!middleware.success && middleware.error) {
+    return middleware.error;
+  }
+
   try {
     const session = await auth();
 
@@ -32,7 +43,7 @@ export async function POST(request: Request) {
 
     // Validate price ID is one of our known prices
     const validPriceIds = Object.values(PRICE_IDS);
-    if (!validPriceIds.includes(priceId as typeof validPriceIds[number])) {
+    if (!validPriceIds.includes(priceId as (typeof validPriceIds)[number])) {
       return NextResponse.json({ error: "Invalid price ID" }, { status: 400 });
     }
 
@@ -42,7 +53,7 @@ export async function POST(request: Request) {
     });
 
     const checkoutSession = await createCheckoutSession({
-      priceId: priceId as typeof validPriceIds[number],
+      priceId: priceId as (typeof validPriceIds)[number],
       userId: session.user.id,
       userEmail: session.user.email,
       successUrl,

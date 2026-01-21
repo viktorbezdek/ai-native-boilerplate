@@ -1,18 +1,29 @@
-import { NextRequest } from "next/server";
-import { z } from "zod";
+import { applyApiMiddleware } from "@/lib/api";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { projects } from "@/lib/db/schema";
-import { eq, desc, asc, and, count } from "drizzle-orm";
 import {
-  paginationSchema,
+  createErrorResponse,
   createProjectSchema,
   createSuccessResponse,
-  createErrorResponse,
+  paginationSchema,
 } from "@/lib/validations";
+import { and, asc, count, desc, eq } from "drizzle-orm";
+import type { NextRequest } from "next/server";
+import { z } from "zod";
 
 // GET /api/v1/projects - List user's projects
 export async function GET(request: NextRequest) {
+  // Apply rate limiting (no CSRF for GET requests)
+  const middleware = await applyApiMiddleware(request, {
+    rateLimit: "standard",
+    csrf: false,
+    routePrefix: "projects",
+  });
+  if (!middleware.success && middleware.error) {
+    return middleware.error;
+  }
+
   try {
     const session = await auth();
 
@@ -74,6 +85,16 @@ export async function GET(request: NextRequest) {
 
 // POST /api/v1/projects - Create a new project
 export async function POST(request: NextRequest) {
+  // Apply rate limiting and CSRF protection for state-changing request
+  const middleware = await applyApiMiddleware(request, {
+    rateLimit: "standard",
+    csrf: true,
+    routePrefix: "projects",
+  });
+  if (!middleware.success && middleware.error) {
+    return middleware.error;
+  }
+
   try {
     const session = await auth();
 
@@ -102,10 +123,7 @@ export async function POST(request: NextRequest) {
       })
       .returning();
 
-    return Response.json(
-      { data: newProject },
-      { status: 201 }
-    );
+    return Response.json({ data: newProject }, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return createErrorResponse("Validation failed", 400, error.issues);

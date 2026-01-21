@@ -1,17 +1,28 @@
-import { NextRequest } from "next/server";
-import { z } from "zod";
+import { applyApiMiddleware } from "@/lib/api";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
 import {
-  updateUserSchema,
-  createSuccessResponse,
   createErrorResponse,
+  createSuccessResponse,
+  updateUserSchema,
 } from "@/lib/validations";
+import { eq } from "drizzle-orm";
+import type { NextRequest } from "next/server";
+import { z } from "zod";
 
 // GET /api/v1/users - Get current user
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Apply rate limiting (no CSRF for GET requests)
+  const middleware = await applyApiMiddleware(request, {
+    rateLimit: "standard",
+    csrf: false,
+    routePrefix: "users",
+  });
+  if (!middleware.success && middleware.error) {
+    return middleware.error;
+  }
+
   try {
     const session = await auth();
 
@@ -45,6 +56,16 @@ export async function GET() {
 
 // PATCH /api/v1/users - Update current user
 export async function PATCH(request: NextRequest) {
+  // Apply rate limiting and CSRF protection for state-changing request
+  const middleware = await applyApiMiddleware(request, {
+    rateLimit: "standard",
+    csrf: true,
+    routePrefix: "users",
+  });
+  if (!middleware.success && middleware.error) {
+    return middleware.error;
+  }
+
   try {
     const session = await auth();
 

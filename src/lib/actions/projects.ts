@@ -1,20 +1,20 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { trackServerEvent } from "@/lib/analytics/server";
 import { auth } from "@/lib/auth";
 import {
   createProject as createProjectQuery,
-  updateProject as updateProjectQuery,
   deleteProject as deleteProjectQuery,
   getProjectByIdForUser,
+  updateProject as updateProjectQuery,
 } from "@/lib/db/queries";
 import {
-  createProjectSchema,
-  updateProjectSchema,
   type CreateProjectInput,
   type UpdateProjectInput,
+  createProjectSchema,
+  updateProjectSchema,
 } from "@/lib/validations";
-import { trackServerEvent } from "@/lib/analytics/server";
+import { revalidatePath } from "next/cache";
 
 export type ActionResult<T = void> =
   | { success: true; data?: T }
@@ -35,7 +35,10 @@ export async function createProjectAction(
 
     const validation = createProjectSchema.safeParse(input);
     if (!validation.success) {
-      return { success: false, error: validation.error.issues[0]?.message ?? "Invalid input" };
+      return {
+        success: false,
+        error: validation.error.issues[0]?.message ?? "Invalid input",
+      };
     }
 
     const project = await createProjectQuery({
@@ -75,7 +78,10 @@ export async function updateProjectAction(
 
     const validation = updateProjectSchema.safeParse(input);
     if (!validation.success) {
-      return { success: false, error: validation.error.issues[0]?.message ?? "Invalid input" };
+      return {
+        success: false,
+        error: validation.error.issues[0]?.message ?? "Invalid input",
+      };
     }
 
     await updateProjectQuery(projectId, session.user.id, validation.data);
