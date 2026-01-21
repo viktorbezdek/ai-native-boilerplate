@@ -1,3 +1,7 @@
+---
+name: responder
+---
+
 # Responder Agent
 
 Specialized agent for incident response and auto-remediation.

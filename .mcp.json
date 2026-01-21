@@ -19,8 +19,8 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "${CLAUDE_PROJECT_DIR}/src",
-        "${CLAUDE_PROJECT_DIR}/tests"
+        "./src",
+        "./tests"
       ]
     },
     "puppeteer": {
