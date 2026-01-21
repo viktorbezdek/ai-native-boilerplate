@@ -1,7 +1,7 @@
-import { describe, it, expect, vi } from "vitest";
+import { UserMenu } from "@/components/features/dashboard/user-menu";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { UserMenu } from "@/components/features/dashboard/user-menu";
+import { describe, expect, it, vi } from "vitest";
 
 // Mock auth
 const mockSignOut = vi.fn();

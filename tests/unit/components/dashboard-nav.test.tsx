@@ -1,6 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
 import { DashboardNav } from "@/components/features/dashboard/nav";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 // Mock next/navigation
 vi.mock("next/navigation", () => ({

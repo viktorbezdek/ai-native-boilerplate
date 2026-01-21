@@ -56,12 +56,16 @@ export const mockStripe = {
     cancel: vi.fn().mockResolvedValue(mockStripeSubscription),
   },
   customers: {
-    create: vi.fn().mockResolvedValue({ id: "cus_123", email: "test@example.com" }),
+    create: vi
+      .fn()
+      .mockResolvedValue({ id: "cus_123", email: "test@example.com" }),
     list: vi.fn().mockResolvedValue({ data: [] }),
   },
   billingPortal: {
     sessions: {
-      create: vi.fn().mockResolvedValue({ url: "https://billing.stripe.com/session/123" }),
+      create: vi
+        .fn()
+        .mockResolvedValue({ url: "https://billing.stripe.com/session/123" }),
     },
   },
   webhooks: {
@@ -138,7 +142,9 @@ export function setupExternalMocks() {
  * Reset all external mocks
  */
 export function resetExternalMocks() {
-  Object.values(mockStripe.checkout.sessions).forEach((mock) => mock.mockClear());
+  Object.values(mockStripe.checkout.sessions).forEach((mock) =>
+    mock.mockClear()
+  );
   Object.values(mockStripe.subscriptions).forEach((mock) => mock.mockClear());
   Object.values(mockStripe.customers).forEach((mock) => mock.mockClear());
   mockResend.emails.send.mockClear();

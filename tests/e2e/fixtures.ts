@@ -1,4 +1,4 @@
-import { test as base, expect, type Page } from "@playwright/test";
+import { type Page, test as base, expect } from "@playwright/test";
 
 /**
  * Extended test fixtures for common testing scenarios

@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest";
 import {
   createProjectSchema,
-  updateProjectSchema,
   paginationSchema,
+  updateProjectSchema,
 } from "@/lib/validations";
+import { describe, expect, it } from "vitest";
 
 describe("createProjectSchema", () => {
   it("validates a valid project", () => {
