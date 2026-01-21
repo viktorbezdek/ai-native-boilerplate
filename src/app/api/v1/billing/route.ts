@@ -1,9 +1,20 @@
-import { NextResponse } from "next/server";
+import { applyApiMiddleware } from "@/lib/api";
 import { auth } from "@/lib/auth";
 import { getSubscriptionByUserId } from "@/lib/db/queries";
 import { createBillingPortalSession } from "@/lib/stripe";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
+  // Apply rate limiting and CSRF protection for billing
+  const middleware = await applyApiMiddleware(request, {
+    rateLimit: "strict", // Stricter rate limit for billing
+    csrf: true,
+    routePrefix: "billing",
+  });
+  if (!middleware.success && middleware.error) {
+    return middleware.error;
+  }
+
   try {
     const session = await auth();
 
