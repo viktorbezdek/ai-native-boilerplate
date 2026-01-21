@@ -17,9 +17,9 @@ import type {
 } from "../types/workflow";
 
 const AUTONOMOUS_DIR = join(homedir(), ".autonomous");
-const WORKFLOWS_DIR = join(AUTONOMOUS_DIR, "workflows");
-const AGENTS_DIR = join(AUTONOMOUS_DIR, "agents");
-const CONFIG_FILE = join(AUTONOMOUS_DIR, "config.yaml");
+const _WORKFLOWS_DIR = join(AUTONOMOUS_DIR, "workflows");
+const _AGENTS_DIR = join(AUTONOMOUS_DIR, "agents");
+const _CONFIG_FILE = join(AUTONOMOUS_DIR, "config.yaml");
 
 export interface StorageConfig {
   baseDir?: string;
@@ -211,10 +211,11 @@ export class FileStorage {
 
   async getLatestCheckpoint(workflowId: string): Promise<Checkpoint | null> {
     const summaries = await this.listCheckpoints(workflowId);
-    if (summaries.length === 0) {
+    const latest = summaries[0];
+    if (!latest) {
       return null;
     }
-    return this.loadCheckpoint(workflowId, summaries[0].id);
+    return this.loadCheckpoint(workflowId, latest.id);
   }
 
   private async cleanupOldCheckpoints(workflowId: string): Promise<void> {
@@ -289,7 +290,7 @@ export class FileStorage {
       ? await readFile(eventsPath, "utf-8")
       : "";
 
-    await writeFile(eventsPath, existingContent + JSON.stringify(event) + "\n");
+    await writeFile(eventsPath, `${existingContent + JSON.stringify(event)}\n`);
   }
 
   async loadEvents(workflowId: string): Promise<WorkflowEvent[]> {
@@ -412,7 +413,7 @@ export class FileStorage {
 
     await writeFile(
       messagesPath,
-      existingContent + JSON.stringify(message) + "\n"
+      `${existingContent + JSON.stringify(message)}\n`
     );
   }
 

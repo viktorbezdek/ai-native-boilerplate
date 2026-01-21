@@ -76,7 +76,7 @@ export class AgentRegistry {
     this.agents.set(agentId, agent);
 
     // Subscribe to messages for this agent
-    this.messageBus.subscribe(agentId, { to: [input.type] }, (message) => {
+    this.messageBus.subscribe(agentId, { to: [input.type] }, (_message) => {
       const agentState = this.agents.get(agentId);
       if (agentState) {
         agentState.messageCount++;

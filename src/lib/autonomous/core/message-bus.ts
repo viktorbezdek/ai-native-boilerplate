@@ -199,9 +199,15 @@ export class MessageBus {
 
   getPendingRequests(agentId?: AgentType): AgentMessage[] {
     return this.messageQueue.filter((m) => {
-      if (m.type !== "request") return false;
-      if (m.acknowledged) return false;
-      if (agentId && m.to !== agentId) return false;
+      if (m.type !== "request") {
+        return false;
+      }
+      if (m.acknowledged) {
+        return false;
+      }
+      if (agentId && m.to !== agentId) {
+        return false;
+      }
       return true;
     });
   }

@@ -213,6 +213,9 @@ export class WorkflowEngine {
 
       // Execute next task
       const task = nextTasks[0];
+      if (!task) {
+        break;
+      }
       workflow.currentTaskId = task.id;
 
       try {
