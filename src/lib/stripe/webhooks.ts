@@ -158,7 +158,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 }
 
 async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
-  const customerId =
+  const _customerId =
     typeof invoice.customer === "string"
       ? invoice.customer
       : invoice.customer?.id;
@@ -223,13 +223,31 @@ async function upsertSubscription(
       ? subscription.customer
       : subscription.customer.id;
 
+  // Map Stripe status to our database enum
+  const mapStatus = (
+    status: Stripe.Subscription.Status
+  ): "active" | "canceled" | "past_due" | "trialing" => {
+    switch (status) {
+      case "active":
+        return "active";
+      case "canceled":
+        return "canceled";
+      case "past_due":
+        return "past_due";
+      case "trialing":
+        return "trialing";
+      default:
+        return "canceled";
+    }
+  };
+
   const subscriptionData = {
     userId,
     stripeCustomerId: customerId,
     stripeSubscriptionId: subscription.id,
     stripePriceId: priceId,
     stripeProductId: productId,
-    status: subscription.status,
+    status: mapStatus(subscription.status),
     currentPeriodStart: new Date(subscription.current_period_start * 1000),
     currentPeriodEnd: new Date(subscription.current_period_end * 1000),
     cancelAtPeriodEnd: subscription.cancel_at_period_end,
