@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { vi } from "vitest";
+import { expect, vi } from "vitest";
 import { mockAuthSession } from "../mocks/auth";
 
 /**
@@ -51,11 +51,15 @@ export async function parseJsonResponse<T>(
 
 /**
  * Mock authenticated session for API tests
+ * Note: vi.mock should be used at the top level of test files, not in helpers.
+ * This function is kept for backwards compatibility but should be avoided.
+ * Instead, use vi.mock directly in your test file.
  */
-export function mockApiAuth(authenticated = true) {
-  vi.mock("@/lib/auth", () => ({
-    auth: vi.fn().mockResolvedValue(authenticated ? mockAuthSession : null),
-  }));
+export function mockApiAuth(_authenticated = true) {
+  // This function is deprecated - use vi.mock at the top of your test file instead
+  console.warn(
+    "mockApiAuth is deprecated. Use vi.mock at the top level of your test file."
+  );
 }
 
 /**

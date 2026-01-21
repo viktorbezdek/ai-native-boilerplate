@@ -34,6 +34,7 @@ export const mockProject = {
   name: "Test Project",
   description: "A test project for unit tests",
   userId: mockUser.id,
+  isPublic: false,
   createdAt: new Date("2024-01-01"),
   updatedAt: new Date("2024-01-01"),
 };

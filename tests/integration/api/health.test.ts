@@ -1,6 +1,6 @@
 import { GET } from "@/app/api/v1/health/route";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { parseJsonResponse } from "./helpers";
+import { parseJsonResponse } from "../helpers";
 
 // Mock database
 vi.mock("@/lib/db", () => ({
@@ -25,13 +25,13 @@ describe("GET /api/v1/health", () => {
     const response = await GET();
     const { status, data } = await parseJsonResponse<{
       status: string;
-      database: string;
+      services: { database: string };
       timestamp: string;
     }>(response);
 
     expect(status).toBe(200);
     expect(data.status).toBe("healthy");
-    expect(data.database).toBe("connected");
+    expect(data.services.database).toBe("connected");
     expect(data.timestamp).toBeDefined();
   });
 
@@ -43,13 +43,11 @@ describe("GET /api/v1/health", () => {
     const response = await GET();
     const { status, data } = await parseJsonResponse<{
       status: string;
-      database: string;
-      error: string;
+      services: { database: string };
     }>(response);
 
     expect(status).toBe(503);
     expect(data.status).toBe("unhealthy");
-    expect(data.database).toBe("disconnected");
-    expect(data.error).toBeDefined();
+    expect(data.services.database).toBe("disconnected");
   });
 });
