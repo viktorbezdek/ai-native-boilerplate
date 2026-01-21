@@ -1,6 +1,6 @@
 import { trackServerEvent } from "@/lib/analytics/server";
 import { applyApiMiddleware } from "@/lib/api";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { PRICE_IDS, createCheckoutSession } from "@/lib/stripe";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const session = await auth();
+    const session = await getSession();
 
     if (!session?.user?.id || !session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

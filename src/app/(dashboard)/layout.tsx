@@ -1,10 +1,11 @@
 import { UserIdentifier } from "@/components/features/analytics/user-identifier";
 import { DashboardNav } from "@/components/features/dashboard/nav";
 import { UserMenu } from "@/components/features/dashboard/user-menu";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -13,9 +14,9 @@ export const metadata: Metadata = {
 export default async function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  const session = await auth();
+  const session = await getSession();
 
   if (!session?.user) {
     redirect("/sign-in");

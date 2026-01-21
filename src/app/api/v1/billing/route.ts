@@ -1,5 +1,5 @@
 import { applyApiMiddleware } from "@/lib/api";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { getSubscriptionByUserId } from "@/lib/db/queries";
 import { createBillingPortalSession } from "@/lib/stripe";
 import { NextResponse } from "next/server";
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const session = await auth();
+    const session = await getSession();
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

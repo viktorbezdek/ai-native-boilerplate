@@ -21,7 +21,9 @@ interface UserIdentifierProps {
  */
 export function UserIdentifier({ user, subscription }: UserIdentifierProps) {
   useEffect(() => {
-    if (!user.id) return;
+    if (!user.id) {
+      return;
+    }
 
     // Identify the user with PostHog
     identifyUser(user.id, {

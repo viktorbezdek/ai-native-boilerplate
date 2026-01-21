@@ -63,7 +63,9 @@ export function createErrorResponse(
   details?: z.ZodIssue[]
 ): Response {
   const body: ApiError = { error: message };
-  if (details) body.details = details;
+  if (details) {
+    body.details = details;
+  }
   return Response.json(body, { status });
 }
 
@@ -73,6 +75,8 @@ export function createSuccessResponse<T>(
   meta?: ApiResponse<T>["meta"]
 ): Response {
   const body: ApiResponse<T> = { data };
-  if (meta) body.meta = meta;
+  if (meta) {
+    body.meta = meta;
+  }
   return Response.json(body);
 }

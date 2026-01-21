@@ -110,7 +110,8 @@ export function getRateLimitHeaders(result: RateLimitResult): HeadersInit {
 export function getClientIp(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) {
-    return forwarded.split(",")[0].trim();
+    const firstIp = forwarded.split(",")[0];
+    return firstIp ? firstIp.trim() : "unknown";
   }
 
   const realIp = request.headers.get("x-real-ip");
