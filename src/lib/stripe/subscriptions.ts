@@ -1,4 +1,4 @@
-import { stripe, type PriceId } from "./client";
+import { type PriceId, stripe } from "./client";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 

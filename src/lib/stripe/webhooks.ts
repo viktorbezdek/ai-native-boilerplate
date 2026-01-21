@@ -1,9 +1,9 @@
-import type Stripe from "stripe";
-import { stripe } from "./client";
+import { identifyServerUser, trackServerEvent } from "@/lib/analytics/server";
 import { db } from "@/lib/db";
 import { subscriptions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { trackServerEvent, identifyServerUser } from "@/lib/analytics/server";
+import type Stripe from "stripe";
+import { stripe } from "./client";
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -79,7 +79,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         : session.subscription.id;
 
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-    
+
     // Track subscription created
     const priceId = subscription.items.data[0]?.price.id;
     trackServerEvent(userId, "subscription_created", {
@@ -158,19 +158,21 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 }
 
 async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
-  const customerId = typeof invoice.customer === "string" 
-    ? invoice.customer 
-    : invoice.customer?.id;
-  
+  const customerId =
+    typeof invoice.customer === "string"
+      ? invoice.customer
+      : invoice.customer?.id;
+
   // Try to get userId from subscription metadata
-  const subscriptionId = typeof invoice.subscription === "string"
-    ? invoice.subscription
-    : invoice.subscription?.id;
+  const subscriptionId =
+    typeof invoice.subscription === "string"
+      ? invoice.subscription
+      : invoice.subscription?.id;
 
   if (subscriptionId) {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     const userId = subscription.metadata?.userId;
-    
+
     if (userId) {
       trackServerEvent(userId, "payment_succeeded", {
         invoice_id: invoice.id,
@@ -184,14 +186,15 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
 }
 
 async function handlePaymentFailed(invoice: Stripe.Invoice) {
-  const subscriptionId = typeof invoice.subscription === "string"
-    ? invoice.subscription
-    : invoice.subscription?.id;
+  const subscriptionId =
+    typeof invoice.subscription === "string"
+      ? invoice.subscription
+      : invoice.subscription?.id;
 
   if (subscriptionId) {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     const userId = subscription.metadata?.userId;
-    
+
     if (userId) {
       trackServerEvent(userId, "payment_failed", {
         invoice_id: invoice.id,

@@ -37,7 +37,8 @@ export const PRICE_IDS = {
   // Example price IDs - replace with actual Stripe price IDs
   PRO_MONTHLY: process.env.STRIPE_PRO_MONTHLY_PRICE_ID ?? "price_pro_monthly",
   PRO_YEARLY: process.env.STRIPE_PRO_YEARLY_PRICE_ID ?? "price_pro_yearly",
-  TEAM_MONTHLY: process.env.STRIPE_TEAM_MONTHLY_PRICE_ID ?? "price_team_monthly",
+  TEAM_MONTHLY:
+    process.env.STRIPE_TEAM_MONTHLY_PRICE_ID ?? "price_team_monthly",
   TEAM_YEARLY: process.env.STRIPE_TEAM_YEARLY_PRICE_ID ?? "price_team_yearly",
 } as const;
 
