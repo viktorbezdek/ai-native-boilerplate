@@ -58,6 +58,7 @@ drizzle/*.sql
 # Claude Code local settings
 .claude/settings.local.json
 .claude/logs/
+.claude/plugins/
 .agents/
 
 # Bun
