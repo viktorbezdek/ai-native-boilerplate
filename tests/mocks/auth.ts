@@ -1,5 +1,5 @@
 import { vi } from "vitest";
-import { mockUser, mockSession } from "./db";
+import { mockSession, mockUser } from "./db";
 
 /**
  * Mock auth session
@@ -18,9 +18,7 @@ export const mockAuthSession = {
  * Create mock auth function
  */
 export function createMockAuth(authenticated = true) {
-  return vi.fn().mockResolvedValue(
-    authenticated ? mockAuthSession : null
-  );
+  return vi.fn().mockResolvedValue(authenticated ? mockAuthSession : null);
 }
 
 /**

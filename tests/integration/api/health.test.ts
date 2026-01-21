@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GET } from "@/app/api/v1/health/route";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { parseJsonResponse } from "./helpers";
 
 // Mock database
@@ -18,7 +18,9 @@ describe("GET /api/v1/health", () => {
   });
 
   it("returns healthy status when database is connected", async () => {
-    (db.execute as ReturnType<typeof vi.fn>).mockResolvedValue([{ now: new Date() }]);
+    (db.execute as ReturnType<typeof vi.fn>).mockResolvedValue([
+      { now: new Date() },
+    ]);
 
     const response = await GET();
     const { status, data } = await parseJsonResponse<{

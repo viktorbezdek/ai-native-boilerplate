@@ -1,4 +1,4 @@
-import { test, expect, type Page } from "@playwright/test";
+import { type Page, expect, test } from "@playwright/test";
 
 test.describe("Authentication", () => {
   test.describe("Sign In Page", () => {
@@ -7,15 +7,19 @@ test.describe("Authentication", () => {
     });
 
     test("should display sign in form", async ({ page }) => {
-      await expect(page.getByRole("heading", { name: /sign in/i })).toBeVisible();
+      await expect(
+        page.getByRole("heading", { name: /sign in/i })
+      ).toBeVisible();
       await expect(page.getByLabel(/email/i)).toBeVisible();
       await expect(page.getByLabel(/password/i)).toBeVisible();
-      await expect(page.getByRole("button", { name: /sign in/i })).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: /sign in/i })
+      ).toBeVisible();
     });
 
     test("should show validation errors for empty form", async ({ page }) => {
       await page.getByRole("button", { name: /sign in/i }).click();
-      
+
       // Check for required field validation
       await expect(page.getByLabel(/email/i)).toHaveAttribute("required", "");
     });
@@ -61,11 +65,15 @@ test.describe("Authentication", () => {
     });
 
     test("should display sign up form", async ({ page }) => {
-      await expect(page.getByRole("heading", { name: /create an account/i })).toBeVisible();
+      await expect(
+        page.getByRole("heading", { name: /create an account/i })
+      ).toBeVisible();
       await expect(page.getByLabel(/email/i)).toBeVisible();
       await expect(page.getByLabel(/^password$/i)).toBeVisible();
       await expect(page.getByLabel(/confirm password/i)).toBeVisible();
-      await expect(page.getByRole("button", { name: /create account/i })).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: /create account/i })
+      ).toBeVisible();
     });
 
     test("should have link to sign in page", async ({ page }) => {
@@ -102,7 +110,7 @@ test.describe("Protected Routes", () => {
     page,
   }) => {
     await page.goto("/dashboard");
-    
+
     // Should redirect to sign-in page
     await expect(page).toHaveURL(/sign-in/);
   });
@@ -111,7 +119,7 @@ test.describe("Protected Routes", () => {
     page,
   }) => {
     await page.goto("/dashboard/profile");
-    
+
     // Should redirect to sign-in page
     await expect(page).toHaveURL(/sign-in/);
   });
@@ -120,7 +128,7 @@ test.describe("Protected Routes", () => {
     page,
   }) => {
     await page.goto("/dashboard/settings");
-    
+
     // Should redirect to sign-in page
     await expect(page).toHaveURL(/sign-in/);
   });

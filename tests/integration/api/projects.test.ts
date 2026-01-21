@@ -1,7 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GET, POST } from "@/app/api/v1/projects/route";
-import { createMockRequest, parseJsonResponse, expectErrorResponse } from "../helpers";
-import { mockProject, mockAuthSession } from "../../mocks";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { mockAuthSession, mockProject } from "../../mocks";
+import {
+  createMockRequest,
+  expectErrorResponse,
+  parseJsonResponse,
+} from "../helpers";
 
 // Mock dependencies
 vi.mock("@/lib/auth", () => ({
@@ -15,7 +19,7 @@ vi.mock("@/lib/db/queries", () => ({
 
 // Import mocked modules
 import { auth } from "@/lib/auth";
-import { getProjectsForUser, createProject } from "@/lib/db/queries";
+import { createProject, getProjectsForUser } from "@/lib/db/queries";
 
 describe("GET /api/v1/projects", () => {
   beforeEach(() => {
@@ -25,7 +29,9 @@ describe("GET /api/v1/projects", () => {
   it("returns 401 when not authenticated", async () => {
     (auth as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
-    const request = createMockRequest({ url: "http://localhost:3000/api/v1/projects" });
+    const request = createMockRequest({
+      url: "http://localhost:3000/api/v1/projects",
+    });
     const response = await GET(request);
     const result = await parseJsonResponse(response);
 
@@ -39,10 +45,12 @@ describe("GET /api/v1/projects", () => {
       total: 1,
     });
 
-    const request = createMockRequest({ url: "http://localhost:3000/api/v1/projects" });
+    const request = createMockRequest({
+      url: "http://localhost:3000/api/v1/projects",
+    });
     const response = await GET(request);
     const { status, data } = await parseJsonResponse<{
-      data: typeof mockProject[];
+      data: (typeof mockProject)[];
       meta: { total: number; page: number; limit: number };
     }>(response);
 

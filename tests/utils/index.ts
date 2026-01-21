@@ -58,7 +58,11 @@ export function generateTestId(prefix = "test"): string {
  */
 export function createMockFetchResponse<T>(
   data: T,
-  options: { status?: number; ok?: boolean; headers?: Record<string, string> } = {}
+  options: {
+    status?: number;
+    ok?: boolean;
+    headers?: Record<string, string>;
+  } = {}
 ): Response {
   const { status = 200, ok = true, headers = {} } = options;
 
@@ -105,9 +109,7 @@ export function mockFetch(responses: Map<string, Response> | Response) {
 /**
  * Async test helper that ensures a promise resolves
  */
-export async function expectToResolve<T>(
-  promise: Promise<T>
-): Promise<T> {
+export async function expectToResolve<T>(promise: Promise<T>): Promise<T> {
   let result: T;
   let error: unknown;
 
@@ -118,7 +120,9 @@ export async function expectToResolve<T>(
   }
 
   if (error) {
-    throw new Error(`Expected promise to resolve, but it rejected with: ${error}`);
+    throw new Error(
+      `Expected promise to resolve, but it rejected with: ${error}`
+    );
   }
 
   return result!;

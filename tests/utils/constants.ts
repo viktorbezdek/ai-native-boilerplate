@@ -34,7 +34,12 @@ export const TEST_PLANS = {
   TEAM: {
     name: "Team",
     priceId: "price_team_monthly",
-    features: ["Unlimited Projects", "24/7 Support", "Advanced Analytics", "SSO"],
+    features: [
+      "Unlimited Projects",
+      "24/7 Support",
+      "Advanced Analytics",
+      "SSO",
+    ],
   },
 };
 
