@@ -26,6 +26,30 @@
     "puppeteer": {
       "command": "npx",
       "args": ["-y", "@anthropic-ai/mcp-server-puppeteer"]
+    },
+    "sentry": {
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/mcp-server-sentry"],
+      "env": {
+        "SENTRY_AUTH_TOKEN": "${SENTRY_AUTH_TOKEN}",
+        "SENTRY_ORG": "${SENTRY_ORG}",
+        "SENTRY_PROJECT": "${SENTRY_PROJECT}"
+      }
+    },
+    "vercel": {
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/mcp-server-vercel"],
+      "env": {
+        "VERCEL_TOKEN": "${VERCEL_TOKEN}",
+        "VERCEL_TEAM_ID": "${VERCEL_TEAM_ID}"
+      }
+    },
+    "linear": {
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/mcp-server-linear"],
+      "env": {
+        "LINEAR_API_KEY": "${LINEAR_API_KEY}"
+      }
     }
   }
 }
