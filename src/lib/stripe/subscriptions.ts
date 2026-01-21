@@ -108,7 +108,7 @@ export async function getUpcomingInvoice(customerId: string) {
     return await stripe.invoices.retrieveUpcoming({
       customer: customerId,
     });
-  } catch (error) {
+  } catch (_error) {
     // No upcoming invoice (no active subscription)
     return null;
   }
