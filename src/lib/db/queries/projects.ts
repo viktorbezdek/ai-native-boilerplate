@@ -1,6 +1,6 @@
-import { eq, desc, asc, and, count } from "drizzle-orm";
+import { and, asc, count, desc, eq } from "drizzle-orm";
 import { db } from "../index";
-import { projects, type Project, type NewProject } from "../schema";
+import { type NewProject, type Project, projects } from "../schema";
 
 export interface GetProjectsOptions {
   userId: string;
