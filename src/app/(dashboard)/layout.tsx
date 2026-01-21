@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { auth } from "@/lib/auth";
+import { UserIdentifier } from "@/components/features/analytics/user-identifier";
 import { DashboardNav } from "@/components/features/dashboard/nav";
 import { UserMenu } from "@/components/features/dashboard/user-menu";
-import { UserIdentifier } from "@/components/features/analytics/user-identifier";
+import { auth } from "@/lib/auth";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -25,7 +25,7 @@ export default async function DashboardLayout({
     <div className="flex min-h-screen">
       {/* Analytics: Identify user on dashboard load */}
       <UserIdentifier user={session.user} />
-      
+
       {/* Sidebar */}
       <aside className="hidden w-64 flex-shrink-0 border-r bg-card lg:block">
         <div className="flex h-full flex-col">
@@ -61,7 +61,7 @@ export default async function DashboardLayout({
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto">
+        <main id="main-content" className="flex-1 overflow-y-auto">
           <div className="container mx-auto p-6">{children}</div>
         </main>
       </div>

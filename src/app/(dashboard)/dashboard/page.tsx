@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { BetaFeaturesCard } from "@/components/features/dashboard/beta-features-card";
 import {
   Card,
   CardContent,
@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { BetaFeaturesCard } from "@/components/features/dashboard/beta-features-card";
+import { auth } from "@/lib/auth";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -24,7 +24,9 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <span className="text-2xl">💰</span>
+            <span className="text-2xl" role="img" aria-label="Money bag icon">
+              💰
+            </span>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">$45,231.89</div>
@@ -37,7 +39,9 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Subscriptions</CardTitle>
-            <span className="text-2xl">👥</span>
+            <span className="text-2xl" role="img" aria-label="Users icon">
+              👥
+            </span>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">+2,350</div>
@@ -50,7 +54,13 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Now</CardTitle>
-            <span className="text-2xl">🟢</span>
+            <span
+              className="text-2xl"
+              role="img"
+              aria-label="Active status indicator"
+            >
+              🟢
+            </span>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">+573</div>
@@ -63,7 +73,9 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Tasks Done</CardTitle>
-            <span className="text-2xl">✅</span>
+            <span className="text-2xl" role="img" aria-label="Checkmark icon">
+              ✅
+            </span>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">12/16</div>
