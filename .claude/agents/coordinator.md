@@ -1,3 +1,7 @@
+---
+name: coordinator
+---
+
 # Coordinator Agent
 
 Central orchestration agent for the autonomous development system.

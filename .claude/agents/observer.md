@@ -1,3 +1,7 @@
+---
+name: observer
+---
+
 # Observer Agent
 
 Passive monitoring agent for telemetry analysis and anomaly detection.
