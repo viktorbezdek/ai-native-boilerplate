@@ -1,9 +1,9 @@
-import { Resend } from "resend";
 import type { ReactElement } from "react";
+import { Resend } from "resend";
 
-import { WelcomeEmail } from "./templates/welcome";
 import { PasswordResetEmail } from "./templates/password-reset";
 import { VerifyEmail } from "./templates/verify-email";
+import { WelcomeEmail } from "./templates/welcome";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -17,7 +17,12 @@ interface SendEmailOptions {
   replyTo?: string;
 }
 
-export async function sendEmail({ to, subject, react, replyTo }: SendEmailOptions) {
+export async function sendEmail({
+  to,
+  subject,
+  react,
+  replyTo,
+}: SendEmailOptions) {
   try {
     const { data, error } = await resend.emails.send({
       from: `${FROM_NAME} <${FROM_EMAIL}>`,

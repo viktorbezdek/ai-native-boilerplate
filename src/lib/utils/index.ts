@@ -48,16 +48,20 @@ export function sleep(ms: number): Promise<void> {
 }
 
 /**
- * Generate a random ID
+ * Generate a cryptographically secure random ID
  */
 export function generateId(length = 12): string {
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-  for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  // Use crypto.randomUUID for secure random generation
+  const uuid = crypto.randomUUID().replace(/-/g, "");
+  if (length <= 32) {
+    return uuid.slice(0, length);
   }
-  return result;
+  // For lengths > 32, concatenate multiple UUIDs
+  let result = uuid;
+  while (result.length < length) {
+    result += crypto.randomUUID().replace(/-/g, "");
+  }
+  return result.slice(0, length);
 }
 
 /**

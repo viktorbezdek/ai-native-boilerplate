@@ -38,7 +38,9 @@ const serverSchema = z.object({
   CRON_SECRET: z.string().min(16).optional(),
 
   // Node environment
-  NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+  NODE_ENV: z
+    .enum(["development", "production", "test"])
+    .default("development"),
 });
 
 /**
