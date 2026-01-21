@@ -5,6 +5,7 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ReactElement, ReactNode } from "react";
+import { vi } from "vitest";
 
 /**
  * Custom render function that includes common providers
@@ -42,7 +43,9 @@ export async function waitForElementToBeRemoved(
   callback: () => HTMLElement | null
 ): Promise<void> {
   const element = callback();
-  if (!element) return;
+  if (!element) {
+    return;
+  }
 
   return new Promise((resolve) => {
     const observer = new MutationObserver(() => {

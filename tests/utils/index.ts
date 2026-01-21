@@ -1,7 +1,7 @@
 export * from "./render";
 export * from "./constants";
 
-import { vi } from "vitest";
+import { expect, vi } from "vitest";
 
 /**
  * Create a spy on console methods for testing
@@ -87,9 +87,9 @@ export function mockFetch(responses: Map<string, Response> | Response) {
   const originalFetch = global.fetch;
 
   if (responses instanceof Response) {
-    global.fetch = vi.fn().mockResolvedValue(responses);
+    (global.fetch as unknown) = vi.fn().mockResolvedValue(responses);
   } else {
-    global.fetch = vi.fn().mockImplementation((url: string) => {
+    (global.fetch as unknown) = vi.fn().mockImplementation((url: string) => {
       const response = responses.get(url);
       if (response) {
         return Promise.resolve(response);
@@ -102,7 +102,7 @@ export function mockFetch(responses: Map<string, Response> | Response) {
     restore: () => {
       global.fetch = originalFetch;
     },
-    mock: global.fetch as ReturnType<typeof vi.fn>,
+    mock: global.fetch as unknown as ReturnType<typeof vi.fn>,
   };
 }
 

@@ -1,14 +1,14 @@
-import { UserMenu } from "@/components/features/dashboard/user-menu";
+/**
+ * @vitest-environment jsdom
+ */
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
-// Mock auth
-const mockSignOut = vi.fn();
-
+// Mock modules before importing the component (vi.mock is hoisted)
 vi.mock("@/lib/auth/client", () => ({
   authClient: {
-    signOut: mockSignOut,
+    signOut: vi.fn(),
   },
 }));
 
@@ -26,6 +26,10 @@ vi.mock("next/navigation", () => ({
     refresh: vi.fn(),
   }),
 }));
+
+// Import component after mocks are defined
+import { UserMenu } from "@/components/features/dashboard/user-menu";
+import { authClient } from "@/lib/auth/client";
 
 describe("UserMenu", () => {
   const defaultProps = {
@@ -64,7 +68,7 @@ describe("UserMenu", () => {
     const signOutButton = screen.getByText("Sign out");
     await user.click(signOutButton);
 
-    expect(mockSignOut).toHaveBeenCalled();
+    expect(authClient.signOut).toHaveBeenCalled();
   });
 
   it("renders fallback to User when name is null", () => {

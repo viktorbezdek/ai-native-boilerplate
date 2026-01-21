@@ -42,11 +42,19 @@ export const mockAuthClient = {
 };
 
 /**
+ * Create mock getSession function
+ */
+export function createMockGetSession(authenticated = true) {
+  return vi.fn().mockResolvedValue(authenticated ? mockAuthSession : null);
+}
+
+/**
  * Mock auth module
  */
 export function mockAuthModule() {
   vi.mock("@/lib/auth", () => ({
-    auth: createMockAuth(true),
+    auth: {},
+    getSession: createMockGetSession(true),
     authClient: mockAuthClient,
   }));
 }
@@ -56,7 +64,8 @@ export function mockAuthModule() {
  */
 export function mockUnauthenticated() {
   vi.mock("@/lib/auth", () => ({
-    auth: createMockAuth(false),
+    auth: {},
+    getSession: createMockGetSession(false),
     authClient: {
       ...mockAuthClient,
       useSession: vi.fn().mockReturnValue({
