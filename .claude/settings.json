@@ -1,46 +1,49 @@
 {
+  "enabledPlugins": {
+    "subtask": true
+  },
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/validate-command.sh"
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit|MultiEdit|Delete",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/guard-protected.sh"
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
       {
-        "matcher": "Write|Edit|MultiEdit",
         "hooks": [
           {
-            "type": "command",
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/format.sh"
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/format.sh",
+            "type": "command"
           },
           {
-            "type": "command",
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/run-tests.sh"
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/run-tests.sh",
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "Write|Edit|MultiEdit"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/validate-command.sh",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      },
+      {
+        "hooks": [
+          {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/guard-protected.sh",
+            "type": "command"
+          }
+        ],
+        "matcher": "Write|Edit|MultiEdit|Delete"
       }
     ],
     "Stop": [
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/log-session.sh"
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/log-session.sh",
+            "type": "command"
           }
         ]
       }

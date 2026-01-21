@@ -57,6 +57,9 @@ drizzle/*.sql
 
 # Claude Code local settings
 .claude/settings.local.json
+.claude/logs/
+.agents/
 
 # Bun
 bun.lockb
+/.subtask/
