@@ -15,6 +15,7 @@ import { ANALYTICS_EVENTS, identifyUser, trackEvent } from "@/lib/analytics";
 import { authClient } from "@/lib/auth/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type { FormEvent } from "react";
 import { useState } from "react";
 
 export default function SignInPage() {
@@ -24,7 +25,7 @@ export default function SignInPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
     setIsLoading(true);

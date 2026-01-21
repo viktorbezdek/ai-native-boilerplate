@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import type { ReactNode } from "react";
 import "./globals.css";
 import { PageViewTracker } from "@/lib/analytics/page-view-tracker";
 import { PostHogProvider } from "@/lib/analytics/provider";
@@ -48,7 +49,7 @@ export const viewport: Viewport = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>

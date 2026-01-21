@@ -27,6 +27,7 @@ export default function GlobalError({
             </p>
             <div className="mt-8 flex gap-4 justify-center">
               <button
+                type="button"
                 onClick={() => reset()}
                 className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
               >

@@ -1,7 +1,7 @@
 "use server";
 
 import { trackServerEvent } from "@/lib/analytics/server";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import {
   createProject as createProjectQuery,
   deleteProject as deleteProjectQuery,
@@ -27,7 +27,7 @@ export async function createProjectAction(
   input: CreateProjectInput
 ): Promise<ActionResult<{ id: string }>> {
   try {
-    const session = await auth();
+    const session = await getSession();
 
     if (!session?.user?.id) {
       return { success: false, error: "Unauthorized" };
@@ -70,7 +70,7 @@ export async function updateProjectAction(
   input: UpdateProjectInput
 ): Promise<ActionResult> {
   try {
-    const session = await auth();
+    const session = await getSession();
 
     if (!session?.user?.id) {
       return { success: false, error: "Unauthorized" };
@@ -109,7 +109,7 @@ export async function deleteProjectAction(
   projectId: string
 ): Promise<ActionResult> {
   try {
-    const session = await auth();
+    const session = await getSession();
 
     if (!session?.user?.id) {
       return { success: false, error: "Unauthorized" };

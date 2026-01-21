@@ -1,5 +1,5 @@
 import { applyApiMiddleware } from "@/lib/api";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import {
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const session = await auth();
+    const session = await getSession();
 
     if (!session?.user?.id) {
       return createErrorResponse("Unauthorized", 401);
@@ -67,7 +67,7 @@ export async function PATCH(request: NextRequest) {
   }
 
   try {
-    const session = await auth();
+    const session = await getSession();
 
     if (!session?.user?.id) {
       return createErrorResponse("Unauthorized", 401);

@@ -14,11 +14,11 @@ function getDbInstance(): NeonHttpDatabase<typeof schema> {
     return dbInstance;
   }
 
-  if (!process.env["DATABASE_URL"]) {
+  if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL environment variable is not set");
   }
 
-  const sql = neon(process.env["DATABASE_URL"]);
+  const sql = neon(process.env.DATABASE_URL);
   dbInstance = drizzle(sql, {
     schema,
     logger: process.env.NODE_ENV === "development",
