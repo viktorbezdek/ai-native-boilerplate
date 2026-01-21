@@ -1,12 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { authClient } from "@/lib/auth/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -15,11 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  trackEvent,
-  identifyUser,
-  ANALYTICS_EVENTS,
-} from "@/lib/analytics";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ANALYTICS_EVENTS, identifyUser, trackEvent } from "@/lib/analytics";
+import { authClient } from "@/lib/auth/client";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function SignUpPage() {
   const router = useRouter();

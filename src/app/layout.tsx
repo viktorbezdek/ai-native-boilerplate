@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { PostHogProvider } from "@/lib/analytics/provider";
 import { PageViewTracker } from "@/lib/analytics/page-view-tracker";
+import { PostHogProvider } from "@/lib/analytics/provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -53,6 +53,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className="min-h-screen bg-background font-sans antialiased">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+        >
+          Skip to main content
+        </a>
         <PostHogProvider>
           <PageViewTracker />
           {children}
