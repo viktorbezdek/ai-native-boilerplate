@@ -12,7 +12,13 @@ export default defineConfig({
       "tests/unit/**/*.{test,spec}.{ts,tsx}",
       "tests/integration/**/*.{test,spec}.{ts,tsx}",
     ],
-    exclude: ["node_modules", ".next", "**/e2e/**", "playwright-report/**"],
+    exclude: [
+      "node_modules",
+      ".next",
+      "**/e2e/**",
+      "**/*.spec.ts",
+      "playwright-report/**",
+    ],
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html", "lcov"],
@@ -37,7 +43,14 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": resolve(__dirname, "./src"),
+      "@": resolve(__dirname, "./apps/web/src"),
+      "@repo/utils": resolve(__dirname, "./packages/utils/src"),
+      "@repo/validations": resolve(__dirname, "./packages/validations/src"),
+      "@repo/database": resolve(__dirname, "./packages/database/src"),
+      "@repo/ui": resolve(__dirname, "./packages/ui/src"),
+      "@repo/payments": resolve(__dirname, "./packages/payments/src"),
+      "@repo/email": resolve(__dirname, "./packages/email/src"),
+      "@repo/autonomous": resolve(__dirname, "./packages/autonomous/src"),
     },
   },
 });

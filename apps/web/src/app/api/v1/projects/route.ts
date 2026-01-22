@@ -1,6 +1,7 @@
 import { applyApiMiddleware } from "@/lib/api";
 import { getSession } from "@/lib/auth";
-import { db, projects } from "@repo/database";
+import { db } from "@/lib/db";
+import { projects } from "@repo/database";
 import {
   createErrorResponse,
   createProjectSchema,

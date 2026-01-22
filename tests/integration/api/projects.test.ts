@@ -12,99 +12,95 @@ import {
   parseJsonResponse,
 } from "../helpers";
 
-// Create mock functions at module level that will be shared
-const mockGetSession = vi.fn();
-const mockDbQuery = {
-  projects: {
-    findMany: vi.fn(),
+import * as apiModule from "@/lib/api";
+// Import the actual modules first
+import * as authModule from "@/lib/auth";
+
+// Create spies on the actual module exports
+const mockGetSession = vi.spyOn(authModule, "getSession");
+const mockApplyApiMiddleware = vi.spyOn(apiModule, "applyApiMiddleware");
+
+// Use vi.hoisted for db mocks that need to be in mock factories
+const { mockFindMany, mockSelect, mockInsert } = vi.hoisted(() => ({
+  mockFindMany: vi.fn(),
+  mockSelect: vi.fn(),
+  mockInsert: vi.fn(),
+}));
+
+// Mock the db module
+vi.mock("@/lib/db", () => ({
+  db: {
+    query: {
+      projects: {
+        findMany: mockFindMany,
+      },
+    },
+    select: mockSelect,
+    insert: mockInsert,
   },
-};
-const mockDbSelect = vi.fn();
-const mockDbInsert = vi.fn();
+}));
+
+vi.mock("@repo/database", () => ({
+  projects: {
+    userId: "userId",
+    createdAt: "createdAt",
+    id: "id",
+    name: "name",
+    description: "description",
+    isPublic: "isPublic",
+    updatedAt: "updatedAt",
+  },
+}));
+
+vi.mock("drizzle-orm", () => ({
+  eq: vi.fn((a, b) => ({ eq: [a, b] })),
+  asc: vi.fn((a) => ({ asc: a })),
+  desc: vi.fn((a) => ({ desc: a })),
+  count: vi.fn(() => "count"),
+  and: vi.fn((...args) => ({ and: args })),
+}));
+
+// Import route handlers
+import { GET, POST } from "@/app/api/v1/projects/route";
 
 describe("GET /api/v1/projects", () => {
-  let GET: (request: Request) => Promise<Response>;
+  beforeEach(() => {
+    vi.clearAllMocks();
 
-  beforeEach(async () => {
-    // Reset module cache
-    vi.resetModules();
-
-    // Reset all mocks
-    mockGetSession.mockReset();
-    mockDbQuery.projects.findMany.mockReset();
-    mockDbSelect.mockReset();
-    mockDbInsert.mockReset();
+    // Default: middleware passes
+    mockApplyApiMiddleware.mockResolvedValue({
+      success: true,
+      headers: {},
+    } as never);
 
     // Default: unauthenticated
-    mockGetSession.mockResolvedValue(null);
+    mockGetSession.mockResolvedValue(null as never);
 
     // Default db mocks
-    mockDbQuery.projects.findMany.mockResolvedValue([]);
-    mockDbSelect.mockReturnValue({
+    mockFindMany.mockResolvedValue([]);
+    mockSelect.mockReturnValue({
       from: vi.fn(() => ({
         where: vi.fn().mockResolvedValue([{ count: 0 }]),
       })),
     });
-
-    // Set up mocks using vi.doMock (not hoisted)
-    vi.doMock("next/headers", () => ({
-      headers: vi.fn(() => Promise.resolve(new Headers())),
-      cookies: vi.fn(() => ({
-        get: vi.fn(),
-        set: vi.fn(),
-        delete: vi.fn(),
-      })),
-    }));
-
-    vi.doMock("@/lib/api", () => ({
-      applyApiMiddleware: vi.fn(() =>
-        Promise.resolve({ success: true, headers: {} })
-      ),
-    }));
-
-    vi.doMock("@/lib/utils/csrf", () => ({
-      validateCsrf: vi.fn(() => Promise.resolve({ valid: true })),
-      validateCsrfToken: vi.fn(() => Promise.resolve({ valid: true })),
-      generateCsrfToken: vi.fn(() => "mock-csrf-token"),
-      CsrfProtection: vi.fn(() => null),
-    }));
-
-    // Mock auth module - getSession returns our mock
-    vi.doMock("@/lib/auth", () => ({
-      auth: {},
-      getSession: mockGetSession,
-    }));
-
-    // Mock database module
-    vi.doMock("@/lib/db", () => ({
-      db: {
-        query: mockDbQuery,
-        select: (...args: unknown[]) => mockDbSelect(...args),
-        insert: (...args: unknown[]) => mockDbInsert(...args),
-      },
-    }));
-
-    // Import the route handler with fresh mocks
-    const routeModule = await import("@/app/api/v1/projects/route");
-    GET = routeModule.GET;
   });
 
   it("returns 401 when not authenticated", async () => {
-    mockGetSession.mockResolvedValue(null);
+    mockGetSession.mockResolvedValue(null as never);
 
     const request = createMockRequest({
       url: "http://localhost:3000/api/v1/projects",
     });
-    const response = await GET(request);
+    const response = await GET(request as never);
     const result = await parseJsonResponse(response);
 
     expectErrorResponse(result, 401, "Unauthorized");
   });
 
   it("returns paginated projects for authenticated user", async () => {
-    mockGetSession.mockResolvedValue(mockAuthSession);
-    mockDbQuery.projects.findMany.mockResolvedValue([mockProject]);
-    mockDbSelect.mockReturnValue({
+    mockGetSession.mockResolvedValue(mockAuthSession as never);
+    mockFindMany.mockResolvedValue([mockProject]);
+    mockSelect.mockReturnValue({
       from: vi.fn(() => ({
         where: vi.fn().mockResolvedValue([{ count: 1 }]),
       })),
@@ -113,7 +109,7 @@ describe("GET /api/v1/projects", () => {
     const request = createMockRequest({
       url: "http://localhost:3000/api/v1/projects",
     });
-    const response = await GET(request);
+    const response = await GET(request as never);
     const { status, data } = await parseJsonResponse<{
       data: (typeof mockProject)[];
       meta: { total: number; page: number; limit: number };
@@ -126,9 +122,9 @@ describe("GET /api/v1/projects", () => {
   });
 
   it("respects pagination parameters", async () => {
-    mockGetSession.mockResolvedValue(mockAuthSession);
-    mockDbQuery.projects.findMany.mockResolvedValue([]);
-    mockDbSelect.mockReturnValue({
+    mockGetSession.mockResolvedValue(mockAuthSession as never);
+    mockFindMany.mockResolvedValue([]);
+    mockSelect.mockReturnValue({
       from: vi.fn(() => ({
         where: vi.fn().mockResolvedValue([{ count: 25 }]),
       })),
@@ -138,106 +134,61 @@ describe("GET /api/v1/projects", () => {
       url: "http://localhost:3000/api/v1/projects",
       searchParams: { page: "2", limit: "5" },
     });
-    const response = await GET(request);
+    const response = await GET(request as never);
     const { status } = await parseJsonResponse<{
       data: unknown[];
       meta: { page: number; limit: number };
     }>(response);
 
     expect(status).toBe(200);
-    expect(mockDbQuery.projects.findMany).toHaveBeenCalled();
+    expect(mockFindMany).toHaveBeenCalled();
   });
 });
 
 describe("POST /api/v1/projects", () => {
-  let POST: (request: Request) => Promise<Response>;
+  beforeEach(() => {
+    vi.clearAllMocks();
 
-  beforeEach(async () => {
-    // Reset module cache
-    vi.resetModules();
-
-    // Reset all mocks
-    mockGetSession.mockReset();
-    mockDbQuery.projects.findMany.mockReset();
-    mockDbSelect.mockReset();
-    mockDbInsert.mockReset();
+    // Default: middleware passes
+    mockApplyApiMiddleware.mockResolvedValue({
+      success: true,
+      headers: {},
+    } as never);
 
     // Default: unauthenticated
-    mockGetSession.mockResolvedValue(null);
+    mockGetSession.mockResolvedValue(null as never);
 
     // Default db mocks
-    mockDbInsert.mockReturnValue({
+    mockInsert.mockReturnValue({
       values: vi.fn(() => ({
         returning: vi.fn().mockResolvedValue([mockProject]),
       })),
     });
-
-    // Set up mocks using vi.doMock (not hoisted)
-    vi.doMock("next/headers", () => ({
-      headers: vi.fn(() => Promise.resolve(new Headers())),
-      cookies: vi.fn(() => ({
-        get: vi.fn(),
-        set: vi.fn(),
-        delete: vi.fn(),
-      })),
-    }));
-
-    vi.doMock("@/lib/api", () => ({
-      applyApiMiddleware: vi.fn(() =>
-        Promise.resolve({ success: true, headers: {} })
-      ),
-    }));
-
-    vi.doMock("@/lib/utils/csrf", () => ({
-      validateCsrf: vi.fn(() => Promise.resolve({ valid: true })),
-      validateCsrfToken: vi.fn(() => Promise.resolve({ valid: true })),
-      generateCsrfToken: vi.fn(() => "mock-csrf-token"),
-      CsrfProtection: vi.fn(() => null),
-    }));
-
-    // Mock auth module - getSession returns our mock
-    vi.doMock("@/lib/auth", () => ({
-      auth: {},
-      getSession: mockGetSession,
-    }));
-
-    // Mock database module
-    vi.doMock("@/lib/db", () => ({
-      db: {
-        query: mockDbQuery,
-        select: (...args: unknown[]) => mockDbSelect(...args),
-        insert: (...args: unknown[]) => mockDbInsert(...args),
-      },
-    }));
-
-    // Import the route handler with fresh mocks
-    const routeModule = await import("@/app/api/v1/projects/route");
-    POST = routeModule.POST;
   });
 
   it("returns 401 when not authenticated", async () => {
-    mockGetSession.mockResolvedValue(null);
+    mockGetSession.mockResolvedValue(null as never);
 
     const request = createMockRequest({
       method: "POST",
       url: "http://localhost:3000/api/v1/projects",
       body: { name: "Test" },
     });
-    const response = await POST(request);
+    const response = await POST(request as never);
     const result = await parseJsonResponse(response);
 
     expectErrorResponse(result, 401, "Unauthorized");
   });
 
   it("creates a project with valid data", async () => {
-    mockGetSession.mockResolvedValue(mockAuthSession);
+    mockGetSession.mockResolvedValue(mockAuthSession as never);
 
     const request = createMockRequest({
       method: "POST",
       url: "http://localhost:3000/api/v1/projects",
       body: { name: "New Project", description: "A test project" },
     });
-    const response = await POST(request);
+    const response = await POST(request as never);
     const { status, data } = await parseJsonResponse<{
       data: typeof mockProject;
     }>(response);
@@ -247,28 +198,28 @@ describe("POST /api/v1/projects", () => {
   });
 
   it("returns 400 for invalid input", async () => {
-    mockGetSession.mockResolvedValue(mockAuthSession);
+    mockGetSession.mockResolvedValue(mockAuthSession as never);
 
     const request = createMockRequest({
       method: "POST",
       url: "http://localhost:3000/api/v1/projects",
       body: { name: "" }, // Invalid: empty name
     });
-    const response = await POST(request);
+    const response = await POST(request as never);
     const result = await parseJsonResponse(response);
 
     expectErrorResponse(result, 400);
   });
 
   it("returns 400 when name is missing", async () => {
-    mockGetSession.mockResolvedValue(mockAuthSession);
+    mockGetSession.mockResolvedValue(mockAuthSession as never);
 
     const request = createMockRequest({
       method: "POST",
       url: "http://localhost:3000/api/v1/projects",
       body: { description: "No name provided" },
     });
-    const response = await POST(request);
+    const response = await POST(request as never);
     const result = await parseJsonResponse(response);
 
     expectErrorResponse(result, 400);
