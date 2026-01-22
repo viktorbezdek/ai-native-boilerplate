@@ -38,6 +38,6 @@
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@repo/vitest-config": "workspace:*",
-    "drizzle-kit": "^0.30.0"
+    "drizzle-kit": "^0.31.8"
   }
 }
