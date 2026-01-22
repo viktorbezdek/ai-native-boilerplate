@@ -30,6 +30,8 @@ jobs:
       url: ${{ steps.deploy.outputs.url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - uses: oven-sh/setup-bun@v2
         with:
@@ -73,6 +75,8 @@ jobs:
       url: https://ai-native-boilerplate.vercel.app
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - uses: oven-sh/setup-bun@v2
         with:
