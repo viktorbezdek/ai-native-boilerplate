@@ -1,7 +1,7 @@
 ---
 name: task-decomposer
 description: Transforms feature requests or bug reports into actionable task DAGs with complexity estimates. Use when planning implementation of new features, breaking down epics, or creating sprint backlogs.
-allowed-tools: Read, Grep, Glob, mcp__linear__*, mcp__github__*
+allowed-tools: Read, Grep, Glob, mcp__github__*
 ---
 
 # Task Decomposition Skill

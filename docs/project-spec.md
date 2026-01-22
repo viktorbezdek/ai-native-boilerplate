@@ -184,7 +184,6 @@ message_format:
 | MCP Server | Endpoint | Capabilities |
 |------------|----------|--------------|
 | **asana-mcp** | `mcp.asana.com/sse` | Tasks, projects, portfolios, goals, workload |
-| **linear-mcp** | `mcp.linear.app/sse` | Issues, cycles, projects, roadmaps, triage |
 
 ### Incident Management
 
@@ -359,8 +358,8 @@ COMMANDS (22):   /plan, /execute, /pause, /resume, /abort, /rollback,
                  /agents, /spawn, /terminate, /reassign,
                  /diagnose, /simulate
 
-MCP SERVERS (12): github-mcp, gitlab-mcp, circleci-mcp,
+MCP SERVERS (11): github-mcp, gitlab-mcp, circleci-mcp,
                   vercel-mcp, kubernetes-mcp, terraform-mcp, aws-mcp,
                   sentry-mcp, datadog-mcp, telemetry-mcp,
-                  asana-mcp, linear-mcp, pagerduty-mcp
+                  asana-mcp, pagerduty-mcp
 ```

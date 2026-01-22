@@ -140,8 +140,6 @@ Pre-configured integrations:
 - **postgres**: Database operations
 - **fetch**: HTTP requests
 - **sequential-thinking**: Complex reasoning
-- **linear**: Issue tracking
-- **notion**: Documentation
 
 ## Scripts
 

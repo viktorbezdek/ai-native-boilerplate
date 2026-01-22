@@ -44,13 +44,6 @@
         "VERCEL_TEAM_ID": "${VERCEL_TEAM_ID}"
       }
     },
-    "linear": {
-      "command": "npx",
-      "args": ["-y", "@anthropic-ai/mcp-server-linear"],
-      "env": {
-        "LINEAR_API_KEY": "${LINEAR_API_KEY}"
-      }
-    },
     "posthog": {
       "command": "npx",
       "args": ["-y", "@anthropic-ai/mcp-server-posthog"],
