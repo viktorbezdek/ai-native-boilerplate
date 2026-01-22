@@ -1,0 +1,16 @@
+{
+  "name": "@repo/vitest-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    "./base": "./base.ts",
+    "./react": "./react.ts"
+  },
+  "files": ["base.ts", "react.ts"],
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.0",
+    "vitest": "^2.1.0"
+  }
+}
