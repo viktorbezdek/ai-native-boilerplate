@@ -1,15 +1,15 @@
-import { GET } from "@/app/api/v1/health/route";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { parseJsonResponse } from "../helpers";
 
-// Mock database
+// Mock database at module level
 vi.mock("@/lib/db", () => ({
   db: {
     execute: vi.fn(),
   },
 }));
 
-// Import mocked db
+import { GET } from "@/app/api/v1/health/route";
+// Import after mocks are set up
 import { db } from "@/lib/db";
 
 describe("GET /api/v1/health", () => {
@@ -18,9 +18,7 @@ describe("GET /api/v1/health", () => {
   });
 
   it("returns healthy status when database is connected", async () => {
-    (db.execute as ReturnType<typeof vi.fn>).mockResolvedValue([
-      { now: new Date() },
-    ]);
+    vi.mocked(db.execute).mockResolvedValue([{ now: new Date() }] as never);
 
     const response = await GET();
     const { status, data } = await parseJsonResponse<{
@@ -36,9 +34,7 @@ describe("GET /api/v1/health", () => {
   });
 
   it("returns unhealthy status when database fails", async () => {
-    (db.execute as ReturnType<typeof vi.fn>).mockRejectedValue(
-      new Error("Connection failed")
-    );
+    vi.mocked(db.execute).mockRejectedValue(new Error("Connection failed"));
 
     const response = await GET();
     const { status, data } = await parseJsonResponse<{

@@ -1,4 +1,5 @@
-import { db } from "@repo/database";
+import { db } from "@/lib/db";
+import { sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -24,7 +25,7 @@ export async function GET() {
 
   try {
     // Test database connection
-    await db.execute("SELECT 1");
+    await db.execute(sql`SELECT 1`);
     status.services.database = "connected";
   } catch {
     status.status = "unhealthy";
