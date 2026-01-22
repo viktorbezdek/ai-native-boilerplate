@@ -2,10 +2,25 @@ import { z } from "zod";
 
 /**
  * Server-side environment variables schema
+ * DATABASE_URL is optional in CI/test - neon.new can provision instant databases
  */
 const serverSchema = z.object({
-  // Database
-  DATABASE_URL: z.string().url(),
+  // Database - optional in CI/test, required in production
+  DATABASE_URL: z
+    .string()
+    .url()
+    .optional()
+    .refine(
+      (val) => {
+        // Required in production
+        if (process.env.NODE_ENV === "production") {
+          return !!val;
+        }
+        // Optional in development/test (neon.new can provision)
+        return true;
+      },
+      { message: "DATABASE_URL is required in production" }
+    ),
 
   // Authentication
   BETTER_AUTH_SECRET: z.string().min(32),
