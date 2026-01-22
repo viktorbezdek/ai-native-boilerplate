@@ -1,6 +1,20 @@
 /**
  * Simple in-memory rate limiter for API routes
  * Uses a sliding window approach with IP-based tracking
+ *
+ * PRODUCTION NOTE: This in-memory rate limiter is NOT suitable for:
+ * - Multi-instance deployments (each instance has its own store)
+ * - Serverless functions (state lost on cold starts)
+ *
+ * For production at scale, consider:
+ * - @upstash/ratelimit (Redis-backed, serverless-friendly)
+ * - Vercel Edge Config (for configuration-based rate limiting)
+ * - Redis with sliding window algorithm
+ *
+ * This implementation is suitable for:
+ * - Development and testing
+ * - Single-instance deployments
+ * - As a fallback when external rate limiting is unavailable
  */
 
 interface RateLimitEntry {

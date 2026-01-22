@@ -85,10 +85,10 @@ test.describe("Authentication", () => {
 
     test("should validate password requirements", async ({ page }) => {
       // Use more specific selectors for WebKit compatibility
-      const nameInput = page.locator('input#name');
-      const emailInput = page.locator('input#email');
-      const passwordInput = page.locator('input#password');
-      const confirmInput = page.locator('input#confirmPassword');
+      const nameInput = page.locator("input#name");
+      const emailInput = page.locator("input#email");
+      const passwordInput = page.locator("input#password");
+      const confirmInput = page.locator("input#confirmPassword");
 
       await nameInput.click();
       await nameInput.fill("Test User");
@@ -98,15 +98,17 @@ test.describe("Authentication", () => {
       await page.getByRole("button", { name: /create account/i }).click();
 
       // Should show password length requirement error
-      await expect(page.getByText(/8 characters/i)).toBeVisible({ timeout: 10000 });
+      await expect(page.getByText(/8 characters/i)).toBeVisible({
+        timeout: 10000,
+      });
     });
 
     test("should validate password confirmation match", async ({ page }) => {
       // Use more specific selectors for WebKit compatibility
-      const nameInput = page.locator('input#name');
-      const emailInput = page.locator('input#email');
-      const passwordInput = page.locator('input#password');
-      const confirmInput = page.locator('input#confirmPassword');
+      const nameInput = page.locator("input#name");
+      const emailInput = page.locator("input#email");
+      const passwordInput = page.locator("input#password");
+      const confirmInput = page.locator("input#confirmPassword");
 
       await nameInput.click();
       await nameInput.fill("Test User");
@@ -119,7 +121,9 @@ test.describe("Authentication", () => {
       await page.getByRole("button", { name: /create account/i }).click();
 
       // Should show password mismatch error - "Passwords do not match"
-      await expect(page.getByText(/passwords do not match/i)).toBeVisible({ timeout: 10000 });
+      await expect(page.getByText(/passwords do not match/i)).toBeVisible({
+        timeout: 10000,
+      });
     });
   });
 });
