@@ -1,7 +1,5 @@
 "use server";
 
-import { trackServerEvent } from "@/lib/analytics/server";
-import { getSession } from "@/lib/auth";
 import {
   createProject as createProjectQuery,
   deleteProject as deleteProjectQuery,
@@ -10,11 +8,13 @@ import {
 } from "@repo/database/queries";
 import {
   type CreateProjectInput,
-  type UpdateProjectInput,
   createProjectSchema,
+  type UpdateProjectInput,
   updateProjectSchema,
 } from "@repo/validations";
 import { revalidatePath } from "next/cache";
+import { trackServerEvent } from "@/lib/analytics/server";
+import { getSession } from "@/lib/auth";
 
 export type ActionResult<T = void> =
   | { success: true; data?: T }

@@ -1,7 +1,5 @@
 "use client";
 
-import { ANALYTICS_EVENTS, identifyUser, trackEvent } from "@/lib/analytics";
-import { authClient } from "@/lib/auth/client";
 import {
   Button,
   Card,
@@ -17,6 +15,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
 import { useState } from "react";
+import { ANALYTICS_EVENTS, identifyUser, trackEvent } from "@/lib/analytics";
+import { authClient } from "@/lib/auth/client";
 
 export default function SignUpPage() {
   const router = useRouter();

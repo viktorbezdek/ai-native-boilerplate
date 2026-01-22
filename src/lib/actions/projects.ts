@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { trackServerEvent } from "@/lib/analytics/server";
 import { getSession } from "@/lib/auth";
 import {
@@ -10,11 +11,10 @@ import {
 } from "@/lib/db/queries";
 import {
   type CreateProjectInput,
-  type UpdateProjectInput,
   createProjectSchema,
+  type UpdateProjectInput,
   updateProjectSchema,
 } from "@/lib/validations";
-import { revalidatePath } from "next/cache";
 
 export type ActionResult<T = void> =
   | { success: true; data?: T }

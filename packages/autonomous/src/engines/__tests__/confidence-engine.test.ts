@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   ConfidenceEngine,
-  type TaskForConfidence,
   getConfidenceEngine,
   resetConfidenceEngine,
+  type TaskForConfidence,
 } from "../confidence-engine";
 
 describe("ConfidenceEngine", () => {

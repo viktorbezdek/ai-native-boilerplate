@@ -1,5 +1,5 @@
 export { Avatar, AvatarFallback, AvatarImage } from "./avatar";
-export { Button, buttonVariants, type ButtonProps } from "./button";
+export { Button, type ButtonProps, buttonVariants } from "./button";
 export {
   Card,
   CardContent,

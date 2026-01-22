@@ -24,7 +24,13 @@ export default defineConfig(({ mode }) => {
         "tests/unit/**/*.{test,spec}.{ts,tsx}",
         "tests/integration/**/*.{test,spec}.{ts,tsx}",
       ],
-      exclude: ["node_modules", ".next", "**/e2e/**", "playwright-report/**"],
+      exclude: [
+        "node_modules",
+        ".next",
+        "**/e2e/**",
+        "playwright-report/**",
+        "tests/unit/components/**", // Run with vitest browser instead
+      ],
       coverage: {
         provider: "v8",
         reporter: ["text", "json", "html", "lcov"],

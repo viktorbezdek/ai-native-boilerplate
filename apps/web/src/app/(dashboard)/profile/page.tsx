@@ -1,6 +1,5 @@
 "use client";
 
-import { authClient } from "@/lib/auth/client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,6 +22,7 @@ import {
 import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
+import { authClient } from "@/lib/auth/client";
 
 export default function ProfilePage() {
   const router = useRouter();

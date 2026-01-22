@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import {
   APPROVAL_POLICIES,
   type ApprovalPolicy,
@@ -5,7 +6,6 @@ import {
   getApprovalPolicy,
   requiresApproval,
 } from "@/lib/autonomous/types/execution-mode";
-import { describe, expect, it } from "vitest";
 
 describe("ExecutionMode", () => {
   describe("getApprovalPolicy", () => {

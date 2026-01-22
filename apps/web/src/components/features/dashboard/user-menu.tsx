@@ -1,9 +1,9 @@
 "use client";
 
-import { ANALYTICS_EVENTS, resetUser, trackEvent } from "@/lib/analytics";
-import { authClient } from "@/lib/auth/client";
 import { Avatar, AvatarFallback, AvatarImage, Button } from "@repo/ui";
 import { useRouter } from "next/navigation";
+import { ANALYTICS_EVENTS, resetUser, trackEvent } from "@/lib/analytics";
+import { authClient } from "@/lib/auth/client";
 
 interface User {
   id: string;

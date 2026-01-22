@@ -7,15 +7,13 @@
  * @module autonomous
  */
 
-// Types
-export * from "./types";
-
 // Core components
 export * from "./core";
-
 // Persistence
 export {
   FileStorage,
   getStorage,
   resetStorage,
 } from "./persistence/file-storage";
+// Types
+export * from "./types";

@@ -8,7 +8,6 @@ import * as path from "node:path";
 
 import type {
   CronSchedule,
-  EventFilter,
   ThresholdCondition,
   Trigger,
   TriggerEngineConfig,

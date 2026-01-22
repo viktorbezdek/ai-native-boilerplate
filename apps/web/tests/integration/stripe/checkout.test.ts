@@ -6,24 +6,27 @@ import type { PriceId } from "@repo/payments";
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-// Mock Stripe at module level
+// Mock Stripe at module level with proper class mock
 const mockCheckoutCreate = vi.fn();
 
-vi.mock("stripe", () => ({
-  default: vi.fn(() => ({
-    checkout: {
+vi.mock("stripe", () => {
+  // Create a proper class mock
+  class MockStripe {
+    checkout = {
       sessions: {
         create: mockCheckoutCreate,
       },
-    },
-  })),
-}));
+    };
+  }
+  return { default: MockStripe, Stripe: MockStripe };
+});
+
+// Reset mocks before each test
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 
 describe("Stripe Checkout", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe("createCheckoutSession", () => {
     it("creates a subscription checkout session with correct parameters", async () => {
       const mockSession = {

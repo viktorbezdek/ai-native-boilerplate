@@ -1,3 +1,6 @@
+import { eq } from "drizzle-orm";
+import type { NextRequest } from "next/server";
+import { z } from "zod";
 import { applyApiMiddleware } from "@/lib/api";
 import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -7,9 +10,6 @@ import {
   createSuccessResponse,
   updateUserSchema,
 } from "@/lib/validations";
-import { eq } from "drizzle-orm";
-import type { NextRequest } from "next/server";
-import { z } from "zod";
 
 // GET /api/v1/users - Get current user
 export async function GET(request: NextRequest) {

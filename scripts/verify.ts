@@ -12,19 +12,13 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { $ } from "bun";
 import { validateAuthSecret } from "./lib/secrets";
-import { type ServiceCheckResult, checkAllServices } from "./lib/services";
+import { checkAllServices } from "./lib/services";
 import {
   type CheckResult,
-  banner,
   checkResults,
   colors,
-  divider,
   error,
-  info,
-  section,
-  success,
   summary,
-  warning,
 } from "./lib/ui";
 
 const ROOT_DIR = resolve(import.meta.dir, "..");
@@ -44,7 +38,9 @@ function loadEnvFile(): EnvVars {
 
   for (const line of content.split("\n")) {
     const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith("#")) continue;
+    if (!trimmed || trimmed.startsWith("#")) {
+      continue;
+    }
 
     const match = trimmed.match(/^([^=]+)=(.*)$/);
     if (match) {
@@ -278,7 +274,7 @@ async function main(): Promise<void> {
   if (failed === 0) {
     console.log();
     console.log(
-      colors.green("Ready to start!") + " Run: " + colors.cyan("bun dev")
+      `${colors.green("Ready to start!")} Run: ${colors.cyan("bun dev")}`
     );
     console.log();
     process.exit(0);

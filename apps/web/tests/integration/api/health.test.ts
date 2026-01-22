@@ -1,5 +1,5 @@
-import { GET } from "@/app/api/v1/health/route";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { GET } from "@/app/api/v1/health/route";
 import { parseJsonResponse } from "../helpers";
 
 // Mock database

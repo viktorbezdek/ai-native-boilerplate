@@ -1,12 +1,500 @@
-{"timestamp":"2026-01-20T12:21:40Z","project":"/Users/vbezdek/Work/ai-native-boilerplate","git":"changed:0,staged:0"}
-{"timestamp":"2026-01-20T12:21:51Z","project":"/Users/vbezdek/Work/ai-native-boilerplate","git":"changed:0,staged:0"}
-{"timestamp":"2026-01-20T12:22:24Z","project":"/Users/vbezdek/Work/ai-native-boilerplate","git":"changed:0,staged:0"}
-{"timestamp":"2026-01-20T12:25:59Z","project":"/Users/vbezdek/Work/ai-native-boilerplate","git":"changed:0,staged:0"}
-{"timestamp":"2026-01-20T13:09:49Z","project":"/Users/vbezdek/Work/ai-native-boilerplate","git":"changed:9,staged:0"}
-{"timestamp":"2026-01-20T21:29:27Z","project":"/Users/vbezdek/Work/ai-native-boilerplate","git":"changed:9,staged:0"}
-{"timestamp":"2026-01-20T21:31:20Z","project":"/Users/vbezdek/Work/ai-native-boilerplate","git":"changed:9,staged:0"}
-{"timestamp":"2026-01-20T21:36:52Z","project":"/Users/vbezdek/Work/ai-native-boilerplate","git":"changed:14,staged:0"}
-{"timestamp":"2026-01-20T22:21:07Z","project":"/Users/vbezdek/Work/ai-native-boilerplate","git":"changed:14,staged:0"}
-{"timestamp":"2026-01-20T22:23:57Z","project":"/Users/vbezdek/Work/ai-native-boilerplate","git":"changed:14,staged:0"}
-{"timestamp":"2026-01-20T22:24:07Z","project":"/Users/vbezdek/Work/ai-native-boilerplate","git":"changed:14,staged:0"}
-{"timestamp":"2026-01-21T07:51:57Z","project":"/Users/vbezdek/Work/ai-native-boilerplate","git":"changed:73,staged:0"}
+    "lint": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "builds": {
+      "success": 0,
+      "failed": 0
+    }
+  },
+  "drift": {
+    "scope_additions": 0,
+    "unplanned_files": 0,
+    "severity": "none"
+  },
+  "tasks": {
+    "planned": 0,
+    "completed": 0,
+    "completion_rate": 0
+  },
+  "git": {
+    "changed": 6,
+    "staged": 0,
+    "commits": 4
+  }
+}
+{
+  "timestamp": "2026-01-22T16:08:33Z",
+  "session_id": "1769098113",
+  "session_start": "2026-01-22T16:07:55Z",
+  "duration_seconds": 3638,
+  "summary": {
+    "total_operations": 8,
+    "avg_operation_ms": 0,
+    "success_rate_pct": 100,
+    "error_count": 0
+  },
+  "tool_usage": {
+    "Read": 2,
+    "Edit": 2,
+    "Bash": 4
+  },
+  "categories": {
+    "read": 2,
+    "write": 2,
+    "execute": 4
+  },
+  "quality": {
+    "tests": {
+      "passed": 0,
+      "failed": 0
+    },
+    "lint": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "builds": {
+      "success": 0,
+      "failed": 0
+    }
+  },
+  "drift": {
+    "scope_additions": 0,
+    "unplanned_files": 0,
+    "severity": "none"
+  },
+  "tasks": {
+    "planned": 0,
+    "completed": 0,
+    "completion_rate": 0
+  },
+  "git": {
+    "changed": 6,
+    "staged": 0,
+    "commits": 5
+  }
+}
+{
+  "timestamp": "2026-01-22T16:19:21Z",
+  "session_id": "1769098761",
+  "session_start": "2026-01-22T16:15:05Z",
+  "duration_seconds": 3856,
+  "summary": {
+    "total_operations": 74,
+    "avg_operation_ms": 0,
+    "success_rate_pct": 100.0,
+    "error_count": 0
+  },
+  "tool_usage": {
+    "Bash": 38,
+    "Read": 8,
+    "Edit": 12,
+    "TodoWrite": 6,
+    "Glob": 4,
+    "Grep": 6
+  },
+  "categories": {
+    "execute": 38,
+    "read": 18,
+    "write": 12,
+    "planning": 6
+  },
+  "quality": {
+    "tests": {
+      "passed": 0,
+      "failed": 0
+    },
+    "lint": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "builds": {
+      "success": 0,
+      "failed": 0
+    }
+  },
+  "drift": {
+    "scope_additions": 0,
+    "unplanned_files": 0,
+    "severity": "none"
+  },
+  "tasks": {
+    "planned": 4,
+    "completed": 4,
+    "completion_rate": 100.0
+  },
+  "git": {
+    "changed": 6,
+    "staged": 0,
+    "commits": 6
+  }
+}
+{
+  "timestamp": "2026-01-22T16:22:02Z",
+  "session_id": "1769098922",
+  "session_start": "2026-01-22T16:22:02Z",
+  "duration_seconds": 3600,
+  "summary": {
+    "total_operations": 0,
+    "avg_operation_ms": 0,
+    "success_rate_pct": 100.0,
+    "error_count": 0
+  },
+  "tool_usage": {},
+  "categories": {},
+  "quality": {
+    "tests": {
+      "passed": 0,
+      "failed": 0
+    },
+    "lint": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "builds": {
+      "success": 0,
+      "failed": 0
+    }
+  },
+  "drift": {
+    "scope_additions": 0,
+    "unplanned_files": 0,
+    "severity": "none"
+  },
+  "tasks": {
+    "planned": 0,
+    "completed": 0,
+    "completion_rate": 0
+  },
+  "git": {
+    "changed": 6,
+    "staged": 0,
+    "commits": 6
+  }
+}
+{
+  "timestamp": "2026-01-22T16:23:59Z",
+  "session_id": "1769099039",
+  "session_start": "2026-01-22T16:23:01Z",
+  "duration_seconds": 3658,
+  "summary": {
+    "total_operations": 22,
+    "avg_operation_ms": 0,
+    "success_rate_pct": 100.0,
+    "error_count": 0
+  },
+  "tool_usage": {
+    "Bash": 20,
+    "Read": 2
+  },
+  "categories": {
+    "execute": 20,
+    "read": 2
+  },
+  "quality": {
+    "tests": {
+      "passed": 0,
+      "failed": 0
+    },
+    "lint": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "builds": {
+      "success": 0,
+      "failed": 0
+    }
+  },
+  "drift": {
+    "scope_additions": 0,
+    "unplanned_files": 0,
+    "severity": "none"
+  },
+  "tasks": {
+    "planned": 0,
+    "completed": 0,
+    "completion_rate": 0
+  },
+  "git": {
+    "changed": 1,
+    "staged": 0,
+    "commits": 7
+  }
+}
+{
+  "timestamp": "2026-01-22T16:25:32Z",
+  "session_id": "1769099132",
+  "session_start": "2026-01-22T16:24:25Z",
+  "duration_seconds": 3667,
+  "summary": {
+    "total_operations": 12,
+    "avg_operation_ms": 0,
+    "success_rate_pct": 100.0,
+    "error_count": 0
+  },
+  "tool_usage": {
+    "Glob": 4,
+    "Read": 6,
+    "Bash": 2
+  },
+  "categories": {
+    "read": 10,
+    "execute": 2
+  },
+  "quality": {
+    "tests": {
+      "passed": 0,
+      "failed": 0
+    },
+    "lint": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "builds": {
+      "success": 0,
+      "failed": 0
+    }
+  },
+  "drift": {
+    "scope_additions": 0,
+    "unplanned_files": 0,
+    "severity": "none"
+  },
+  "tasks": {
+    "planned": 0,
+    "completed": 0,
+    "completion_rate": 0
+  },
+  "git": {
+    "changed": 1,
+    "staged": 0,
+    "commits": 7
+  }
+}
+{
+  "timestamp": "2026-01-22T16:35:45Z",
+  "session_id": "1769099745",
+  "session_start": "2026-01-22T16:26:42Z",
+  "duration_seconds": 4143,
+  "summary": {
+    "total_operations": 133,
+    "avg_operation_ms": 0,
+    "success_rate_pct": 100.0,
+    "error_count": 0
+  },
+  "tool_usage": {
+    "TodoWrite": 16,
+    "Glob": 7,
+    "Read": 29,
+    "Edit": 20,
+    "Bash": 41,
+    "Skill": 2,
+    "TaskOutput": 2,
+    "Write": 16
+  },
+  "categories": {
+    "planning": 16,
+    "read": 36,
+    "write": 36,
+    "execute": 41,
+    "skill": 2,
+    "other": 2
+  },
+  "quality": {
+    "tests": {
+      "passed": 0,
+      "failed": 0
+    },
+    "lint": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "builds": {
+      "success": 0,
+      "failed": 0
+    }
+  },
+  "drift": {
+    "scope_additions": 0,
+    "unplanned_files": 0,
+    "severity": "none"
+  },
+  "tasks": {
+    "planned": 8,
+    "completed": 8,
+    "completion_rate": 100.0
+  },
+  "git": {
+    "changed": 121,
+    "staged": 0,
+    "commits": 7
+  }
+}
+{
+  "timestamp": "2026-01-22T16:41:56Z",
+  "session_id": "1769100116",
+  "session_start": "2026-01-22T16:39:55Z",
+  "duration_seconds": 3721,
+  "summary": {
+    "total_operations": 13,
+    "avg_operation_ms": 0,
+    "success_rate_pct": 100.0,
+    "error_count": 0
+  },
+  "tool_usage": {
+    "Bash": 7,
+    "Read": 4,
+    "Edit": 2
+  },
+  "categories": {
+    "execute": 7,
+    "read": 4,
+    "write": 2
+  },
+  "quality": {
+    "tests": {
+      "passed": 0,
+      "failed": 0
+    },
+    "lint": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "builds": {
+      "success": 0,
+      "failed": 0
+    }
+  },
+  "drift": {
+    "scope_additions": 0,
+    "unplanned_files": 0,
+    "severity": "none"
+  },
+  "tasks": {
+    "planned": 0,
+    "completed": 0,
+    "completion_rate": 0
+  },
+  "git": {
+    "changed": 121,
+    "staged": 0,
+    "commits": 6
+  }
+}
+{
+  "timestamp": "2026-01-22T17:04:57Z",
+  "session_id": "1769101497",
+  "session_start": "2026-01-22T16:43:02Z",
+  "duration_seconds": 4915,
+  "summary": {
+    "total_operations": 201,
+    "avg_operation_ms": 0,
+    "success_rate_pct": 100,
+    "error_count": 0
+  },
+  "tool_usage": {
+    "WebSearch": 6,
+    "Bash": 97,
+    "Read": 58,
+    "Task": 1,
+    "Write": 4,
+    "Edit": 22,
+    "WebFetch": 2,
+    "Glob": 3,
+    "TodoWrite": 4,
+    "TaskOutput": 2,
+    "KillShell": 2
+  },
+  "categories": {
+    "web": 8,
+    "execute": 97,
+    "read": 61,
+    "agent": 1,
+    "write": 26,
+    "planning": 4,
+    "other": 4
+  },
+  "quality": {
+    "tests": {
+      "passed": 0,
+      "failed": 0
+    },
+    "lint": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "builds": {
+      "success": 0,
+      "failed": 0
+    }
+  },
+  "drift": {
+    "scope_additions": 0,
+    "unplanned_files": 0,
+    "severity": "none"
+  },
+  "tasks": {
+    "planned": 6,
+    "completed": 3,
+    "completion_rate": 50.0
+  },
+  "git": {
+    "changed": 129,
+    "staged": 0,
+    "commits": 4
+  }
+}
+{
+  "timestamp": "2026-01-22T17:07:06Z",
+  "session_id": "1769101626",
+  "session_start": "2026-01-22T17:06:11Z",
+  "duration_seconds": 3655,
+  "summary": {
+    "total_operations": 16,
+    "avg_operation_ms": 0,
+    "success_rate_pct": 100,
+    "error_count": 0
+  },
+  "tool_usage": {
+    "Write": 4,
+    "Bash": 4,
+    "Read": 2,
+    "Edit": 4,
+    "TodoWrite": 2
+  },
+  "categories": {
+    "write": 8,
+    "execute": 4,
+    "read": 2,
+    "planning": 2
+  },
+  "quality": {
+    "tests": {
+      "passed": 0,
+      "failed": 0
+    },
+    "lint": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "builds": {
+      "success": 0,
+      "failed": 0
+    }
+  },
+  "drift": {
+    "scope_additions": 0,
+    "unplanned_files": 0,
+    "severity": "none"
+  },
+  "tasks": {
+    "planned": 8,
+    "completed": 8,
+    "completion_rate": 100.0
+  },
+  "git": {
+    "changed": 130,
+    "staged": 0,
+    "commits": 3
+  }
+}

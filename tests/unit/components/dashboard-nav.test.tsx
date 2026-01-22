@@ -1,9 +1,10 @@
 /**
  * @vitest-environment jsdom
  */
-import { DashboardNav } from "@/components/features/dashboard/nav";
+
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import { DashboardNav } from "@/components/features/dashboard/nav";
 
 // Mock next/navigation
 vi.mock("next/navigation", () => ({

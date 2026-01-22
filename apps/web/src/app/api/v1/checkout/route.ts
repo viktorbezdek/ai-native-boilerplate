@@ -1,9 +1,9 @@
+import { createCheckoutSession, PRICE_IDS } from "@repo/payments";
+import { NextResponse } from "next/server";
+import { z } from "zod";
 import { trackServerEvent } from "@/lib/analytics/server";
 import { applyApiMiddleware } from "@/lib/api";
 import { getSession } from "@/lib/auth";
-import { PRICE_IDS, createCheckoutSession } from "@repo/payments";
-import { NextResponse } from "next/server";
-import { z } from "zod";
 
 const checkoutSchema = z.object({
   priceId: z.string().min(1, "Price ID is required"),

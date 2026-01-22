@@ -1,5 +1,3 @@
-import { BetaFeaturesCard } from "@/components/features/dashboard/beta-features-card";
-import { getSession } from "@/lib/auth";
 import {
   Card,
   CardContent,
@@ -7,6 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@repo/ui";
+import { BetaFeaturesCard } from "@/components/features/dashboard/beta-features-card";
+import { getSession } from "@/lib/auth";
 
 export default async function DashboardPage() {
   const session = await getSession();

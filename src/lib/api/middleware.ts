@@ -3,15 +3,15 @@
  * Provides rate limiting and CSRF protection for API routes
  */
 
+import { NextResponse } from "next/server";
 import { type CsrfValidationResult, validateCsrf } from "@/lib/utils/csrf";
 import {
-  RATE_LIMITS,
-  type RateLimitConfig,
   checkRateLimit,
   getClientIp,
   getRateLimitHeaders,
+  RATE_LIMITS,
+  type RateLimitConfig,
 } from "@/lib/utils/rate-limit";
-import { NextResponse } from "next/server";
 
 export interface ApiMiddlewareConfig {
   /** Rate limit configuration (default: standard) */

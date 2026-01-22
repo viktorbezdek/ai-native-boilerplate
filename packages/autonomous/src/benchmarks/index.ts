@@ -3,24 +3,23 @@
  */
 
 export {
-  smallFeatureBenchmark,
-  mediumFeatureBenchmark,
-  largeFeatureBenchmark,
+  bugFixSuite,
+  complexBugFixBenchmark,
+  regressionBugFixBenchmark,
+  simpleBugFixBenchmark,
+} from "./bug-fix";
+export {
   featureImplementationSuite,
+  largeFeatureBenchmark,
+  mediumFeatureBenchmark,
+  smallFeatureBenchmark,
 } from "./feature-implementation";
 
 export {
-  simpleBugFixBenchmark,
-  complexBugFixBenchmark,
-  regressionBugFixBenchmark,
-  bugFixSuite,
-} from "./bug-fix";
-
-export {
-  smallRefactorBenchmark,
-  moduleRefactorBenchmark,
   architecturalRefactorBenchmark,
+  moduleRefactorBenchmark,
   refactorSuite,
+  smallRefactorBenchmark,
 } from "./refactor";
 
 import type { BenchmarkSuite } from "../types/benchmark";

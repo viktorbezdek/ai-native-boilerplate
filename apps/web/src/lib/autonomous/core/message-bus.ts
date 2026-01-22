@@ -10,7 +10,6 @@ import type {
   MessageFilter,
   MessageRecipient,
   MessageSubscription,
-  MessageType,
 } from "../types/message";
 import { createMessageId, matchesFilter } from "../types/message";
 

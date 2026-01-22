@@ -6,13 +6,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import type {
-  AdapterHealth,
-  Signal,
-  SignalAdapter,
-  SignalPriority,
-  SignalType,
-} from "../../types/signal";
+import type { AdapterHealth, Signal, SignalAdapter } from "../../types/signal";
 
 /**
  * Configuration for local adapter

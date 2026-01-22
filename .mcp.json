@@ -14,15 +14,6 @@
         "POSTGRES_CONNECTION_STRING": "${DATABASE_URL}"
       }
     },
-    "filesystem": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "./src",
-        "./tests"
-      ]
-    },
     "puppeteer": {
       "command": "npx",
       "args": ["-y", "@anthropic-ai/mcp-server-puppeteer"]

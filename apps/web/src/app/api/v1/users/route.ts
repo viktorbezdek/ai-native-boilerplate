@@ -1,5 +1,3 @@
-import { applyApiMiddleware } from "@/lib/api";
-import { getSession } from "@/lib/auth";
 import { db, users } from "@repo/database";
 import {
   createErrorResponse,
@@ -9,6 +7,8 @@ import {
 import { eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
+import { applyApiMiddleware } from "@/lib/api";
+import { getSession } from "@/lib/auth";
 
 // GET /api/v1/users - Get current user
 export async function GET(request: NextRequest) {
