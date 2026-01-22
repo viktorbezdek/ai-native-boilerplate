@@ -34,7 +34,7 @@
     "lint": "biome check src/"
   },
   "dependencies": {
-    "stripe": "^17.0.0"
+    "stripe": "^20.2.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
