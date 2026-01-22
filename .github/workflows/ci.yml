@@ -93,6 +93,7 @@ jobs:
         run: bun run test
         env:
           CI: true
+          SKIP_ENV_VALIDATION: true
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4
@@ -121,9 +122,17 @@ jobs:
         id: db
         run: |
           # Use get-db to provision an instant Neon database
-          DB_URL=$(npx get-db --yes 2>/dev/null | grep -o 'postgresql://[^[:space:]]*')
-          echo "DATABASE_URL=${DB_URL}" >> $GITHUB_ENV
-          echo "::add-mask::${DB_URL}"
+          npx get-db --yes --env
+          # Source the .env file to get DATABASE_URL
+          if [ -f .env ]; then
+            export $(grep -v '^#' .env | xargs)
+            echo "DATABASE_URL=${DATABASE_URL}" >> $GITHUB_ENV
+            echo "::add-mask::${DATABASE_URL}"
+            echo "Database provisioned successfully"
+          else
+            echo "::error::Failed to provision database - .env file not created"
+            exit 1
+          fi
 
       - name: Turbo cache
         uses: actions/cache@v4
@@ -137,6 +146,7 @@ jobs:
         run: bun run test
         env:
           CI: true
+          SKIP_ENV_VALIDATION: true
 
   e2e-tests:
     name: E2E Tests
@@ -162,9 +172,17 @@ jobs:
         id: db
         run: |
           # Use get-db to provision an instant Neon database
-          DB_URL=$(npx get-db --yes 2>/dev/null | grep -o 'postgresql://[^[:space:]]*')
-          echo "DATABASE_URL=${DB_URL}" >> $GITHUB_ENV
-          echo "::add-mask::${DB_URL}"
+          npx get-db --yes --env
+          # Source the .env file to get DATABASE_URL
+          if [ -f .env ]; then
+            export $(grep -v '^#' .env | xargs)
+            echo "DATABASE_URL=${DATABASE_URL}" >> $GITHUB_ENV
+            echo "::add-mask::${DATABASE_URL}"
+            echo "Database provisioned successfully"
+          else
+            echo "::error::Failed to provision database - .env file not created"
+            exit 1
+          fi
 
       - name: Turbo cache
         uses: actions/cache@v4
@@ -186,6 +204,7 @@ jobs:
         run: bun run test:e2e
         env:
           CI: true
+          SKIP_ENV_VALIDATION: true
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
