@@ -224,7 +224,7 @@ export const SignalSchema = z.object({
   source: SignalSourceTypeSchema,
   priority: SignalPrioritySchema,
   timestamp: z.date(),
-  payload: z.record(z.unknown()),
+  payload: z.record(z.string(), z.unknown()),
   tags: z.array(z.string()),
   processed: z.boolean(),
   workflowId: z.string().optional(),
@@ -248,5 +248,5 @@ export const SignalActionSchema = z.object({
     })
     .optional(),
   workflowId: z.string().optional(),
-  params: z.record(z.unknown()).optional(),
+  params: z.record(z.string(), z.unknown()).optional(),
 });

@@ -159,7 +159,7 @@ export const ConfidenceSignalSchema = z.object({
   value: z.number().min(0).max(100),
   weight: z.number().min(0).max(1),
   timestamp: z.date(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const ConfidenceResultSchema = z.object({

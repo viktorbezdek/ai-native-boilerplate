@@ -163,10 +163,11 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
       : invoice.customer?.id;
 
   // Try to get userId from subscription metadata
+  const subscriptionDetails = invoice.parent?.subscription_details;
   const subscriptionId =
-    typeof invoice.subscription === "string"
-      ? invoice.subscription
-      : invoice.subscription?.id;
+    typeof subscriptionDetails?.subscription === "string"
+      ? subscriptionDetails.subscription
+      : subscriptionDetails?.subscription?.id;
 
   if (subscriptionId) {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
@@ -185,10 +186,11 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
 }
 
 async function handlePaymentFailed(invoice: Stripe.Invoice) {
+  const subscriptionDetails = invoice.parent?.subscription_details;
   const subscriptionId =
-    typeof invoice.subscription === "string"
-      ? invoice.subscription
-      : invoice.subscription?.id;
+    typeof subscriptionDetails?.subscription === "string"
+      ? subscriptionDetails.subscription
+      : subscriptionDetails?.subscription?.id;
 
   if (subscriptionId) {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
@@ -260,6 +262,12 @@ async function upsertSubscription(
     }
   };
 
+  // Get billing period from subscription item (moved from subscription in Stripe v20+)
+  const currentPeriodStart =
+    subscriptionItem?.current_period_start ?? subscription.start_date;
+  const currentPeriodEnd =
+    subscriptionItem?.current_period_end ?? subscription.start_date;
+
   const subscriptionData = {
     userId,
     stripeCustomerId: customerId,
@@ -267,8 +275,8 @@ async function upsertSubscription(
     stripePriceId: priceId,
     stripeProductId: productId,
     status: mapStatus(subscription.status),
-    currentPeriodStart: new Date(subscription.current_period_start * 1000),
-    currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+    currentPeriodStart: new Date(currentPeriodStart * 1000),
+    currentPeriodEnd: new Date(currentPeriodEnd * 1000),
     cancelAtPeriodEnd: subscription.cancel_at_period_end,
     canceledAt: subscription.canceled_at
       ? new Date(subscription.canceled_at * 1000)

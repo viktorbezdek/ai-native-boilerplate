@@ -436,7 +436,11 @@ describe("Stripe Webhooks", () => {
       ({
         id: "in_test123",
         customer: "cus_123",
-        subscription: "sub_123",
+        parent: {
+          subscription_details: {
+            subscription: "sub_123",
+          },
+        },
         amount_paid: 1999,
         amount_due: 1999,
         currency: "usd",

@@ -200,7 +200,7 @@ export const BenchmarkSpecSchema = z.object({
     "documentation",
   ]),
   dimensions: z.array(BenchmarkDimensionSchema),
-  expectedOutcomes: z.record(z.unknown()),
+  expectedOutcomes: z.record(z.string(), z.unknown()),
   threshold: z.number().min(0).max(100),
   timeout: z.number().positive(),
   tags: z.array(z.string()),

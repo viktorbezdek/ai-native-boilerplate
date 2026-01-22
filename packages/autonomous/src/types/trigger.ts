@@ -256,7 +256,7 @@ export const TriggerSchema = z.object({
       filter: z.object({
         eventType: z.string(),
         source: z.string().optional(),
-        payloadFilters: z.record(z.unknown()).optional(),
+        payloadFilters: z.record(z.string(), z.unknown()).optional(),
       }),
     }),
   ]),
@@ -269,7 +269,7 @@ export const TriggerSchema = z.object({
       "send-notification",
       "evolve-config",
     ]),
-    params: z.record(z.unknown()),
+    params: z.record(z.string(), z.unknown()),
     timeout: z.number().optional(),
     retry: z
       .object({
