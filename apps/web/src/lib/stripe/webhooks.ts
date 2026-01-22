@@ -211,11 +211,18 @@ async function upsertSubscription(
   userId: string,
   subscription: Stripe.Subscription
 ) {
-  const priceId = subscription.items.data[0]?.price.id;
+  const subscriptionItem = subscription.items.data[0];
+  if (!subscriptionItem?.price?.id) {
+    throw new Error(
+      `Subscription ${subscription.id} has no items - cannot upsert`
+    );
+  }
+
+  const priceId = subscriptionItem.price.id;
   const productId =
-    typeof subscription.items.data[0]?.price.product === "string"
-      ? subscription.items.data[0]?.price.product
-      : subscription.items.data[0]?.price.product?.id;
+    typeof subscriptionItem.price.product === "string"
+      ? subscriptionItem.price.product
+      : subscriptionItem.price.product?.id;
 
   const customerId =
     typeof subscription.customer === "string"
@@ -235,8 +242,21 @@ async function upsertSubscription(
         return "past_due";
       case "trialing":
         return "trialing";
-      default:
+      case "incomplete":
+      case "incomplete_expired":
+      case "unpaid":
+      case "paused":
+        // These are valid Stripe statuses that we map to canceled for our purposes
+        console.warn(
+          `[Stripe] Mapping subscription status "${status}" to "canceled"`
+        );
         return "canceled";
+      default: {
+        // Exhaustive check - this should never happen with typed Stripe statuses
+        const _exhaustiveCheck: never = status;
+        console.error(`[Stripe] Unknown subscription status: ${status}`);
+        throw new Error(`Unknown subscription status: ${status}`);
+      }
     }
   };
 
