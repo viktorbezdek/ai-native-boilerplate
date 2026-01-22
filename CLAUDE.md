@@ -12,6 +12,8 @@ Production-ready template for building AI-native products. Full test coverage, a
 - **Styling**: Tailwind CSS 4 + shadcn/ui
 - **Testing**: Vitest (unit) + Playwright (E2E)
 - **Linting**: Biome (format + lint)
+- **AI Memory**: Claude-mem (project-level persistent memory)
+- **Autonomous**: @repo/autonomous (self-developing system)
 
 ## Commands
 ```bash
@@ -167,9 +169,42 @@ async function getUserById(id: string): Promise<Result<User>> {
 }
 ```
 
+## AI Infrastructure
+
+### Autonomous Development System
+The project includes a self-developing product architecture in `packages/autonomous/`:
+- **Confidence Engine**: Weighted scoring from 8 signal sources (>95% auto-execute, 80-95% notify, <60% escalate)
+- **Benchmark Runner**: Quality measurement across 5 dimensions (quality, completeness, efficiency, drift, speed)
+- **Signal Processor**: Multi-source ingestion from Sentry, PostHog, Vercel, local logs
+- **Trigger Engine**: Scheduled, threshold, and event-driven automation
+- **Learning Engine**: Pattern extraction and skill scoring
+- **Config Evolver**: A/B testing of configuration changes
+
+### Claude-Mem Integration
+Project-level AI memory system (`packages/claude-mem/`):
+- **Persistent Memory**: Captures tool observations across sessions
+- **Semantic Search**: Vector embeddings for context retrieval
+- **Project Scoped**: All data stored in `.claude/memory/`
+- **Worker Port**: 37778 (project-isolated from global claude-mem)
+
+Key commands:
+```bash
+/memory status    # Check memory service
+/memory search    # Search past sessions
+/autonomous start # Start self-developing loop
+```
+
+### Hooks System
+Project hooks in `.claude/hooks/`:
+- `telemetry.sh` - Track tool usage
+- `track-execution.sh` - Log execution results
+- `track-drift.sh` - Detect scope creep
+- `track-quality.sh` - Monitor test/lint results
+- `claude-mem.sh` - Memory capture integration
+
 ## Active Context
 <!-- Auto-updated by optimizer subagent -->
-- **Current Focus**: Initial boilerplate setup
-- **Recent Changes**: Auth, database, UI components
-- **Next Steps**: Claude Code configuration, auth pages
+- **Current Focus**: Autonomous development infrastructure
+- **Recent Changes**: Self-developing architecture, claude-mem integration
+- **Next Steps**: Test coverage for autonomous system
 - **Blockers**: None

@@ -160,6 +160,123 @@ When reporting metrics, use this format:
 | Lint Errors | > 10 | > 25 |
 | Avg Duration | > 1000ms | > 2000ms |
 
+## Autonomous System Metrics
+
+### Confidence Scoring
+Track confidence-based decisions:
+```bash
+# View recent confidence scores
+tail -20 .claude/logs/executions.jsonl | jq '{taskType, confidenceScore, decision: (if .confidenceScore >= 95 then "auto-execute" elif .confidenceScore >= 80 then "notify" elif .confidenceScore >= 60 then "require-approval" else "escalate" end)}'
+```
+
+### Signal Processing
+Monitor signal pipeline health:
+```bash
+# View recent signals
+tail -20 .claude/logs/signals/signals.jsonl | jq '{type, source, priority}'
+
+# Signal distribution by source
+cat .claude/logs/signals/signals.jsonl | jq -s 'group_by(.source) | map({source: .[0].source, count: length})'
+```
+
+### Benchmark Results
+Review benchmark performance:
+```bash
+# Latest benchmark results
+cat .claude/logs/benchmarks/latest.json | jq '{suiteId, aggregateScore, passed, summary}'
+
+# Score by dimension
+cat .claude/logs/benchmarks/latest.json | jq '.summary.scoreByDimension'
+```
+
+### Trigger History
+View trigger execution history:
+```bash
+# Recent trigger executions
+tail -10 .claude/logs/triggers/executions.jsonl | jq '{triggerId, success, duration}'
+```
+
+### Learning Reports
+Access extracted learnings:
+```bash
+# Latest learning report summary
+cat .claude/logs/learnings/latest.json | jq '.summary'
+
+# Top patterns
+cat .claude/logs/learnings/latest.json | jq '.summary.topPatterns'
+
+# Critical anti-patterns
+cat .claude/logs/learnings/latest.json | jq '.summary.criticalAntiPatterns'
+```
+
+### Config Evolution
+Track configuration experiments:
+```bash
+# Active experiments
+cat .claude/logs/evolution/evolver-state.json | jq '.activeExperiments | map({target: .proposal.target, appliedAt, evaluationScheduled})'
+
+# Evolution history
+cat .claude/logs/evolution/evolver-state.json | jq '.evolutionResults | .[-5:] | map({proposalId, verdict, improvement: .actualImpact})'
+```
+
+## Enhanced Output Format
+
+When reporting autonomous system metrics, include:
+
+```markdown
+## Autonomous System Report
+
+### Confidence Metrics
+| Metric | Value |
+|--------|-------|
+| Avg Confidence Score | X% |
+| Auto-Execute Rate | X% |
+| Escalation Rate | X% |
+
+### Signal Metrics (Last Hour)
+| Source | Count | Priority Breakdown |
+|--------|-------|-------------------|
+| Local | X | critical: X, high: X, med: X |
+| Sentry | X | ... |
+| PostHog | X | ... |
+| Vercel | X | ... |
+
+### Benchmark Scores
+| Dimension | Score | Target |
+|-----------|-------|--------|
+| Quality | X% | 80% |
+| Completeness | X% | 80% |
+| Efficiency | X% | 75% |
+| Drift | X% | 90% |
+| Speed | X% | 70% |
+
+### Trigger Activity
+| Trigger | Last Run | Status |
+|---------|----------|--------|
+| Nightly Benchmark | X | ✓/✗ |
+| High Drift Alert | X | ✓/✗ |
+| Weekly Learning | X | ✓/✗ |
+
+### Learning Insights
+- Patterns Identified: X
+- Anti-Patterns Found: X
+- Config Proposals: X
+
+### Evolution Status
+- Active Experiments: X
+- Successful Evolutions: X
+- Rollbacks: X
+```
+
+## Success Metrics (Target State)
+
+| Metric | Current | Target |
+|--------|---------|--------|
+| Autonomous Execution Rate | 20% | 70% |
+| False Positive Escalations | N/A | <5% |
+| Mean Time to Detection | Manual | <5 min |
+| Config Evolution Frequency | Manual | Weekly |
+
 ## Integration with Optimizer Agent
 
 The optimizer agent can read these logs to:
@@ -168,3 +285,6 @@ The optimizer agent can read these logs to:
 3. Detect recurring issues
 4. Optimize agent selection
 5. Improve skill recommendations
+6. Tune confidence thresholds
+7. Adjust signal weights
+8. Refine trigger conditions

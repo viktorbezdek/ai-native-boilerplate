@@ -1,0 +1,3 @@
+[submodule "packages/claude-mem"]
+	path = packages/claude-mem
+	url = https://github.com/thedotmack/claude-mem.git
