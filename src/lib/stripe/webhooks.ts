@@ -1,8 +1,8 @@
+import { eq } from "drizzle-orm";
+import type Stripe from "stripe";
 import { identifyServerUser, trackServerEvent } from "@/lib/analytics/server";
 import { db } from "@/lib/db";
 import { subscriptions } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
-import type Stripe from "stripe";
 import { stripe } from "./client";
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;

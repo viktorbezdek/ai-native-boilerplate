@@ -1,5 +1,5 @@
-export * from "./render";
 export * from "./constants";
+export * from "./render";
 
 import { expect, vi } from "vitest";
 
@@ -8,10 +8,10 @@ import { expect, vi } from "vitest";
  */
 export function spyOnConsole() {
   const consoleSpy = {
-    log: vi.spyOn(console, "log").mockImplementation(() => {}),
-    error: vi.spyOn(console, "error").mockImplementation(() => {}),
-    warn: vi.spyOn(console, "warn").mockImplementation(() => {}),
-    info: vi.spyOn(console, "info").mockImplementation(() => {}),
+    log: vi.spyOn(console, "log").mockImplementation(() => undefined),
+    error: vi.spyOn(console, "error").mockImplementation(() => undefined),
+    warn: vi.spyOn(console, "warn").mockImplementation(() => undefined),
+    info: vi.spyOn(console, "info").mockImplementation(() => undefined),
   };
 
   return {
@@ -110,22 +110,11 @@ export function mockFetch(responses: Map<string, Response> | Response) {
  * Async test helper that ensures a promise resolves
  */
 export async function expectToResolve<T>(promise: Promise<T>): Promise<T> {
-  let result: T;
-  let error: unknown;
-
   try {
-    result = await promise;
+    return await promise;
   } catch (e) {
-    error = e;
+    throw new Error(`Expected promise to resolve, but it rejected with: ${e}`);
   }
-
-  if (error) {
-    throw new Error(
-      `Expected promise to resolve, but it rejected with: ${error}`
-    );
-  }
-
-  return result!;
 }
 
 /**

@@ -3,9 +3,23 @@
  * Coordinates: Sense → Analyze → Plan → Build → Verify → Deploy → Monitor → Learn → Evolve
  */
 
+import { getBenchmarkRunner } from "./engines/benchmark-runner";
+import {
+  type ConfidenceEngine,
+  getConfidenceEngine,
+} from "./engines/confidence-engine";
+import { type ConfigEvolver, getConfigEvolver } from "./engines/config-evolver";
+import {
+  getLearningEngine,
+  type LearningEngine,
+} from "./engines/learning-engine";
+import {
+  getSignalProcessor,
+  type SignalProcessor,
+} from "./engines/signal-processor";
+import { getTriggerEngine, type TriggerEngine } from "./engines/trigger-engine";
 import type { BenchmarkResult } from "./types/benchmark";
-import type { ConfidenceResult } from "./types/confidence";
-import type { ConfigProposal, LearningReport } from "./types/learning";
+import type { LearningReport } from "./types/learning";
 import type {
   AnalysisResult,
   Anomaly,
@@ -18,33 +32,14 @@ import type {
   OrchestratorConfig,
   OrchestratorStatus,
   PatternAnalysis,
-  PlanResult,
   PlannedTask,
+  PlanResult,
   Recommendation,
   SenseResult,
   VerificationResult,
 } from "./types/orchestrator";
 import { DEFAULT_ORCHESTRATOR_CONFIG } from "./types/orchestrator";
-import type { Signal, SignalMetrics } from "./types/signal";
-
-import {
-  type BenchmarkRunner,
-  getBenchmarkRunner,
-} from "./engines/benchmark-runner";
-import {
-  type ConfidenceEngine,
-  getConfidenceEngine,
-} from "./engines/confidence-engine";
-import { type ConfigEvolver, getConfigEvolver } from "./engines/config-evolver";
-import {
-  type LearningEngine,
-  getLearningEngine,
-} from "./engines/learning-engine";
-import {
-  type SignalProcessor,
-  getSignalProcessor,
-} from "./engines/signal-processor";
-import { type TriggerEngine, getTriggerEngine } from "./engines/trigger-engine";
+import type { Signal } from "./types/signal";
 
 /**
  * Autonomous Orchestrator for the self-developing system
@@ -53,17 +48,17 @@ export class AutonomousOrchestrator {
   private config: OrchestratorConfig;
   private status: OrchestratorStatus;
   private currentPhase: LoopPhase;
-  private currentIteration: LoopIteration | null;
   private iterations: LoopIteration[];
   private loopTimer: ReturnType<typeof setInterval> | null;
 
   // Engine references
   private confidenceEngine: ConfidenceEngine;
-  private benchmarkRunner: BenchmarkRunner;
   private signalProcessor: SignalProcessor;
   private triggerEngine: TriggerEngine;
   private learningEngine: LearningEngine;
   private configEvolver: ConfigEvolver;
+  private benchmarkRunner: ReturnType<typeof getBenchmarkRunner>;
+  private currentIteration: LoopIteration | null;
 
   constructor(config: Partial<OrchestratorConfig> = {}) {
     this.config = { ...DEFAULT_ORCHESTRATOR_CONFIG, ...config };

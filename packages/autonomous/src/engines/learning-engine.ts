@@ -11,7 +11,6 @@ import type {
   Learning,
   LearningConfidence,
   LearningEngineConfig,
-  LearningEvidence,
   LearningReport,
   LearningSummary,
   LearningType,

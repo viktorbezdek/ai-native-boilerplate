@@ -1,3 +1,6 @@
+import { and, asc, count, desc, eq } from "drizzle-orm";
+import type { NextRequest } from "next/server";
+import { z } from "zod";
 import { applyApiMiddleware } from "@/lib/api";
 import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -8,9 +11,6 @@ import {
   createSuccessResponse,
   paginationSchema,
 } from "@/lib/validations";
-import { and, asc, count, desc, eq } from "drizzle-orm";
-import type { NextRequest } from "next/server";
-import { z } from "zod";
 
 // GET /api/v1/projects - List user's projects
 export async function GET(request: NextRequest) {

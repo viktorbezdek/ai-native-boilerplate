@@ -1,5 +1,5 @@
-import { constructWebhookEvent, handleWebhookEvent } from "@/lib/stripe";
 import { NextResponse } from "next/server";
+import { constructWebhookEvent, handleWebhookEvent } from "@/lib/stripe";
 
 export async function POST(request: Request) {
   const body = await request.text();

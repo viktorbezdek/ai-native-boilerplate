@@ -37,7 +37,7 @@ import {
   type CheckpointManager,
   getCheckpointManager,
 } from "./checkpoint-manager";
-import { type MessageBus, getMessageBus } from "./message-bus";
+import { getMessageBus, type MessageBus } from "./message-bus";
 
 export interface WorkflowEngineConfig {
   storage?: FileStorage;

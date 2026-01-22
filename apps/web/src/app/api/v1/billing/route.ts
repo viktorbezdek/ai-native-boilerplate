@@ -1,8 +1,8 @@
-import { applyApiMiddleware } from "@/lib/api";
-import { getSession } from "@/lib/auth";
 import { getSubscriptionByUserId } from "@repo/database/queries";
 import { createBillingPortalSession } from "@repo/payments";
 import { NextResponse } from "next/server";
+import { applyApiMiddleware } from "@/lib/api";
+import { getSession } from "@/lib/auth";
 
 export async function POST(request: Request) {
   // Apply rate limiting and CSRF protection for billing

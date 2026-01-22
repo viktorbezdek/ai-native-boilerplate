@@ -12,13 +12,8 @@ import type {
   ConfidenceResult,
   ConfidenceSignal,
   ExecutionRecord,
-  QualityMetrics,
-  SignalSource,
 } from "../types/confidence";
-import {
-  DEFAULT_CONFIDENCE_CONFIG,
-  DEFAULT_SIGNAL_WEIGHTS,
-} from "../types/confidence";
+import { DEFAULT_CONFIDENCE_CONFIG } from "../types/confidence";
 
 /**
  * Task interface for confidence calculation

@@ -1,27 +1,28 @@
 // Client-side exports
-export { PostHogProvider, posthog } from "./provider";
 
-export {
-  ANALYTICS_EVENTS,
-  trackEvent,
-  trackPageView,
-  identifyUser,
-  resetUser,
-  setUserProperties,
-  trackTiming,
-} from "./events";
 export type { AnalyticsEvent } from "./events";
 
 export {
+  ANALYTICS_EVENTS,
+  identifyUser,
+  resetUser,
+  setUserProperties,
+  trackEvent,
+  trackPageView,
+  trackTiming,
+} from "./events";
+export type { FeatureFlag } from "./feature-flags";
+
+export {
+  clearFeatureFlagOverrides,
   FEATURE_FLAGS,
-  isFeatureEnabled,
   getFeatureFlagVariant,
+  isFeatureEnabled,
+  overrideFeatureFlags,
   useFeatureFlag,
   useFeatureFlagVariant,
-  overrideFeatureFlags,
-  clearFeatureFlagOverrides,
 } from "./feature-flags";
-export type { FeatureFlag } from "./feature-flags";
+export { PostHogProvider, posthog } from "./provider";
 
 // Server-side exports (import separately to avoid client bundle)
 // import { trackServerEvent } from "@/lib/analytics/server"

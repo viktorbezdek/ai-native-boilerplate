@@ -2,9 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { AdapterHealth, Signal, SignalAdapter } from "../../types/signal";
 import {
   BUILTIN_PATTERNS,
-  SignalProcessor,
   getSignalProcessor,
   resetSignalProcessor,
+  SignalProcessor,
 } from "../signal-processor";
 
 describe("SignalProcessor", () => {

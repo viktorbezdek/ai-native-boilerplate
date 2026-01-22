@@ -6,7 +6,6 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import type { ConfidenceThresholds } from "../types/confidence";
 import type {
   ConfigEvolverConfig,
   ConfigProposal,

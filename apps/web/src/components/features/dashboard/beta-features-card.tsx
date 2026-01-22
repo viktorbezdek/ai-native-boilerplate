@@ -1,6 +1,5 @@
 "use client";
 
-import { FEATURE_FLAGS, trackEvent, useFeatureFlag } from "@/lib/analytics";
 import {
   Button,
   Card,
@@ -9,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@repo/ui";
+import { FEATURE_FLAGS, trackEvent, useFeatureFlag } from "@/lib/analytics";
 
 export function BetaFeaturesCard() {
   const showBetaFeatures = useFeatureFlag(FEATURE_FLAGS.BETA_FEATURES);

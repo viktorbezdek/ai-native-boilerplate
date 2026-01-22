@@ -9,26 +9,19 @@ import type {
   ExecutionMode,
   ExecutionModeConfig,
 } from "../types/execution-mode";
-import {
-  DEFAULT_MODE_CONFIG,
-  getApprovalPolicy,
-  requiresApproval,
-} from "../types/execution-mode";
+import { requiresApproval } from "../types/execution-mode";
 import type { AgentType } from "../types/message";
 import type {
   CreateWorkflowInput,
   Task,
-  TaskStatus,
   Workflow,
   WorkflowEvent,
   WorkflowEventType,
   WorkflowPlan,
-  WorkflowStatus,
   WorkflowSummary,
 } from "../types/workflow";
 import {
   calculateProgress,
-  canExecuteTask,
   createWorkflowId,
   getNextTasks,
 } from "../types/workflow";
@@ -37,7 +30,7 @@ import {
   type CheckpointManager,
   getCheckpointManager,
 } from "./checkpoint-manager";
-import { type MessageBus, getMessageBus } from "./message-bus";
+import { getMessageBus, type MessageBus } from "./message-bus";
 
 export interface WorkflowEngineConfig {
   storage?: FileStorage;

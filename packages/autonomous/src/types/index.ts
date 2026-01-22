@@ -3,9 +3,9 @@
  * Provides types for confidence scoring, benchmarks, signals, triggers, learning, and orchestration.
  */
 
-export * from "./confidence";
 export * from "./benchmark";
-export * from "./signal";
-export * from "./trigger";
+export * from "./confidence";
 export * from "./learning";
 export * from "./orchestrator";
+export * from "./signal";
+export * from "./trigger";

@@ -1,7 +1,7 @@
 export {
+  type ApiMiddlewareConfig,
+  type ApiMiddlewareResult,
   applyApiMiddleware,
   withApiMiddleware,
   withRateLimitHeaders,
-  type ApiMiddlewareConfig,
-  type ApiMiddlewareResult,
 } from "./middleware";

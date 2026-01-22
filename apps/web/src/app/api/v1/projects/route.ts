@@ -1,6 +1,3 @@
-import { applyApiMiddleware } from "@/lib/api";
-import { getSession } from "@/lib/auth";
-import { db } from "@/lib/db";
 import { projects } from "@repo/database";
 import {
   createErrorResponse,
@@ -8,9 +5,12 @@ import {
   createSuccessResponse,
   paginationSchema,
 } from "@repo/validations";
-import { and, asc, count, desc, eq } from "drizzle-orm";
+import { asc, count, desc, eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
+import { applyApiMiddleware } from "@/lib/api";
+import { getSession } from "@/lib/auth";
+import { db } from "@/lib/db";
 
 // GET /api/v1/projects - List user's projects
 export async function GET(request: NextRequest) {

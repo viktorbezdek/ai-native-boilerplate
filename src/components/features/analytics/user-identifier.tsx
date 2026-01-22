@@ -1,7 +1,7 @@
 "use client";
 
-import { identifyUser, setUserProperties } from "@/lib/analytics";
 import { useEffect } from "react";
+import { identifyUser, setUserProperties } from "@/lib/analytics";
 
 interface UserIdentifierProps {
   user: {

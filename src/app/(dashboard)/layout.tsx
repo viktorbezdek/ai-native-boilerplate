@@ -1,11 +1,11 @@
-import { UserIdentifier } from "@/components/features/analytics/user-identifier";
-import { DashboardNav } from "@/components/features/dashboard/nav";
-import { UserMenu } from "@/components/features/dashboard/user-menu";
-import { getSession } from "@/lib/auth";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
+import { UserIdentifier } from "@/components/features/analytics/user-identifier";
+import { DashboardNav } from "@/components/features/dashboard/nav";
+import { UserMenu } from "@/components/features/dashboard/user-menu";
+import { getSession } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Dashboard",

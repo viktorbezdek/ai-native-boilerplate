@@ -106,8 +106,8 @@ export function createEmailClient(config: EmailConfig = {}) {
 
 // Re-export templates
 export {
-  WelcomeEmail,
+  EmailLayout,
   PasswordResetEmail,
   VerifyEmail,
-  EmailLayout,
+  WelcomeEmail,
 } from "./templates";

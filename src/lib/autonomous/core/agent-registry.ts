@@ -5,7 +5,7 @@
 
 import type { AgentState } from "../types/checkpoint";
 import type { AgentType } from "../types/message";
-import { type MessageBus, getMessageBus } from "./message-bus";
+import { getMessageBus, type MessageBus } from "./message-bus";
 
 export type AgentStatus = "idle" | "busy" | "waiting" | "error" | "terminated";
 

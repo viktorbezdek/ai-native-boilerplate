@@ -10,21 +10,19 @@
  * @module @repo/autonomous
  */
 
-// Types
-export * from "./types";
-
-// Engines
-export * from "./engines";
-
 // Benchmarks
 export * from "./benchmarks";
 
-// Signals
-export * from "./signals";
-
+// Engines
+export * from "./engines";
 // Orchestrator
 export {
   AutonomousOrchestrator,
   getOrchestrator,
   resetOrchestrator,
 } from "./orchestrator";
+
+// Signals
+export * from "./signals";
+// Types
+export * from "./types";

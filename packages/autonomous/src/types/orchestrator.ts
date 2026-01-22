@@ -11,6 +11,7 @@ import type { ConfigProposal, Learning, LearningReport } from "./learning";
 
 // Re-export ConfigProposal for convenience
 export type { ConfigProposal } from "./learning";
+
 import type { Signal, SignalMetrics } from "./signal";
 
 /**

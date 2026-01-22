@@ -1,7 +1,7 @@
-import { db } from "@/lib/db";
-import { sessions } from "@/lib/db/schema";
 import { lt } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import { sessions } from "@/lib/db/schema";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

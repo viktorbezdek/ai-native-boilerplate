@@ -5,16 +5,15 @@
  * authentication and database.
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import * as apiModule from "@/lib/api";
+// Import the actual modules first
+import * as authModule from "@/lib/auth";
 import { mockAuthSession, mockProject } from "../../mocks";
 import {
   createMockRequest,
   expectErrorResponse,
   parseJsonResponse,
 } from "../helpers";
-
-import * as apiModule from "@/lib/api";
-// Import the actual modules first
-import * as authModule from "@/lib/auth";
 
 // Create spies on the actual module exports
 const mockGetSession = vi.spyOn(authModule, "getSession");

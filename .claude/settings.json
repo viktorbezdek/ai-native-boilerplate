@@ -4,6 +4,17 @@
     "claude-mem": true
   },
   "hooks": {
+    "Setup": [
+      {
+        "hooks": [
+          {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/setup.sh",
+            "type": "command",
+            "timeout": 300
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "hooks": [
@@ -57,6 +68,16 @@
       {
         "hooks": [
           {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/validate-commit.sh",
+            "type": "command",
+            "timeout": 600
+          }
+        ],
+        "matcher": "Bash"
+      },
+      {
+        "hooks": [
+          {
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/guard-protected.sh",
             "type": "command"
           }
@@ -88,6 +109,11 @@
           {
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/format.sh",
             "type": "command"
+          },
+          {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/validate-changes.sh",
+            "type": "command",
+            "timeout": 60
           },
           {
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/run-tests.sh",
