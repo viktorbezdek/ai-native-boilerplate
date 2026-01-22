@@ -1,8 +1,36 @@
 {
   "enabledPlugins": {
-    "subtask": true
+    "subtask": true,
+    "claude-mem": true
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/claude-mem.sh start",
+            "type": "command",
+            "timeout": 60
+          },
+          {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/claude-mem.sh hook claude-code context",
+            "type": "command",
+            "timeout": 60
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/claude-mem.sh hook claude-code session-init",
+            "type": "command",
+            "timeout": 60
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "hooks": [
@@ -46,6 +74,11 @@
           {
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/track-execution.sh",
             "type": "command"
+          },
+          {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/claude-mem.sh hook claude-code observation",
+            "type": "command",
+            "timeout": 120
           }
         ],
         "matcher": ".*"
@@ -92,9 +125,20 @@
           {
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/session-summary.sh",
             "type": "command"
+          },
+          {
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/claude-mem.sh hook claude-code summarize",
+            "type": "command",
+            "timeout": 120
           }
         ]
       }
     ]
+  },
+  "claudeMem": {
+    "enabled": true,
+    "dataDir": ".claude/memory",
+    "workerPort": 37778,
+    "scope": "project"
   }
 }

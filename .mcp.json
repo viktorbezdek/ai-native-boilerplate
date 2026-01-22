@@ -50,6 +50,15 @@
       "env": {
         "LINEAR_API_KEY": "${LINEAR_API_KEY}"
       }
+    },
+    "posthog": {
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/mcp-server-posthog"],
+      "env": {
+        "POSTHOG_API_KEY": "${POSTHOG_API_KEY}",
+        "POSTHOG_HOST": "${POSTHOG_HOST:-https://app.posthog.com}",
+        "POSTHOG_PROJECT_ID": "${POSTHOG_PROJECT_ID}"
+      }
     }
   }
 }

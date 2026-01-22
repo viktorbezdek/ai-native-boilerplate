@@ -31,7 +31,11 @@
     "docker:up": "docker compose -f docker-compose.local.yml up -d",
     "docker:down": "docker compose -f docker-compose.local.yml down",
     "docker:logs": "docker compose -f docker-compose.local.yml logs -f",
-    "prepare": "husky"
+    "prepare": "husky && git submodule update --init --recursive",
+    "submodule:update": "git submodule update --init --recursive --remote",
+    "memory:start": "bash .claude/hooks/claude-mem.sh start",
+    "memory:stop": "bash .claude/hooks/claude-mem.sh stop",
+    "memory:status": "bash .claude/hooks/claude-mem.sh status"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,md}": [

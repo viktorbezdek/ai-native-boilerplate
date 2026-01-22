@@ -13,6 +13,8 @@ concurrency:
 env:
   BUN_VERSION: "1.1.38"
   NODE_VERSION: "20"
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
 jobs:
   lint:
@@ -27,6 +29,14 @@ jobs:
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
+
+      - name: Turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ runner.os }}-
 
       - name: Run Biome check
         run: bun run lint
@@ -47,6 +57,14 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ runner.os }}-
+
       - name: Run TypeScript check
         run: bun run typecheck
 
@@ -63,15 +81,23 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ runner.os }}-
+
       - name: Run unit tests
-        run: bun run test:unit
+        run: bun run test
         env:
           CI: true
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4
         with:
-          files: ./coverage/lcov.info
+          files: ./apps/web/coverage/lcov.info
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
 
@@ -92,8 +118,16 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ runner.os }}-
+
       - name: Run integration tests
-        run: bun run test:integration
+        run: bun run test
         env:
           CI: true
 
@@ -118,6 +152,14 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ runner.os }}-
+
       - name: Install Playwright browsers
         run: bunx playwright install --with-deps chromium
 
@@ -134,7 +176,7 @@ jobs:
         if: failure()
         with:
           name: playwright-report
-          path: playwright-report/
+          path: apps/web/playwright-report/
           retention-days: 7
 
   build:
@@ -151,6 +193,14 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ runner.os }}-
+
       - name: Build application
         run: bun run build
         env:
@@ -159,7 +209,7 @@ jobs:
       - name: Check bundle size
         run: |
           echo "📦 Build output size:"
-          du -sh .next/
+          du -sh apps/web/.next/
           echo ""
           echo "📊 Static assets:"
-          find .next/static -type f -name "*.js" -exec du -h {} \; | sort -rh | head -10
+          find apps/web/.next/static -type f -name "*.js" -exec du -h {} \; | sort -rh | head -10

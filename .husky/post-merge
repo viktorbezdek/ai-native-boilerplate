@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+# Auto-update git submodules after merge/pull
+
+echo "Updating git submodules..."
+git submodule update --init --recursive --remote
+
+# Install dependencies if package.json changed
+CHANGED_FILES=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)
+if echo "$CHANGED_FILES" | grep -qE "package\.json|bun\.lockb"; then
+  echo "Dependencies changed, running bun install..."
+  bun install
+fi
