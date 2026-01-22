@@ -22,6 +22,17 @@ const mockDbQuery = {
 const mockDbSelect = vi.fn();
 const mockDbInsert = vi.fn();
 
+// Mock projects table schema (used with drizzle-orm functions like eq, desc, asc)
+const mockProjectsSchema = {
+  id: Symbol("projects.id"),
+  name: Symbol("projects.name"),
+  description: Symbol("projects.description"),
+  userId: Symbol("projects.userId"),
+  isPublic: Symbol("projects.isPublic"),
+  createdAt: Symbol("projects.createdAt"),
+  updatedAt: Symbol("projects.updatedAt"),
+};
+
 describe("GET /api/v1/projects", () => {
   // biome-ignore lint/suspicious/noExplicitAny: Test mock types are intentionally loose
   let GET: (request: any) => Promise<Response>;
@@ -83,6 +94,7 @@ describe("GET /api/v1/projects", () => {
         select: (...args: unknown[]) => mockDbSelect(...args),
         insert: (...args: unknown[]) => mockDbInsert(...args),
       },
+      projects: mockProjectsSchema,
     }));
 
     // Import the route handler with fresh mocks
@@ -210,6 +222,7 @@ describe("POST /api/v1/projects", () => {
         select: (...args: unknown[]) => mockDbSelect(...args),
         insert: (...args: unknown[]) => mockDbInsert(...args),
       },
+      projects: mockProjectsSchema,
     }));
 
     // Import the route handler with fresh mocks
