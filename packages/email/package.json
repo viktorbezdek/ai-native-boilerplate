@@ -26,8 +26,8 @@
     "lint": "biome check src/"
   },
   "dependencies": {
-    "@react-email/components": "^0.0.35",
-    "resend": "^4.8.0"
+    "@react-email/components": "^1.0.6",
+    "resend": "^6.8.0"
   },
   "peerDependencies": {
     "react": "^19.0.0"

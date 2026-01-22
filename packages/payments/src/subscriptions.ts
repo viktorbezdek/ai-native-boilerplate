@@ -103,7 +103,7 @@ export async function getCustomerInvoices(customerId: string, limit = 10) {
  */
 export async function getUpcomingInvoice(customerId: string) {
   try {
-    return await stripe.invoices.retrieveUpcoming({
+    return await stripe.invoices.createPreview({
       customer: customerId,
     });
   } catch {
