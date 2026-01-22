@@ -34,11 +34,7 @@
     "docker:up": "docker compose -f docker-compose.local.yml up -d",
     "docker:down": "docker compose -f docker-compose.local.yml down",
     "docker:logs": "docker compose -f docker-compose.local.yml logs -f",
-    "prepare": "husky && git submodule update --init --recursive",
-    "submodule:update": "git submodule update --init --recursive --remote",
-    "memory:start": "bash .claude/hooks/claude-mem.sh start",
-    "memory:stop": "bash .claude/hooks/claude-mem.sh stop",
-    "memory:status": "bash .claude/hooks/claude-mem.sh status",
+    "prepare": "husky",
     "syncpack:list": "syncpack list-mismatches",
     "syncpack:fix": "syncpack fix-mismatches",
     "syncpack:lint": "syncpack lint"
@@ -62,8 +58,8 @@
     "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
-    "@vitest/browser": "^4.0.17",
-    "@vitest/coverage-v8": "^4.0.17",
+    "@vitest/browser": "^4.0.18",
+    "@vitest/coverage-v8": "^4.0.18",
     "dotenv": "^17.2.3",
     "husky": "^9.1.7",
     "jsdom": "^27.4.0",
@@ -74,7 +70,7 @@
     "tailwindcss": "^4.1.18",
     "turbo": "^2.7.5",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.17",
-    "vitest-browser-react": "^2.0.2"
+    "vitest": "^4.0.18",
+    "vitest-browser-react": "^2.0.4"
   }
 }
