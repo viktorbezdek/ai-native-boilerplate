@@ -15,7 +15,20 @@ function getDbInstance(): NeonHttpDatabase<typeof schema> {
   }
 
   if (!process.env.DATABASE_URL) {
-    throw new Error("DATABASE_URL environment variable is not set");
+    const isCI = process.env.CI === "true";
+    const isProd = process.env.NODE_ENV === "production";
+
+    if (isProd) {
+      throw new Error(
+        "DATABASE_URL environment variable is required in production"
+      );
+    }
+
+    throw new Error(
+      isCI
+        ? "DATABASE_URL not set. Run 'npx get-db --yes' to provision an instant database via neon.new"
+        : "DATABASE_URL not set. Run 'bun run setup' or 'npx get-db --yes' to provision a database"
+    );
   }
 
   const sql = neon(process.env.DATABASE_URL);
