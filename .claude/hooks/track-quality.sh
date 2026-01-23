@@ -34,25 +34,35 @@ METRIC_DATA="{}"
 if echo "$COMMAND" | grep -qE "(vitest|jest|bun test|npm test|yarn test|playwright)" 2>/dev/null; then
   METRIC_TYPE="test"
 
-  # Extract test counts from common patterns (vitest, jest, bun test)
+  # Extract test counts from common patterns (vitest, jest, bun test, turborepo)
   # Vitest: "5 passed" or "Tests  5 passed" or "✓ 5 tests"
-  # Bun: "5 pass" or "pass 5"
+  # Bun: "5 pass" or "pass 5" or "106 pass"
   # Jest: "5 passed, 2 failed"
+  # Turborepo: "web:test: ✓ 106 tests"
 
-  # Try "X passed" or "X pass" pattern (vitest/bun)
+  # Method 1: "X passed" or "X pass" pattern (vitest/bun) - most common
   TESTS_PASSED=$(echo "$RESULT" | grep -oE "[0-9]+ (pass|passed|passing)" | grep -oE "[0-9]+" | head -1)
-  # Try "Tests  X passed" (Vitest summary line)
-  [ -z "$TESTS_PASSED" ] && TESTS_PASSED=$(echo "$RESULT" | grep -oE "Tests[[:space:]]+[0-9]+" | grep -oE "[0-9]+" | head -1)
-  # Try "Test Files  X passed" (Vitest)
-  [ -z "$TESTS_PASSED" ] && TESTS_PASSED=$(echo "$RESULT" | grep -oE "Test Files[^0-9]*[0-9]+" | grep -oE "[0-9]+" | head -1)
-  # Turborepo: count "✓" symbols for passed tests
-  [ -z "$TESTS_PASSED" ] && TESTS_PASSED=$(echo "$RESULT" | grep -c "✓" 2>/dev/null || echo "0")
+  # Method 2: "Tests  X passed" (Vitest summary line)
+  [ -z "$TESTS_PASSED" ] && TESTS_PASSED=$(echo "$RESULT" | grep -oE "Tests[[:space:]]+[0-9]+ passed" | grep -oE "[0-9]+" | head -1)
+  # Method 3: "Test Files  X passed" (Vitest)
+  [ -z "$TESTS_PASSED" ] && TESTS_PASSED=$(echo "$RESULT" | grep -oE "Test Files[^0-9]*[0-9]+ passed" | grep -oE "[0-9]+" | head -1)
+  # Method 4: Turborepo "✓ X tests" pattern
+  [ -z "$TESTS_PASSED" ] && TESTS_PASSED=$(echo "$RESULT" | grep -oE "✓[[:space:]]*[0-9]+ tests?" | grep -oE "[0-9]+" | head -1)
+  # Method 5: Bun test "X tests passed" or just count checkmarks as last resort
+  [ -z "$TESTS_PASSED" ] && TESTS_PASSED=$(echo "$RESULT" | grep -oE "[0-9]+ tests? passed" | grep -oE "[0-9]+" | head -1)
+  # Method 6: Count individual ✓ marks (less accurate but better than 0)
+  if [ -z "$TESTS_PASSED" ] || [ "$TESTS_PASSED" = "0" ]; then
+    CHECK_COUNT=$(echo "$RESULT" | grep -c "✓" 2>/dev/null || echo "0")
+    [ "$CHECK_COUNT" -gt 0 ] && TESTS_PASSED="$CHECK_COUNT"
+  fi
   [ -z "$TESTS_PASSED" ] && TESTS_PASSED="0"
 
   # Extract failed count - "X fail" or "X failed"
   TESTS_FAILED=$(echo "$RESULT" | grep -oE "[0-9]+ (fail|failed|failing)" | grep -oE "[0-9]+" | head -1)
-  # Try counting "✗" or "×" symbols
-  [ -z "$TESTS_FAILED" ] && TESTS_FAILED=$(echo "$RESULT" | grep -cE "(✗|×|FAIL)" 2>/dev/null || echo "0")
+  # Try "X tests failed"
+  [ -z "$TESTS_FAILED" ] && TESTS_FAILED=$(echo "$RESULT" | grep -oE "[0-9]+ tests? failed" | grep -oE "[0-9]+" | head -1)
+  # Try counting "✗" or "×" or "FAIL" symbols
+  [ -z "$TESTS_FAILED" ] && TESTS_FAILED=$(echo "$RESULT" | grep -cE "(✗|×)" 2>/dev/null || echo "0")
   [ -z "$TESTS_FAILED" ] && TESTS_FAILED="0"
 
   # Extract skipped count

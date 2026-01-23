@@ -8,8 +8,18 @@
 LOG_DIR="$CLAUDE_PROJECT_DIR/.claude/logs"
 DRIFT_FILE="$LOG_DIR/drift.jsonl"
 PLAN_STATE="$LOG_DIR/.plan-state.json"
+SESSION_DRIFT_CACHE="$LOG_DIR/.drift-session-cache"
 
 mkdir -p "$LOG_DIR"
+
+# Session-level deduplication: track files already logged this session
+# Cache expires after 1 hour (stale session detection)
+if [ -f "$SESSION_DRIFT_CACHE" ]; then
+  CACHE_AGE=$(($(date +%s) - $(stat -f %m "$SESSION_DRIFT_CACHE" 2>/dev/null || echo "0")))
+  if [ "$CACHE_AGE" -gt 3600 ]; then
+    rm -f "$SESSION_DRIFT_CACHE"
+  fi
+fi
 
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
@@ -91,17 +101,18 @@ if echo "$TOOL_NAME" | grep -qE "Write|Edit|MultiEdit" 2>/dev/null; then
       ACTUAL_COUNT=$(echo "$CURRENT_STATE" | jq '.actual_files | length')
       PLANNED_COUNT=$(echo "$CURRENT_STATE" | jq '.planned_tasks | length')
 
-      # Check if we already logged drift for this file in this session (deduplication)
+      # Session-level deduplication using cache file
       ALREADY_LOGGED="false"
-      if [ -f "$DRIFT_FILE" ]; then
-        # Look in recent entries (last 50) for this file path
-        if tail -n 50 "$DRIFT_FILE" 2>/dev/null | grep -qF "\"file_path\":\"$FILE_PATH\"" 2>/dev/null; then
+      if [ -f "$SESSION_DRIFT_CACHE" ]; then
+        if grep -qxF "$FILE_PATH" "$SESSION_DRIFT_CACHE" 2>/dev/null; then
           ALREADY_LOGGED="true"
         fi
       fi
 
-      # Only flag as drift if we have a plan, this wasn't in it, and not already logged
+      # Only flag as drift if we have a plan, this wasn't in it, and not already logged this session
       if [ "$PLANNED_COUNT" -gt 0 ] && [ "$ALREADY_LOGGED" = "false" ]; then
+        # Add to session cache to prevent future duplicates
+        echo "$FILE_PATH" >> "$SESSION_DRIFT_CACHE"
         DRIFT_ENTRY=$(jq -n \
           --arg ts "$TIMESTAMP" \
           --arg type "unplanned_file" \

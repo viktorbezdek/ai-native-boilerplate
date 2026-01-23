@@ -46,10 +46,6 @@
       {
         "hooks": [
           {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/telemetry.sh",
-            "type": "command"
-          },
-          {
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/start-timing.sh",
             "type": "command"
           }
