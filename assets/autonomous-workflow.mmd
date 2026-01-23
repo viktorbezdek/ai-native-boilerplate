@@ -1,0 +1,56 @@
+graph LR
+    A[Sense] --> B[Analyze]
+    B --> C[Plan]
+    C --> D[Build]
+    D --> E[Verify]
+    E --> F[Deploy]
+    F --> G[Monitor]
+    G --> H[Learn]
+    H --> I[Evolve]
+    I --> A
+    
+    subgraph "Signal Sources"
+        J[Sentry Errors]
+        K[PostHog Analytics]
+        L[Vercel Logs]
+        M[Local Events]
+    end
+    
+    subgraph "Confidence Engine"
+        N[Score: 95-100<br/>Auto-Execute]
+        O[Score: 80-95<br/>Notify]
+        P[Score: 0-80<br/>Escalate]
+    end
+    
+    subgraph "Learning Engine"
+        Q[Pattern Extraction]
+        R[Success Analysis]
+        S[Memory Update]
+    end
+    
+    J --> A
+    K --> A
+    L --> A
+    M --> A
+    
+    B --> N
+    B --> O
+    B --> P
+    
+    H --> Q
+    Q --> R
+    R --> S
+    S --> I
+    
+    style A fill:#10b981,stroke:#10b981,color:#fff
+    style B fill:#3b82f6,stroke:#3b82f6,color:#fff
+    style C fill:#8b5cf6,stroke:#8b5cf6,color:#fff
+    style D fill:#f59e0b,stroke:#f59e0b,color:#fff
+    style E fill:#06b6d4,stroke:#06b6d4,color:#fff
+    style F fill:#ec4899,stroke:#ec4899,color:#fff
+    style G fill:#6366f1,stroke:#6366f1,color:#fff
+    style H fill:#14b8a6,stroke:#14b8a6,color:#fff
+    style I fill:#a855f7,stroke:#a855f7,color:#fff
+    style N fill:#22c55e,stroke:#22c55e,color:#fff
+    style O fill:#eab308,stroke:#eab308,color:#000
+    style P fill:#ef4444,stroke:#ef4444,color:#fff
