@@ -125,7 +125,7 @@ jobs:
         id: db
         run: |
           # Use get-db to provision an instant Neon database
-          npx get-db --yes --env
+          npx get-db --yes --env .env
           # Source the .env file to get DATABASE_URL
           if [ -f .env ]; then
             export $(grep -v '^#' .env | xargs)
@@ -176,7 +176,7 @@ jobs:
         id: db
         run: |
           # Use get-db to provision an instant Neon database
-          npx get-db --yes --env
+          npx get-db --yes --env .env
           # Source the .env file to get DATABASE_URL
           if [ -f .env ]; then
             export $(grep -v '^#' .env | xargs)
