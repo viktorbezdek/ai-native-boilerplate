@@ -114,16 +114,15 @@
   },
   "files": {
     "includes": [
-      "**",
-      "!**/node_modules",
-      "!**/.next",
-      "!**/dist",
-      "!**/build",
-      "!**/coverage",
-      "!**/drizzle/meta",
-      "!**/*.min.js",
-      "!**/.turbo",
-      "!**/*.css"
+      "apps/**/*.ts",
+      "apps/**/*.tsx",
+      "apps/**/*.js",
+      "apps/**/*.jsx",
+      "packages/**/*.ts",
+      "packages/**/*.tsx",
+      "packages/**/*.js",
+      "packages/**/*.json",
+      "scripts/**/*.ts"
     ]
   }
 }

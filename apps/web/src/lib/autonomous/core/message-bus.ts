@@ -29,7 +29,6 @@ export class MessageBus {
   private messageQueue: AgentMessage[];
   private maxQueueSize: number;
   private enablePersistence: boolean;
-  private processing: boolean;
 
   constructor(config: MessageBusConfig = {}) {
     this.storage = config.storage ?? getStorage();
@@ -38,7 +37,6 @@ export class MessageBus {
     this.enablePersistence = config.enablePersistence ?? true;
     this.subscriptions = new Map();
     this.messageQueue = [];
-    this.processing = false;
   }
 
   setWorkflowId(workflowId: string): void {
