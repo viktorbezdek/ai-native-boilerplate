@@ -154,21 +154,7 @@ The `@repo/autonomous` package implements a closed-loop development system that 
 
 ### Architecture
 
-```
-┌─────────┐     ┌─────────┐     ┌──────┐     ┌───────┐
-│  SENSE  │────▶│ ANALYZE │────▶│ PLAN │────▶│ BUILD │
-└─────────┘     └─────────┘     └──────┘     └───────┘
-     ▲                                            │
-     │                                            ▼
-┌─────────┐     ┌───────┐     ┌─────────┐    ┌────────┐
-│ EVOLVE  │◀────│ LEARN │◀────│ MONITOR │◀───│ VERIFY │
-└─────────┘     └───────┘     └─────────┘    └────────┘
-                                                  │
-                                                  ▼
-                                             ┌────────┐
-                                             │ DEPLOY │
-                                             └────────┘
-```
+![Autonomous Workflow](../assets/autonomous-workflow.png)
 
 ### Confidence Engine
 
