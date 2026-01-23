@@ -22,6 +22,10 @@ export default async function DashboardLayout({
     redirect("/sign-in");
   }
 
+  // Check if user is admin
+  const user = session.user as { id: string; role?: string };
+  const isAdmin = user.role === "admin";
+
   return (
     <div className="flex min-h-screen">
       {/* Analytics: Identify user on dashboard load */}
@@ -40,7 +44,7 @@ export default async function DashboardLayout({
 
           {/* Navigation */}
           <nav className="flex-1 space-y-1 p-4">
-            <DashboardNav />
+            <DashboardNav isAdmin={isAdmin} />
           </nav>
 
           {/* User section */}
