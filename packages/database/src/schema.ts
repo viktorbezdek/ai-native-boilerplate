@@ -146,6 +146,7 @@ export const accounts = pgTable(
     }),
     scope: text("scope"),
     idToken: text("id_token"),
+    password: text("password"), // For email/password auth
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

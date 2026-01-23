@@ -4,7 +4,7 @@
   "buildCommand": "bun run build",
   "installCommand": "bun install",
   "devCommand": "bun run dev",
-  "outputDirectory": ".next",
+  "outputDirectory": "apps/web/.next",
   "regions": ["iad1"],
   "headers": [
     {

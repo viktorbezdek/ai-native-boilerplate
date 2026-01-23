@@ -78,72 +78,64 @@ type ServerEnv = z.infer<typeof serverSchema>;
 type ClientEnv = z.infer<typeof clientSchema>;
 type Env = z.infer<typeof envSchema>;
 
-// Cache for validated env
-let cachedServerEnv: ServerEnv | null = null;
-let cachedClientEnv: ClientEnv | null = null;
+// Cache objects for validated env
+const serverEnvCache = { value: null as ServerEnv | null };
+const clientEnvCache = { value: null as ClientEnv | null };
 
 /**
- * Validate server environment variables (lazy)
+ * Factory function to create environment validators
+ * Reduces duplication between server and client validation
  */
-function validateServerEnv(): ServerEnv {
-  // Skip validation during build
-  if (process.env.SKIP_ENV_VALIDATION === "true") {
-    return {} as ServerEnv;
-  }
+export function createEnvValidator<T>(
+  schema: z.ZodSchema<T>,
+  getEnv: () => Record<string, unknown>,
+  cache: { value: T | null }
+): () => T {
+  return (): T => {
+    // Skip validation during build
+    if (process.env.SKIP_ENV_VALIDATION === "true") {
+      return {} as T;
+    }
 
-  if (cachedServerEnv) {
-    return cachedServerEnv;
-  }
+    // Return cached value if available
+    if (cache.value) {
+      return cache.value;
+    }
 
-  const parsed = serverSchema.safeParse(process.env);
+    const parsed = schema.safeParse(getEnv());
 
-  if (!parsed.success) {
-    console.error(
-      "❌ Invalid server environment variables:",
-      parsed.error.flatten().fieldErrors
-    );
-    throw new Error("Invalid server environment variables");
-  }
+    if (!parsed.success) {
+      console.error(
+        "❌ Invalid environment variables:",
+        parsed.error.flatten().fieldErrors
+      );
+      throw new Error("Invalid environment variables");
+    }
 
-  cachedServerEnv = parsed.data;
-  return parsed.data;
+    cache.value = parsed.data;
+    return parsed.data;
+  };
 }
 
-/**
- * Validate client environment variables (lazy)
- */
-function validateClientEnv(): ClientEnv {
-  // Skip validation during build
-  if (process.env.SKIP_ENV_VALIDATION === "true") {
-    return {} as ClientEnv;
-  }
+// Create validators using the factory
+const validateServerEnv = createEnvValidator(
+  serverSchema,
+  () => process.env,
+  serverEnvCache
+);
 
-  if (cachedClientEnv) {
-    return cachedClientEnv;
-  }
-
-  const clientEnv = {
+const validateClientEnv = createEnvValidator(
+  clientSchema,
+  () => ({
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  };
-
-  const parsed = clientSchema.safeParse(clientEnv);
-
-  if (!parsed.success) {
-    console.error(
-      "❌ Invalid client environment variables:",
-      parsed.error.flatten().fieldErrors
-    );
-    throw new Error("Invalid client environment variables");
-  }
-
-  cachedClientEnv = parsed.data;
-  return parsed.data;
-}
+  }),
+  clientEnvCache
+);
 
 /**
  * Get server environment variables

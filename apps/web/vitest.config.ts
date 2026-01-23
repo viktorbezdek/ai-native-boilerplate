@@ -4,8 +4,8 @@ import { loadEnv } from "vite";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig(({ mode }) => {
-  // Load env files from apps/web directory
-  const env = loadEnv(mode, resolve(__dirname), "");
+  // Load env files from apps/web directory, including .env.test for test mode
+  const env = loadEnv(mode === "test" ? "test" : mode, resolve(__dirname), "");
 
   return {
     plugins: [react()],
@@ -15,11 +15,17 @@ export default defineConfig(({ mode }) => {
       "process.env.STRIPE_WEBHOOK_SECRET": JSON.stringify(
         env.STRIPE_WEBHOOK_SECRET
       ),
+      "process.env.RESEND_API_KEY": JSON.stringify(
+        env.RESEND_API_KEY || "re_test_123456789"
+      ),
+      "process.env.FROM_EMAIL": JSON.stringify(
+        env.FROM_EMAIL || "test@example.com"
+      ),
     },
     test: {
       environment: "jsdom",
       globals: true,
-      setupFiles: ["./tests/setup.ts"],
+      setupFiles: ["./tests/preload.ts", "./tests/setup.ts"],
       include: [
         "tests/unit/**/*.{test,spec}.{ts,tsx}",
         "tests/integration/**/*.{test,spec}.{ts,tsx}",

@@ -1,10 +1,7 @@
-import { neon, neonConfig } from "@neondatabase/serverless";
+import { neon } from "@neondatabase/serverless";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "./schema";
-
-// Enable connection caching for serverless environments
-neonConfig.fetchConnectionCache = true;
 
 // Lazy initialization for database
 let dbInstance: NeonHttpDatabase<typeof schema> | null = null;

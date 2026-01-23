@@ -1,5 +1,6 @@
 export {
   createMockAuth,
+  createMockGetSession,
   mockAuthClient,
   mockAuthModule,
   mockAuthSession,

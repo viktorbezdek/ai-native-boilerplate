@@ -2,6 +2,12 @@ import { db, eq, subscriptions } from "@repo/database";
 import { stripe } from "@repo/payments";
 import type Stripe from "stripe";
 import { identifyServerUser, trackServerEvent } from "@/lib/analytics/server";
+import {
+  extractSubscriptionId,
+  getUserIdFromCheckoutSession,
+  getUserIdFromSubscription,
+  mapStripeStatus,
+} from "./webhook-helpers";
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -55,7 +61,7 @@ export async function handleWebhookEvent(event: Stripe.Event) {
 }
 
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
-  const userId = session.metadata?.userId ?? session.client_reference_id;
+  const userId = getUserIdFromCheckoutSession(session);
 
   if (!userId) {
     console.error("No userId in checkout session");
@@ -71,10 +77,11 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   });
 
   if (session.mode === "subscription" && session.subscription) {
-    const subscriptionId =
-      typeof session.subscription === "string"
-        ? session.subscription
-        : session.subscription.id;
+    const subscriptionId = extractSubscriptionId(session.subscription);
+    if (!subscriptionId) {
+      console.error("Failed to extract subscription ID from checkout session");
+      return;
+    }
 
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
@@ -99,7 +106,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 }
 
 async function handleSubscriptionChange(subscription: Stripe.Subscription) {
-  const userId = subscription.metadata?.userId;
+  const userId = getUserIdFromSubscription(subscription);
 
   if (!userId) {
     console.error("No userId in subscription metadata");
@@ -125,7 +132,7 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
 }
 
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
-  const userId = subscription.metadata?.userId;
+  const userId = getUserIdFromSubscription(subscription);
 
   if (!userId) {
     console.error("No userId in subscription metadata");
@@ -156,17 +163,11 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 }
 
 async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
-  const _customerId =
-    typeof invoice.customer === "string"
-      ? invoice.customer
-      : invoice.customer?.id;
-
   // Try to get userId from subscription metadata
   const subscriptionDetails = invoice.parent?.subscription_details;
-  const subscriptionId =
-    typeof subscriptionDetails?.subscription === "string"
-      ? subscriptionDetails.subscription
-      : subscriptionDetails?.subscription?.id;
+  const subscriptionId = extractSubscriptionId(
+    subscriptionDetails?.subscription
+  );
 
   if (subscriptionId) {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
@@ -186,10 +187,9 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
 
 async function handlePaymentFailed(invoice: Stripe.Invoice) {
   const subscriptionDetails = invoice.parent?.subscription_details;
-  const subscriptionId =
-    typeof subscriptionDetails?.subscription === "string"
-      ? subscriptionDetails.subscription
-      : subscriptionDetails?.subscription?.id;
+  const subscriptionId = extractSubscriptionId(
+    subscriptionDetails?.subscription
+  );
 
   if (subscriptionId) {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
@@ -230,37 +230,6 @@ async function upsertSubscription(
       ? subscription.customer
       : subscription.customer.id;
 
-  // Map Stripe status to our database enum
-  const mapStatus = (
-    status: Stripe.Subscription.Status
-  ): "active" | "canceled" | "past_due" | "trialing" => {
-    switch (status) {
-      case "active":
-        return "active";
-      case "canceled":
-        return "canceled";
-      case "past_due":
-        return "past_due";
-      case "trialing":
-        return "trialing";
-      case "incomplete":
-      case "incomplete_expired":
-      case "unpaid":
-      case "paused":
-        // These are valid Stripe statuses that we map to canceled for our purposes
-        console.warn(
-          `[Stripe] Mapping subscription status "${status}" to "canceled"`
-        );
-        return "canceled";
-      default: {
-        // Exhaustive check - this should never happen with typed Stripe statuses
-        const _exhaustiveCheck: never = status;
-        console.error(`[Stripe] Unknown subscription status: ${status}`);
-        throw new Error(`Unknown subscription status: ${status}`);
-      }
-    }
-  };
-
   // Get billing period from subscription item (moved from subscription in Stripe v20+)
   const currentPeriodStart =
     subscriptionItem?.current_period_start ?? subscription.start_date;
@@ -273,7 +242,7 @@ async function upsertSubscription(
     stripeSubscriptionId: subscription.id,
     stripePriceId: priceId,
     stripeProductId: productId,
-    status: mapStatus(subscription.status),
+    status: mapStripeStatus(subscription.status),
     currentPeriodStart: new Date(currentPeriodStart * 1000),
     currentPeriodEnd: new Date(currentPeriodEnd * 1000),
     cancelAtPeriodEnd: subscription.cancel_at_period_end,

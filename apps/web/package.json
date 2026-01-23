@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "biome check src/",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "RESEND_API_KEY=${RESEND_API_KEY:-re_test_123} vitest run --config vitest.config.ts",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
@@ -33,6 +33,7 @@
     "posthog-node": "^5.24.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "resend": "^6.8.0",
     "yaml": "^2.8.2",
     "zod": "^4.3.6"
   },

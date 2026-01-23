@@ -1,0 +1,3 @@
+[test]
+# Preload script to set environment variables before tests run
+preload = ["./tests/preload.ts"]

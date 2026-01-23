@@ -64,3 +64,4 @@ drizzle/*.sql
 # Bun
 bun.lockb
 /.subtask/
+.vercel

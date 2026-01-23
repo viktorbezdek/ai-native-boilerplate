@@ -3,6 +3,11 @@ import * as schema from "@repo/database/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { headers } from "next/headers";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+const fromEmail = process.env.FROM_EMAIL ?? "noreply@example.com";
+const fromName = process.env.FROM_NAME ?? "AI Native App";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -14,9 +19,28 @@ export const auth = betterAuth({
       verification: schema.verificationTokens,
     },
   }),
+  advanced: {
+    database: {
+      generateId: () => crypto.randomUUID(),
+    },
+  },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+    sendResetPassword: async ({ user, url }) => {
+      await resend.emails.send({
+        from: `${fromName} <${fromEmail}>`,
+        to: user.email,
+        subject: "Reset your password",
+        html: `
+          <h2>Reset Your Password</h2>
+          <p>Click the link below to reset your password:</p>
+          <a href="${url}" style="display: inline-block; padding: 12px 24px; background-color: #0070f3; color: white; text-decoration: none; border-radius: 6px;">Reset Password</a>
+          <p>If you didn't request this, you can safely ignore this email.</p>
+          <p>This link will expire in 1 hour.</p>
+        `,
+      });
+    },
   },
   socialProviders: {
     github: {

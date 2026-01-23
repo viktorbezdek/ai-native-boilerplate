@@ -1,0 +1,39 @@
+# Dependencies
+node_modules
+
+# Build artifacts
+.next
+.turbo
+dist
+out
+
+# Test files
+tests
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+coverage
+playwright-report
+
+# Development files
+.claude
+.git
+.env.local
+.env.backup
+*.log
+
+# IDE
+.idea
+.vscode
+
+# Documentation
+docs
+*.md
+!README.md
+
+# Large files
+**/*.mp4
+**/*.mov
+**/*.zip
+**/*.tar.gz

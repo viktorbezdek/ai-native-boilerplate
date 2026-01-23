@@ -2,6 +2,10 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 
+// Set test environment variables before any modules load
+process.env.RESEND_API_KEY = process.env.RESEND_API_KEY || "re_test_123456789";
+process.env.FROM_EMAIL = process.env.FROM_EMAIL || "test@example.com";
+
 // Cleanup after each test
 afterEach(() => {
   cleanup();
