@@ -80,6 +80,11 @@ ai-native-boilerplate/
 - Conventional commits: `feat|fix|chore|docs|refactor|test`
 - PRs require review
 
+### Task Tracking
+- Use TodoWrite for multi-step tasks (3+ steps)
+- Mark tasks in_progress before starting, completed immediately after
+- Break complex features into specific, actionable items
+
 ## Code Patterns
 
 ### Server Actions

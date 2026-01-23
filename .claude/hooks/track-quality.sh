@@ -39,17 +39,20 @@ if echo "$COMMAND" | grep -qE "(vitest|jest|bun test|npm test|yarn test|playwrig
   # Bun: "5 pass" or "pass 5"
   # Jest: "5 passed, 2 failed"
 
-  # Try "X passed" pattern first (most common)
+  # Try "X passed" or "X pass" pattern (vitest/bun)
   TESTS_PASSED=$(echo "$RESULT" | grep -oE "[0-9]+ (pass|passed|passing)" | grep -oE "[0-9]+" | head -1)
-  # Try "passed X" or "✓ X" pattern
-  [ -z "$TESTS_PASSED" ] && TESTS_PASSED=$(echo "$RESULT" | grep -oE "(passed|passing|✓)[^0-9]*[0-9]+" | grep -oE "[0-9]+" | head -1)
+  # Try "Tests  X passed" (Vitest summary line)
+  [ -z "$TESTS_PASSED" ] && TESTS_PASSED=$(echo "$RESULT" | grep -oE "Tests[[:space:]]+[0-9]+" | grep -oE "[0-9]+" | head -1)
   # Try "Test Files  X passed" (Vitest)
   [ -z "$TESTS_PASSED" ] && TESTS_PASSED=$(echo "$RESULT" | grep -oE "Test Files[^0-9]*[0-9]+" | grep -oE "[0-9]+" | head -1)
+  # Turborepo: count "✓" symbols for passed tests
+  [ -z "$TESTS_PASSED" ] && TESTS_PASSED=$(echo "$RESULT" | grep -c "✓" 2>/dev/null || echo "0")
   [ -z "$TESTS_PASSED" ] && TESTS_PASSED="0"
 
-  # Extract failed count
+  # Extract failed count - "X fail" or "X failed"
   TESTS_FAILED=$(echo "$RESULT" | grep -oE "[0-9]+ (fail|failed|failing)" | grep -oE "[0-9]+" | head -1)
-  [ -z "$TESTS_FAILED" ] && TESTS_FAILED=$(echo "$RESULT" | grep -oE "(failed|failing|✗)[^0-9]*[0-9]+" | grep -oE "[0-9]+" | head -1)
+  # Try counting "✗" or "×" symbols
+  [ -z "$TESTS_FAILED" ] && TESTS_FAILED=$(echo "$RESULT" | grep -cE "(✗|×|FAIL)" 2>/dev/null || echo "0")
   [ -z "$TESTS_FAILED" ] && TESTS_FAILED="0"
 
   # Extract skipped count
