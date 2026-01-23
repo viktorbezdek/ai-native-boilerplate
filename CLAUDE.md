@@ -180,31 +180,33 @@ The project includes a self-developing product architecture in `packages/autonom
 - **Learning Engine**: Pattern extraction and skill scoring
 - **Config Evolver**: A/B testing of configuration changes
 
-### Claude-Mem Integration
-Project-level AI memory system (`packages/claude-mem/`):
-- **Persistent Memory**: Captures tool observations across sessions
-- **Semantic Search**: Vector embeddings for context retrieval
-- **Project Scoped**: All data stored in `.claude/memory/`
-- **Worker Port**: 37778 (project-isolated from global claude-mem)
-
 Key commands:
 ```bash
-/memory status    # Check memory service
-/memory search    # Search past sessions
 /autonomous start # Start self-developing loop
+/optimize ai      # Analyze and improve AI configuration
+/status           # Check workflow status
 ```
 
 ### Hooks System
 Project hooks in `.claude/hooks/`:
-- `telemetry.sh` - Track tool usage
+- `telemetry.sh` - Track tool usage metrics
 - `track-execution.sh` - Log execution results
 - `track-drift.sh` - Detect scope creep
 - `track-quality.sh` - Monitor test/lint results
-- `claude-mem.sh` - Memory capture integration
+- `validate-commit.sh` - Pre-commit validation
+- `validate-changes.sh` - Post-write validation
+- `session-summary.sh` - Session completion summary
+
+### Skills Library
+22 specialized skills in `.claude/skills/`:
+- **Development**: code-review, code-synthesizer, refactor-engine, tdd-orchestrator
+- **Infrastructure**: cicd-pipelines, deploy-strategist, incident-responder
+- **Analysis**: analytics-setup, architecture-advisor, cost-optimizer
+- **Quality**: test-amplifier, vulnerability-scanner, compliance-checker
 
 ## Active Context
 <!-- Auto-updated by optimizer subagent -->
-- **Current Focus**: Autonomous development infrastructure
-- **Recent Changes**: Self-developing architecture, claude-mem integration
-- **Next Steps**: Test coverage for autonomous system
+- **Current Focus**: Hook reliability and metrics accuracy
+- **Recent Changes**: Fixed quality tracking regex, added drift deduplication, skip empty sessions
+- **Next Steps**: Verify metrics capture actual test/lint counts
 - **Blockers**: None
