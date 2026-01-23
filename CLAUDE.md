@@ -198,15 +198,16 @@ Project hooks in `.claude/hooks/`:
 - `session-summary.sh` - Session completion summary
 
 ### Skills Library
-22 specialized skills in `.claude/skills/`:
-- **Development**: code-review, code-synthesizer, refactor-engine, tdd-orchestrator
-- **Infrastructure**: cicd-pipelines, deploy-strategist, incident-responder
-- **Analysis**: analytics-setup, architecture-advisor, cost-optimizer
-- **Quality**: test-amplifier, vulnerability-scanner, compliance-checker
+27 specialized skills in `.claude/skills/`:
+- **Development**: api-design, code-review, code-synthesizer, db-migrations, refactor-engine, tdd-orchestrator, ui-patterns
+- **Infrastructure**: cicd-pipelines, deploy-strategist, incident-responder, observability
+- **Analysis**: analytics-setup, architecture-advisor, compliance-checker, cost-optimizer, scope-guardian
+- **Quality**: test-amplifier, vulnerability-scanner, webapp-testing
+- **Best Practices**: better-auth, stripe, vercel-react, web-design-guidelines
 
 ## Active Context
 <!-- Auto-updated by optimizer subagent -->
-- **Current Focus**: Hook reliability and metrics accuracy
-- **Recent Changes**: Fixed quality tracking regex, added drift deduplication, skip empty sessions
-- **Next Steps**: Verify metrics capture actual test/lint counts
+- **Current Focus**: Configuration optimization
+- **Recent Changes**: Removed 18 unused marketing skills, added mandatory validation hooks, pushed to main
+- **Next Steps**: Consolidate telemetry hooks, auto-archive old logs
 - **Blockers**: None
