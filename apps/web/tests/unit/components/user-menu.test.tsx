@@ -1,6 +1,5 @@
-import { page } from "@vitest/browser/context";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { render } from "vitest-browser-react";
 
 // Mock modules before importing the component (vi.mock is hoisted)
 vi.mock("@/lib/auth/client", () => ({
@@ -38,36 +37,36 @@ describe("UserMenu", () => {
     },
   };
 
-  it("renders user name", async () => {
+  it("renders user name", () => {
     render(<UserMenu {...defaultProps} />);
-    await expect.element(page.getByText("Test User")).toBeVisible();
+    expect(screen.getByText("Test User")).toBeInTheDocument();
   });
 
-  it("renders user email", async () => {
+  it("renders user email", () => {
     render(<UserMenu {...defaultProps} />);
-    await expect.element(page.getByText("test@example.com")).toBeVisible();
+    expect(screen.getByText("test@example.com")).toBeInTheDocument();
   });
 
-  it("shows sign out button", async () => {
+  it("shows sign out button", () => {
     render(<UserMenu {...defaultProps} />);
-    await expect.element(page.getByText("Sign out")).toBeVisible();
+    expect(screen.getByText("Sign out")).toBeInTheDocument();
   });
 
-  it("renders avatar with user initials when no image", async () => {
+  it("renders avatar with user initials when no image", () => {
     render(<UserMenu {...defaultProps} />);
-    await expect.element(page.getByText("TU")).toBeVisible();
+    expect(screen.getByText("TU")).toBeInTheDocument();
   });
 
-  it("handles sign out click", async () => {
+  it("handles sign out click", () => {
     render(<UserMenu {...defaultProps} />);
 
-    const signOutButton = page.getByText("Sign out");
-    await signOutButton.click();
+    const signOutButton = screen.getByText("Sign out");
+    fireEvent.click(signOutButton);
 
     expect(authClient.signOut).toHaveBeenCalled();
   });
 
-  it("renders fallback to User when name is null", async () => {
+  it("renders fallback to User when name is null", () => {
     const propsWithNoName = {
       user: {
         id: "user-1",
@@ -78,10 +77,10 @@ describe("UserMenu", () => {
     };
 
     render(<UserMenu {...propsWithNoName} />);
-    await expect.element(page.getByText("User")).toBeVisible();
+    expect(screen.getByText("User")).toBeInTheDocument();
   });
 
-  it("renders email initial when name is null", async () => {
+  it("renders email initial when name is null", () => {
     const propsWithNoName = {
       user: {
         id: "user-1",
@@ -92,6 +91,6 @@ describe("UserMenu", () => {
     };
 
     render(<UserMenu {...propsWithNoName} />);
-    await expect.element(page.getByText("T")).toBeVisible();
+    expect(screen.getByText("T")).toBeInTheDocument();
   });
 });

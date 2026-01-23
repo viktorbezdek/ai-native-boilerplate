@@ -10,7 +10,6 @@
     "lint": "biome check src/",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:browser": "vitest run --config vitest.browser.config.ts",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",

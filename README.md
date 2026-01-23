@@ -44,7 +44,7 @@ Open [http://localhost:3000](http://localhost:3000). The app is running with a w
 
 **That's it.** No manual env configuration. No Docker required. Database provisioned automatically.
 
-> The instant database expires in 72 hours. Run `bun db:claim` to keep it permanently (free Neon account).
+> For production use, create a permanent database at [neon.tech](https://neon.tech) (free tier available).
 
 ## Documentation
 
