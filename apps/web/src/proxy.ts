@@ -32,7 +32,7 @@ function isValidTokenFormat(token: string): boolean {
   return true;
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Get session token from cookie

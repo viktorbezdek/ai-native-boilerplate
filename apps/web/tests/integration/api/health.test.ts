@@ -7,6 +7,11 @@ vi.mock("@repo/database", () => ({
   db: {
     execute: vi.fn(),
   },
+  // Re-export drizzle-orm functions that are now exported from @repo/database
+  sql: vi.fn((strings: TemplateStringsArray, ...values: unknown[]) => ({
+    strings,
+    values,
+  })),
 }));
 
 // Import mocked db

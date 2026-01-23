@@ -36,10 +36,7 @@ vi.mock("@repo/database", () => ({
     id: Symbol("subscriptions.id"),
     stripeSubscriptionId: Symbol("subscriptions.stripeSubscriptionId"),
   },
-}));
-
-// Mock drizzle-orm eq function
-vi.mock("drizzle-orm", () => ({
+  // Re-export drizzle-orm functions that are now exported from @repo/database
   eq: vi.fn((field, value) => ({ field, value })),
 }));
 

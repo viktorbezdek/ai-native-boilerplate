@@ -1,16 +1,14 @@
-import { projects } from "@repo/database";
+import { asc, count, db, desc, eq, projects } from "@repo/database";
 import {
   createErrorResponse,
   createProjectSchema,
   createSuccessResponse,
   paginationSchema,
 } from "@repo/validations";
-import { asc, count, desc, eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { applyApiMiddleware } from "@/lib/api";
 import { getSession } from "@/lib/auth";
-import { db } from "@/lib/db";
 
 // GET /api/v1/projects - List user's projects
 export async function GET(request: NextRequest) {

@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import { vi } from "vitest";
 import { mockSession, mockUser } from "./db";
 
@@ -17,14 +18,22 @@ export const mockAuthSession = {
 /**
  * Create mock auth function
  */
-export function createMockAuth(authenticated = true) {
+export function createMockAuth(authenticated = true): Mock {
   return vi.fn().mockResolvedValue(authenticated ? mockAuthSession : null);
+}
+
+interface MockAuthClient {
+  signIn: { email: Mock; social: Mock };
+  signUp: { email: Mock };
+  signOut: Mock;
+  useSession: Mock;
+  getSession: Mock;
 }
 
 /**
  * Mock better-auth client
  */
-export const mockAuthClient = {
+export const mockAuthClient: MockAuthClient = {
   signIn: {
     email: vi.fn().mockResolvedValue({ data: mockAuthSession }),
     social: vi.fn().mockResolvedValue({ data: mockAuthSession }),
@@ -44,7 +53,7 @@ export const mockAuthClient = {
 /**
  * Create mock getSession function
  */
-export function createMockGetSession(authenticated = true) {
+export function createMockGetSession(authenticated = true): Mock {
   return vi.fn().mockResolvedValue(authenticated ? mockAuthSession : null);
 }
 
@@ -81,7 +90,9 @@ export function mockUnauthenticated() {
  * Reset auth mocks
  */
 export function resetAuthMocks() {
-  Object.values(mockAuthClient.signIn).forEach((mock) => mock.mockClear());
+  Object.values(mockAuthClient.signIn).forEach((mock) => {
+    mock.mockClear();
+  });
   mockAuthClient.signUp.email.mockClear();
   mockAuthClient.signOut.mockClear();
   mockAuthClient.useSession.mockClear();

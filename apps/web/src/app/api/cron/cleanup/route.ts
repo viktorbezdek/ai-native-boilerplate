@@ -1,5 +1,4 @@
-import { db, sessions } from "@repo/database";
-import { lt } from "drizzle-orm";
+import { db, lt, sessions } from "@repo/database";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";

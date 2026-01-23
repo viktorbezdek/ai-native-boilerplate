@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import { vi } from "vitest";
 
 /**
@@ -60,10 +61,26 @@ export const mockSubscription = {
   updatedAt: new Date("2024-01-01"),
 };
 
+interface MockDb {
+  select: Mock;
+  from: Mock;
+  where: Mock;
+  limit: Mock;
+  offset: Mock;
+  orderBy: Mock;
+  insert: Mock;
+  values: Mock;
+  update: Mock;
+  set: Mock;
+  delete: Mock;
+  returning: Mock;
+  execute: Mock;
+}
+
 /**
  * Create mock database module
  */
-export function createMockDb() {
+export function createMockDb(): MockDb {
   return {
     select: vi.fn().mockReturnThis(),
     from: vi.fn().mockReturnThis(),
@@ -81,10 +98,22 @@ export function createMockDb() {
   };
 }
 
+interface MockQueries {
+  getUserById: Mock;
+  getUserByEmail: Mock;
+  getProjectById: Mock;
+  getProjectByIdForUser: Mock;
+  getProjectsForUser: Mock;
+  createProject: Mock;
+  updateProject: Mock;
+  deleteProject: Mock;
+  getSubscriptionByUserId: Mock;
+}
+
 /**
  * Mock query functions
  */
-export const mockQueries = {
+export const mockQueries: MockQueries = {
   getUserById: vi.fn().mockResolvedValue(mockUser),
   getUserByEmail: vi.fn().mockResolvedValue(mockUser),
   getProjectById: vi.fn().mockResolvedValue(mockProject),
@@ -103,5 +132,7 @@ export const mockQueries = {
  * Reset all mock queries
  */
 export function resetMockQueries() {
-  Object.values(mockQueries).forEach((mock) => mock.mockClear());
+  Object.values(mockQueries).forEach((mock) => {
+    mock.mockClear();
+  });
 }

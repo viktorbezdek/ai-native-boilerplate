@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import { vi } from "vitest";
 
 /**
@@ -40,10 +41,19 @@ export const mockStripeSubscription = {
   },
 };
 
+interface MockStripe {
+  checkout: { sessions: { create: Mock; retrieve: Mock } };
+  subscriptions: { retrieve: Mock; update: Mock; cancel: Mock };
+  customers: { create: Mock; list: Mock };
+  billingPortal: { sessions: { create: Mock } };
+  webhooks: { constructEvent: Mock };
+  invoices: { list: Mock; retrieveUpcoming: Mock };
+}
+
 /**
  * Mock Stripe module
  */
-export const mockStripe = {
+export const mockStripe: MockStripe = {
   checkout: {
     sessions: {
       create: vi.fn().mockResolvedValue(mockCheckoutSession),
@@ -87,19 +97,33 @@ export const mockEmailResponse = {
   subject: "Test Email",
 };
 
+interface MockResend {
+  emails: { send: Mock };
+}
+
 /**
  * Mock Resend module
  */
-export const mockResend = {
+export const mockResend: MockResend = {
   emails: {
     send: vi.fn().mockResolvedValue({ data: mockEmailResponse, error: null }),
   },
 };
 
+interface MockPostHog {
+  capture: Mock;
+  identify: Mock;
+  reset: Mock;
+  setPersonProperties: Mock;
+  isFeatureEnabled: Mock;
+  getFeatureFlag: Mock;
+  featureFlags: { override: Mock };
+}
+
 /**
  * Mock PostHog module
  */
-export const mockPostHog = {
+export const mockPostHog: MockPostHog = {
   capture: vi.fn(),
   identify: vi.fn(),
   reset: vi.fn(),
@@ -142,11 +166,15 @@ export function setupExternalMocks() {
  * Reset all external mocks
  */
 export function resetExternalMocks() {
-  Object.values(mockStripe.checkout.sessions).forEach((mock) =>
-    mock.mockClear()
-  );
-  Object.values(mockStripe.subscriptions).forEach((mock) => mock.mockClear());
-  Object.values(mockStripe.customers).forEach((mock) => mock.mockClear());
+  Object.values(mockStripe.checkout.sessions).forEach((mock) => {
+    mock.mockClear();
+  });
+  Object.values(mockStripe.subscriptions).forEach((mock) => {
+    mock.mockClear();
+  });
+  Object.values(mockStripe.customers).forEach((mock) => {
+    mock.mockClear();
+  });
   mockResend.emails.send.mockClear();
   mockPostHog.capture.mockClear();
   mockPostHog.identify.mockClear();

@@ -1,10 +1,9 @@
-import { neon, neonConfig } from "@neondatabase/serverless";
+import { neon } from "@neondatabase/serverless";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "./schema";
 
-// Enable connection caching for serverless environments
-neonConfig.fetchConnectionCache = true;
+// Note: fetchConnectionCache is now always enabled by default in @neondatabase/serverless
 
 // Lazy initialization for database
 let dbInstance: NeonHttpDatabase<typeof schema> | null = null;
@@ -52,6 +51,30 @@ export const db = new Proxy({} as NeonHttpDatabase<typeof schema>, {
   },
 });
 
+// Re-export commonly used drizzle-orm functions for consumer packages
+// This avoids transitive dependency resolution issues with Turbopack
+export {
+  and,
+  asc,
+  between,
+  count,
+  desc,
+  eq,
+  gt,
+  gte,
+  ilike,
+  inArray,
+  isNotNull,
+  isNull,
+  like,
+  lt,
+  lte,
+  ne,
+  not,
+  notInArray,
+  or,
+  sql,
+} from "drizzle-orm";
 // Re-export queries
 export * from "./queries";
 // Re-export schema for convenience
