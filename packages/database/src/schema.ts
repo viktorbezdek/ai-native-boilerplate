@@ -2,6 +2,8 @@ import { relations } from "drizzle-orm";
 import {
   boolean,
   index,
+  integer,
+  jsonb,
   pgEnum,
   pgTable,
   text,
@@ -19,6 +21,39 @@ export const subscriptionStatusEnum = pgEnum("subscription_status", [
   "canceled",
   "past_due",
   "trialing",
+]);
+
+// Asset enums
+export const assetTypeEnum = pgEnum("asset_type", [
+  "prompt",
+  "chain",
+  "skill",
+  "agent",
+]);
+
+export const assetCategoryEnum = pgEnum("asset_category", [
+  "productivity",
+  "writing",
+  "coding",
+  "analysis",
+  "creative",
+  "business",
+  "education",
+  "other",
+]);
+
+export const modelCompatibilityEnum = pgEnum("model_compatibility", [
+  "openai",
+  "anthropic",
+  "google",
+  "open-source",
+  "universal",
+]);
+
+export const accessTypeEnum = pgEnum("access_type", [
+  "view",
+  "download",
+  "copy",
 ]);
 
 // ============================================================================
@@ -49,6 +84,8 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   accounts: many(accounts),
   subscription: one(subscriptions),
   projects: many(projects),
+  assetAccess: many(assetAccess),
+  recentlyViewed: many(userRecentlyViewed),
 }));
 
 // ============================================================================
@@ -217,6 +254,135 @@ export const projectsRelations = relations(projects, ({ one }) => ({
 }));
 
 // ============================================================================
+// Assets (AI Marketplace)
+// ============================================================================
+
+export const assets = pgTable(
+  "assets",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    // Basic info
+    title: text("title").notNull(),
+    slug: text("slug").notNull().unique(),
+    description: text("description").notNull(),
+    // Content stored as JSONB for flexibility
+    content: jsonb("content").notNull(),
+    // Classification
+    type: assetTypeEnum("type").notNull(),
+    category: assetCategoryEnum("category").notNull(),
+    // Model compatibility (array of compatible models)
+    modelCompatibility: text("model_compatibility").array().notNull(),
+    // Sample usage
+    sampleInput: text("sample_input"),
+    sampleOutput: text("sample_output"),
+    // Access control
+    isFree: boolean("is_free").notNull().default(false),
+    isPublished: boolean("is_published").notNull().default(false),
+    // Stats
+    viewCount: integer("view_count").notNull().default(0),
+    downloadCount: integer("download_count").notNull().default(0),
+    // Metadata
+    tags: text("tags").array().default([]),
+    version: text("version").notNull().default("1.0.0"),
+    // Timestamps
+    publishedAt: timestamp("published_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("idx_assets_slug").on(table.slug),
+    index("idx_assets_type").on(table.type),
+    index("idx_assets_category").on(table.category),
+    index("idx_assets_is_free").on(table.isFree),
+    index("idx_assets_is_published").on(table.isPublished),
+    index("idx_assets_published_at").on(table.publishedAt),
+  ]
+);
+
+// ============================================================================
+// Asset Access Tracking
+// ============================================================================
+
+export const assetAccess = pgTable(
+  "asset_access",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    assetId: uuid("asset_id")
+      .notNull()
+      .references(() => assets.id, { onDelete: "cascade" }),
+    accessType: accessTypeEnum("access_type").notNull(),
+    format: text("format"), // json, yaml, txt for downloads
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("idx_asset_access_user_id").on(table.userId),
+    index("idx_asset_access_asset_id").on(table.assetId),
+    index("idx_asset_access_user_asset").on(table.userId, table.assetId),
+  ]
+);
+
+export const assetAccessRelations = relations(assetAccess, ({ one }) => ({
+  user: one(users, {
+    fields: [assetAccess.userId],
+    references: [users.id],
+  }),
+  asset: one(assets, {
+    fields: [assetAccess.assetId],
+    references: [assets.id],
+  }),
+}));
+
+// ============================================================================
+// User Recently Viewed (for dashboard)
+// ============================================================================
+
+export const userRecentlyViewed = pgTable(
+  "user_recently_viewed",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    assetId: uuid("asset_id")
+      .notNull()
+      .references(() => assets.id, { onDelete: "cascade" }),
+    viewedAt: timestamp("viewed_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("idx_user_recently_viewed_user_id").on(table.userId),
+    index("idx_user_recently_viewed_user_asset").on(
+      table.userId,
+      table.assetId
+    ),
+  ]
+);
+
+export const userRecentlyViewedRelations = relations(
+  userRecentlyViewed,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [userRecentlyViewed.userId],
+      references: [users.id],
+    }),
+    asset: one(assets, {
+      fields: [userRecentlyViewed.assetId],
+      references: [assets.id],
+    }),
+  })
+);
+
+// ============================================================================
 // Type Exports
 // ============================================================================
 
@@ -230,3 +396,18 @@ export type Subscription = typeof subscriptions.$inferSelect;
 export type NewSubscription = typeof subscriptions.$inferInsert;
 export type Project = typeof projects.$inferSelect;
 export type NewProject = typeof projects.$inferInsert;
+
+// Asset types
+export type Asset = typeof assets.$inferSelect;
+export type NewAsset = typeof assets.$inferInsert;
+export type AssetAccess = typeof assetAccess.$inferSelect;
+export type NewAssetAccess = typeof assetAccess.$inferInsert;
+export type UserRecentlyViewed = typeof userRecentlyViewed.$inferSelect;
+export type NewUserRecentlyViewed = typeof userRecentlyViewed.$inferInsert;
+
+// Enum value types
+export type AssetType = (typeof assetTypeEnum.enumValues)[number];
+export type AssetCategory = (typeof assetCategoryEnum.enumValues)[number];
+export type ModelCompatibility =
+  (typeof modelCompatibilityEnum.enumValues)[number];
+export type AccessType = (typeof accessTypeEnum.enumValues)[number];

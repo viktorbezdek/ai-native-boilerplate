@@ -10,7 +10,7 @@
  */
 
 import { execSync } from "child_process";
-import { readFileSync, existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 
 // ADR: 2025-12-08-mise-env-centralized-config
 // Configuration via environment variables with defaults for backward compatibility
@@ -20,7 +20,8 @@ const DESIGN_DIR = process.env.DESIGN_DIR || "docs/design";
 // ADR file pattern: YYYY-MM-DD-slug.md
 const ADR_FILE_PATTERN = /^docs\/adr\/(\d{4}-\d{2}-\d{2}-[\w-]+)\.md$/;
 // Design spec pattern: YYYY-MM-DD-slug/spec.md
-const DESIGN_SPEC_PATTERN = /^docs\/design\/(\d{4}-\d{2}-\d{2}-[\w-]+)\/spec\.md$/;
+const DESIGN_SPEC_PATTERN =
+  /^docs\/design\/(\d{4}-\d{2}-\d{2}-[\w-]+)\/spec\.md$/;
 // ADR reference in commit messages: ADR: YYYY-MM-DD-slug
 const ADR_COMMIT_REF_PATTERN = /ADR:\s*(\d{4}-\d{2}-\d{2}-[\w-]+)/g;
 
