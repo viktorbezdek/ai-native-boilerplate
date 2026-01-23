@@ -8,6 +8,13 @@
       "when": 1769091129345,
       "tag": "0000_premium_sumo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1769157461959,
+      "tag": "0001_abandoned_shadow_king",
+      "breakpoints": true
     }
   ]
 }
