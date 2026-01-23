@@ -1,10 +1,9 @@
-import { db, users } from "@repo/database";
+import { db, eq, users } from "@repo/database";
 import {
   createErrorResponse,
   createSuccessResponse,
   updateUserSchema,
 } from "@repo/validations";
-import { eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { applyApiMiddleware } from "@/lib/api";

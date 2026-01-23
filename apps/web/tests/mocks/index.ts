@@ -7,13 +7,25 @@ export {
   resetAuthMocks,
 } from "./auth";
 export {
+  and,
+  asc,
+  count,
   createMockDb,
+  desc,
+  eq,
+  gt,
+  gte,
+  lt,
+  lte,
   mockProject,
   mockQueries,
   mockSession,
   mockSubscription,
   mockUser,
+  ne,
+  or,
   resetMockQueries,
+  sql,
 } from "./db";
 
 export {

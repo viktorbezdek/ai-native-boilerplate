@@ -7,6 +7,10 @@ vi.mock("@repo/database", () => ({
   db: {
     execute: vi.fn(),
   },
+  sql: vi.fn((strings: TemplateStringsArray, ...values: unknown[]) => ({
+    strings,
+    values,
+  })),
 }));
 
 // Import mocked db

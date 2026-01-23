@@ -1,6 +1,26 @@
 import { vi } from "vitest";
 
 /**
+ * Mock drizzle operators - these are pass-through since mocks don't need real SQL generation
+ */
+export const eq = vi.fn((a, b) => ({ type: "eq", a, b }));
+export const lt = vi.fn((a, b) => ({ type: "lt", a, b }));
+export const gt = vi.fn((a, b) => ({ type: "gt", a, b }));
+export const lte = vi.fn((a, b) => ({ type: "lte", a, b }));
+export const gte = vi.fn((a, b) => ({ type: "gte", a, b }));
+export const ne = vi.fn((a, b) => ({ type: "ne", a, b }));
+export const asc = vi.fn((col) => ({ type: "asc", col }));
+export const desc = vi.fn((col) => ({ type: "desc", col }));
+export const and = vi.fn((...conditions) => ({ type: "and", conditions }));
+export const or = vi.fn((...conditions) => ({ type: "or", conditions }));
+export const sql = vi.fn((strings, ...values) => ({
+  type: "sql",
+  strings,
+  values,
+}));
+export const count = vi.fn((col) => ({ type: "count", col }));
+
+/**
  * Mock user data
  */
 export const mockUser = {
@@ -103,5 +123,7 @@ export const mockQueries = {
  * Reset all mock queries
  */
 export function resetMockQueries() {
-  Object.values(mockQueries).forEach((mock) => mock.mockClear());
+  for (const mock of Object.values(mockQueries)) {
+    mock.mockClear();
+  }
 }

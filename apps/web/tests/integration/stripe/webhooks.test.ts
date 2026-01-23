@@ -36,10 +36,6 @@ vi.mock("@repo/database", () => ({
     id: Symbol("subscriptions.id"),
     stripeSubscriptionId: Symbol("subscriptions.stripeSubscriptionId"),
   },
-}));
-
-// Mock drizzle-orm eq function
-vi.mock("drizzle-orm", () => ({
   eq: vi.fn((field, value) => ({ field, value })),
 }));
 
@@ -141,10 +137,7 @@ describe("Stripe Webhooks", () => {
         subscriptions: {
           stripeSubscriptionId: Symbol("subscriptions.stripeSubscriptionId"),
         },
-      }));
-
-      vi.doMock("drizzle-orm", () => ({
-        eq: vi.fn(),
+        eq: vi.fn((field, value) => ({ field, value })),
       }));
 
       vi.doMock("@/lib/analytics/server", () => ({

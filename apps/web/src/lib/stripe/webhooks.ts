@@ -1,6 +1,5 @@
-import { db, subscriptions } from "@repo/database";
+import { db, eq, subscriptions } from "@repo/database";
 import { stripe } from "@repo/payments";
-import { eq } from "drizzle-orm";
 import type Stripe from "stripe";
 import { identifyServerUser, trackServerEvent } from "@/lib/analytics/server";
 

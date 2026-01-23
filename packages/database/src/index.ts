@@ -52,6 +52,21 @@ export const db = new Proxy({} as NeonHttpDatabase<typeof schema>, {
   },
 });
 
+// Re-export commonly used drizzle-orm operators to ensure single instance
+export {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gt,
+  gte,
+  lt,
+  lte,
+  ne,
+  or,
+  sql,
+} from "drizzle-orm";
 // Re-export queries
 export * from "./queries";
 // Re-export schema for convenience

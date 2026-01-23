@@ -95,6 +95,10 @@ describe("GET /api/v1/projects", () => {
         insert: (...args: unknown[]) => mockDbInsert(...args),
       },
       projects: mockProjectsSchema,
+      eq: vi.fn((field, value) => ({ field, value })),
+      asc: vi.fn((col) => ({ type: "asc", col })),
+      desc: vi.fn((col) => ({ type: "desc", col })),
+      count: vi.fn((col) => ({ type: "count", col })),
     }));
 
     // Import the route handler with fresh mocks
@@ -223,6 +227,10 @@ describe("POST /api/v1/projects", () => {
         insert: (...args: unknown[]) => mockDbInsert(...args),
       },
       projects: mockProjectsSchema,
+      eq: vi.fn((field, value) => ({ field, value })),
+      asc: vi.fn((col) => ({ type: "asc", col })),
+      desc: vi.fn((col) => ({ type: "desc", col })),
+      count: vi.fn((col) => ({ type: "count", col })),
     }));
 
     // Import the route handler with fresh mocks
