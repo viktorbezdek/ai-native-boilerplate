@@ -165,22 +165,31 @@ SESSION_SUMMARY=$(jq -n \
     git: $git
   }')
 
-# Append to sessions log
-echo "$SESSION_SUMMARY" >> "$SESSIONS_FILE"
+# Append to sessions log (skip empty sessions)
+if [ "$TOTAL_OPERATIONS" -gt 0 ]; then
+  echo "$SESSION_SUMMARY" >> "$SESSIONS_FILE"
+else
+  echo "Session skipped (0 operations)"
+fi
 
 # Clean up temporary state files
 rm -f "$LOG_DIR/.plan-state.json"
 rm -rf "$LOG_DIR/.timing"
 rm -f "$METRICS_FILE"
 
-# Rotate sessions log (keep last 500 entries)
-if [ -f "$SESSIONS_FILE" ]; then
-  LINES=$(wc -l < "$SESSIONS_FILE" | tr -d ' ')
-  if [ "$LINES" -gt 500 ]; then
-    tail -n 500 "$SESSIONS_FILE" > "$SESSIONS_FILE.tmp"
-    mv "$SESSIONS_FILE.tmp" "$SESSIONS_FILE"
+# Rotate all log files (keep manageable sizes)
+for LOG_FILE in "$SESSIONS_FILE" "$QUALITY_FILE" "$DRIFT_FILE" "$EXECUTION_FILE"; do
+  if [ -f "$LOG_FILE" ]; then
+    LINES=$(wc -l < "$LOG_FILE" | tr -d ' ')
+    MAX_LINES=500
+    [ "$LOG_FILE" = "$QUALITY_FILE" ] && MAX_LINES=1000
+    [ "$LOG_FILE" = "$DRIFT_FILE" ] && MAX_LINES=500
+    if [ "$LINES" -gt "$MAX_LINES" ]; then
+      tail -n "$MAX_LINES" "$LOG_FILE" > "$LOG_FILE.tmp"
+      mv "$LOG_FILE.tmp" "$LOG_FILE"
+    fi
   fi
-fi
+done
 
 # Print summary to console (optional, for visibility)
 echo "Session Summary:"

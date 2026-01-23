@@ -91,8 +91,17 @@ if echo "$TOOL_NAME" | grep -qE "Write|Edit|MultiEdit" 2>/dev/null; then
       ACTUAL_COUNT=$(echo "$CURRENT_STATE" | jq '.actual_files | length')
       PLANNED_COUNT=$(echo "$CURRENT_STATE" | jq '.planned_tasks | length')
 
-      # Only flag as drift if we have a plan and this wasn't in it
-      if [ "$PLANNED_COUNT" -gt 0 ]; then
+      # Check if we already logged drift for this file in this session (deduplication)
+      ALREADY_LOGGED="false"
+      if [ -f "$DRIFT_FILE" ]; then
+        # Look in recent entries (last 50) for this file path
+        if tail -n 50 "$DRIFT_FILE" 2>/dev/null | grep -qF "\"file_path\":\"$FILE_PATH\"" 2>/dev/null; then
+          ALREADY_LOGGED="true"
+        fi
+      fi
+
+      # Only flag as drift if we have a plan, this wasn't in it, and not already logged
+      if [ "$PLANNED_COUNT" -gt 0 ] && [ "$ALREADY_LOGGED" = "false" ]; then
         DRIFT_ENTRY=$(jq -n \
           --arg ts "$TIMESTAMP" \
           --arg type "unplanned_file" \

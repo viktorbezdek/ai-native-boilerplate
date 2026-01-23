@@ -34,13 +34,35 @@ METRIC_DATA="{}"
 if echo "$COMMAND" | grep -qE "(vitest|jest|bun test|npm test|yarn test|playwright)" 2>/dev/null; then
   METRIC_TYPE="test"
 
-  # Extract test counts from common patterns
-  TESTS_PASSED=$(echo "$RESULT" | grep -oE "[0-9]+ (passed|passing)" | grep -oE "[0-9]+" | head -1 || echo "0")
-  TESTS_FAILED=$(echo "$RESULT" | grep -oE "[0-9]+ (failed|failing)" | grep -oE "[0-9]+" | head -1 || echo "0")
-  TESTS_SKIPPED=$(echo "$RESULT" | grep -oE "[0-9]+ (skipped|pending)" | grep -oE "[0-9]+" | head -1 || echo "0")
+  # Extract test counts from common patterns (vitest, jest, bun test)
+  # Vitest: "5 passed" or "Tests  5 passed" or "✓ 5 tests"
+  # Bun: "5 pass" or "pass 5"
+  # Jest: "5 passed, 2 failed"
+
+  # Try "X passed" pattern first (most common)
+  TESTS_PASSED=$(echo "$RESULT" | grep -oE "[0-9]+ (pass|passed|passing)" | grep -oE "[0-9]+" | head -1)
+  # Try "passed X" or "✓ X" pattern
+  [ -z "$TESTS_PASSED" ] && TESTS_PASSED=$(echo "$RESULT" | grep -oE "(passed|passing|✓)[^0-9]*[0-9]+" | grep -oE "[0-9]+" | head -1)
+  # Try "Test Files  X passed" (Vitest)
+  [ -z "$TESTS_PASSED" ] && TESTS_PASSED=$(echo "$RESULT" | grep -oE "Test Files[^0-9]*[0-9]+" | grep -oE "[0-9]+" | head -1)
+  [ -z "$TESTS_PASSED" ] && TESTS_PASSED="0"
+
+  # Extract failed count
+  TESTS_FAILED=$(echo "$RESULT" | grep -oE "[0-9]+ (fail|failed|failing)" | grep -oE "[0-9]+" | head -1)
+  [ -z "$TESTS_FAILED" ] && TESTS_FAILED=$(echo "$RESULT" | grep -oE "(failed|failing|✗)[^0-9]*[0-9]+" | grep -oE "[0-9]+" | head -1)
+  [ -z "$TESTS_FAILED" ] && TESTS_FAILED="0"
+
+  # Extract skipped count
+  TESTS_SKIPPED=$(echo "$RESULT" | grep -oE "[0-9]+ (skip|skipped|pending|todo)" | grep -oE "[0-9]+" | head -1)
+  [ -z "$TESTS_SKIPPED" ] && TESTS_SKIPPED=$(echo "$RESULT" | grep -oE "(skipped|pending|todo)[^0-9]*[0-9]+" | grep -oE "[0-9]+" | head -1)
+  [ -z "$TESTS_SKIPPED" ] && TESTS_SKIPPED="0"
 
   # Extract coverage if present
-  COVERAGE=$(echo "$RESULT" | grep -oE "([0-9.]+)%\s*(coverage|cov)" | grep -oE "[0-9.]+" | head -1 || echo "0")
+  # Try "XX.XX% Stmts" or "Coverage: XX%" or "All files | XX%"
+  COVERAGE=$(echo "$RESULT" | grep -oE "[0-9]+\.?[0-9]*%[^a-zA-Z]*(Stmts|coverage|cov|Coverage)" | grep -oE "[0-9]+\.?[0-9]*" | head -1)
+  [ -z "$COVERAGE" ] && COVERAGE=$(echo "$RESULT" | grep -oE "All files[^0-9]*[0-9]+\.?[0-9]*" | grep -oE "[0-9]+\.?[0-9]*" | head -1)
+  [ -z "$COVERAGE" ] && COVERAGE=$(echo "$RESULT" | grep -oE "(coverage|Coverage)[^0-9]*[0-9]+\.?[0-9]*" | grep -oE "[0-9]+\.?[0-9]*" | head -1)
+  [ -z "$COVERAGE" ] && COVERAGE="0"
 
   METRIC_DATA=$(jq -n \
     --argjson passed "${TESTS_PASSED:-0}" \
