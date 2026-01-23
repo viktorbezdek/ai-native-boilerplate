@@ -95,6 +95,11 @@ describe("GET /api/v1/projects", () => {
         insert: (...args: unknown[]) => mockDbInsert(...args),
       },
       projects: mockProjectsSchema,
+      // Re-export drizzle-orm functions
+      eq: vi.fn((field, value) => ({ field, value })),
+      asc: vi.fn((field) => ({ field, direction: "asc" })),
+      desc: vi.fn((field) => ({ field, direction: "desc" })),
+      count: vi.fn(() => ({ type: "count" })),
     }));
 
     // Import the route handler with fresh mocks
@@ -223,6 +228,11 @@ describe("POST /api/v1/projects", () => {
         insert: (...args: unknown[]) => mockDbInsert(...args),
       },
       projects: mockProjectsSchema,
+      // Re-export drizzle-orm functions
+      eq: vi.fn((field, value) => ({ field, value })),
+      asc: vi.fn((field) => ({ field, direction: "asc" })),
+      desc: vi.fn((field) => ({ field, direction: "desc" })),
+      count: vi.fn(() => ({ type: "count" })),
     }));
 
     // Import the route handler with fresh mocks

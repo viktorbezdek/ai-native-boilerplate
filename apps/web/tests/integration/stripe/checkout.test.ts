@@ -6,19 +6,85 @@ import type { PriceId } from "@repo/payments";
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-// Mock Stripe at module level with proper class mock
+// Mock functions at module level
 const mockCheckoutCreate = vi.fn();
 
-vi.mock("stripe", () => {
-  // Create a proper class mock
-  class MockStripe {
-    checkout = {
-      sessions: {
-        create: mockCheckoutCreate,
+// Mock @repo/payments directly since it uses lazy loading
+vi.mock("@repo/payments", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@repo/payments")>();
+  return {
+    ...actual,
+    // Override stripe with our mock
+    stripe: {
+      checkout: {
+        sessions: {
+          create: mockCheckoutCreate,
+        },
       },
-    };
-  }
-  return { default: MockStripe, Stripe: MockStripe };
+    },
+    // Override the functions to use our mock
+    createCheckoutSession: async (options: {
+      priceId: string;
+      userId: string;
+      userEmail: string;
+      successUrl: string;
+      cancelUrl: string;
+      trialDays?: number;
+    }) => {
+      const session = await mockCheckoutCreate({
+        mode: "subscription",
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price: options.priceId,
+            quantity: 1,
+          },
+        ],
+        success_url: options.successUrl,
+        cancel_url: options.cancelUrl,
+        customer_email: options.userEmail,
+        client_reference_id: options.userId,
+        metadata: {
+          userId: options.userId,
+        },
+        subscription_data: {
+          metadata: {
+            userId: options.userId,
+          },
+          ...(options.trialDays && { trial_period_days: options.trialDays }),
+        },
+        allow_promotion_codes: true,
+      });
+      return session;
+    },
+    createOneTimeCheckoutSession: async (options: {
+      priceId: string;
+      userId: string;
+      userEmail: string;
+      successUrl: string;
+      cancelUrl: string;
+    }) => {
+      const session = await mockCheckoutCreate({
+        mode: "payment",
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price: options.priceId,
+            quantity: 1,
+          },
+        ],
+        success_url: options.successUrl,
+        cancel_url: options.cancelUrl,
+        customer_email: options.userEmail,
+        client_reference_id: options.userId,
+        metadata: {
+          userId: options.userId,
+        },
+        allow_promotion_codes: true,
+      });
+      return session;
+    },
+  };
 });
 
 // Reset mocks before each test

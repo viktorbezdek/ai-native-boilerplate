@@ -74,9 +74,7 @@ describe("GET /api/v1/users", () => {
         update: () => mockDbUpdate(),
       },
       users: mockUsersSchema,
-    }));
-
-    vi.doMock("drizzle-orm", () => ({
+      // Re-export drizzle-orm functions
       eq: vi.fn((field, value) => ({ field, value })),
     }));
 
@@ -204,9 +202,7 @@ describe("PATCH /api/v1/users", () => {
         update: () => mockDbUpdate(),
       },
       users: mockUsersSchema,
-    }));
-
-    vi.doMock("drizzle-orm", () => ({
+      // Re-export drizzle-orm functions
       eq: vi.fn((field, value) => ({ field, value })),
     }));
 

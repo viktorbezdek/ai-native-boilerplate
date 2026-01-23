@@ -35,6 +35,16 @@ vi.mock("@repo/database", () => ({
   subscriptions: {
     id: Symbol("subscriptions.id"),
     stripeSubscriptionId: Symbol("subscriptions.stripeSubscriptionId"),
+    userId: Symbol("subscriptions.userId"),
+    status: Symbol("subscriptions.status"),
+    priceId: Symbol("subscriptions.priceId"),
+    productId: Symbol("subscriptions.productId"),
+    currentPeriodStart: Symbol("subscriptions.currentPeriodStart"),
+    currentPeriodEnd: Symbol("subscriptions.currentPeriodEnd"),
+    cancelAtPeriodEnd: Symbol("subscriptions.cancelAtPeriodEnd"),
+    canceledAt: Symbol("subscriptions.canceledAt"),
+    createdAt: Symbol("subscriptions.createdAt"),
+    updatedAt: Symbol("subscriptions.updatedAt"),
   },
   // Re-export drizzle-orm functions that are now exported from @repo/database
   eq: vi.fn((field, value) => ({ field, value })),
@@ -138,10 +148,8 @@ describe("Stripe Webhooks", () => {
         subscriptions: {
           stripeSubscriptionId: Symbol("subscriptions.stripeSubscriptionId"),
         },
-      }));
-
-      vi.doMock("drizzle-orm", () => ({
-        eq: vi.fn(),
+        // Re-export drizzle-orm functions
+        eq: vi.fn((field, value) => ({ field, value })),
       }));
 
       vi.doMock("@/lib/analytics/server", () => ({
