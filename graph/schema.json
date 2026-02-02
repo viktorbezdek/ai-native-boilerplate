@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PWI Knowledge Graph Schema",
+  "version": "1.0.0",
+  "entities": {
+    "message": {
+      "directory": "chat",
+      "id_pattern": "{source}_{id}",
+      "fields": {
+        "id": "string",
+        "source": "enum:google-chat,slack,email",
+        "sender": "string",
+        "text": "string",
+        "timestamp": "datetime",
+        "thread_id": "string?",
+        "space": "string?",
+        "mentions": "string[]",
+        "links": "ref:*[]"
+      },
+      "indexes": ["timestamp", "sender", "space"]
+    },
+    "event": {
+      "directory": "calendar",
+      "id_pattern": "{calendar}_{id}",
+      "fields": {
+        "id": "string",
+        "title": "string",
+        "start": "datetime",
+        "end": "datetime",
+        "attendees": "string[]",
+        "location": "string?",
+        "meeting_link": "string?",
+        "description": "string?",
+        "recurring": "boolean",
+        "links": "ref:*[]"
+      },
+      "indexes": ["start", "attendees"]
+    },
+    "issue": {
+      "directory": "jira",
+      "id_pattern": "{key}",
+      "fields": {
+        "key": "string",
+        "summary": "string",
+        "status": "string",
+        "assignee": "string?",
+        "reporter": "string",
+        "priority": "string",
+        "created": "datetime",
+        "updated": "datetime",
+        "labels": "string[]",
+        "sprint": "string?",
+        "story_points": "number?",
+        "links": "ref:*[]"
+      },
+      "indexes": ["status", "assignee", "updated"]
+    },
+    "task": {
+      "directory": "asana",
+      "id_pattern": "{gid}",
+      "fields": {
+        "gid": "string",
+        "name": "string",
+        "completed": "boolean",
+        "assignee": "string?",
+        "due_on": "date?",
+        "projects": "string[]",
+        "tags": "string[]",
+        "created_at": "datetime",
+        "modified_at": "datetime",
+        "links": "ref:*[]"
+      },
+      "indexes": ["completed", "assignee", "due_on"]
+    },
+    "metric": {
+      "directory": "metrics",
+      "id_pattern": "{source}_{date}",
+      "fields": {
+        "source": "string",
+        "date": "date",
+        "values": "object",
+        "fetched_at": "datetime"
+      },
+      "indexes": ["source", "date"]
+    },
+    "contact": {
+      "directory": "contacts",
+      "id_pattern": "{email}",
+      "fields": {
+        "email": "string",
+        "name": "string?",
+        "aliases": "string[]",
+        "communication_style": "object?",
+        "last_interaction": "datetime?",
+        "interaction_count": "number",
+        "links": "ref:*[]"
+      },
+      "indexes": ["name", "last_interaction"]
+    }
+  },
+  "relationships": {
+    "mentions": "contact -> message[]",
+    "attends": "contact -> event[]",
+    "assigned_to": "contact -> issue|task",
+    "related_to": "* -> *"
+  },
+  "meta": {
+    "created_at": "datetime",
+    "updated_at": "datetime",
+    "source_system": "string",
+    "sync_cursor": "string?"
+  }
+}
