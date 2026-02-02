@@ -1,0 +1,28 @@
+Execute /update command.
+
+## Instructions
+
+1. Read sync cursors from memory
+2. Fetch only new/changed items since last sync
+3. Update graph with delta
+4. Run quick analysis on new items
+5. Notify if critical findings
+
+## Required Skills
+
+@import ../.claude/commands/update.md
+
+## Output Requirements
+
+- JSON format
+- Delta counts for each source
+- New findings only
+- Updated cursor timestamps
+
+## Efficiency
+
+- Skip sources with no changes
+- Timeout after 2 minutes
+- If delta > 500 items, suggest full-process instead
+
+Execute now.

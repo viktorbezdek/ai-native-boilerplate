@@ -1,0 +1,28 @@
+Execute /full-process command.
+
+## Instructions
+
+1. Run complete knowledge graph rebuild
+2. Fetch all data sources in parallel
+3. Update graph with all entities
+4. Run all analysis skills
+5. Send notifications for critical findings
+
+## Required Skills
+
+@import ../.claude/commands/full-process.md
+
+## Output Requirements
+
+- JSON format
+- Include timing for each phase
+- Summary of findings
+- List of notifications sent
+
+## Error Handling
+
+- Log errors but continue with other sources
+- Report partial success if some sources fail
+- Retry failed operations once
+
+Execute now.
