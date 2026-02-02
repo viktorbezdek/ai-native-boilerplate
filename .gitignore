@@ -1,0 +1,22 @@
+# Environment and credentials
+.env
+.env.*
+!.env.example
+credentials/
+tokens/
+
+# Data and graph (local only)
+data/
+graph/
+
+# Logs (keep structure, ignore content)
+logs/*.jsonl
+logs/*.log
+!logs/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/

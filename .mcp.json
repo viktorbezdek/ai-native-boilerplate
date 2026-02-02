@@ -1,0 +1,46 @@
+{
+  "mcpServers": {
+    "google-workspace": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-google-workspace"],
+      "env": {
+        "GOOGLE_CREDENTIALS_PATH": "${GOOGLE_CREDENTIALS_PATH}",
+        "GOOGLE_TOKEN_PATH": "${GOOGLE_TOKEN_PATH:-./tokens/google-token.json}"
+      }
+    },
+    "google-sheets": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-google-sheets"],
+      "env": {
+        "GOOGLE_CREDENTIALS_PATH": "${GOOGLE_CREDENTIALS_PATH}",
+        "GOOGLE_TOKEN_PATH": "${GOOGLE_TOKEN_PATH:-./tokens/google-token.json}"
+      }
+    },
+    "jira": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-jira"],
+      "env": {
+        "JIRA_HOST": "${JIRA_HOST}",
+        "JIRA_EMAIL": "${JIRA_EMAIL}",
+        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}"
+      }
+    },
+    "asana": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-asana"],
+      "env": {
+        "ASANA_ACCESS_TOKEN": "${ASANA_ACCESS_TOKEN}"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "./graph", "./logs", "./data"],
+      "env": {}
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/claude-mem", "--db", "./graph/memory.db"],
+      "env": {}
+    }
+  }
+}
