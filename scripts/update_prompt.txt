@@ -1,23 +1,58 @@
-Execute /update command.
+Execute /update command for Personal Work Intelligence System.
 
 ## Instructions
 
-1. Read sync cursors from memory
-2. Fetch only new/changed items since last sync
-3. Update graph with delta
-4. Run quick analysis on new items
-5. Notify if critical findings
+Run delta update processing only new/changed items:
+
+### Phase 1: Load Cursors
+Read sync cursors from memory for each data source.
+
+### Phase 2: Incremental Fetch
+Fetch only items newer than cursor from each source.
+
+### Phase 3: Delta Graph Update
+Update graph with new items only, run entity-reconciliation on new entities (auto-merge threshold: 0.85).
+
+### Phase 4: Quick Enrichment
+Run inference-engine on new nodes only.
+
+### Phase 5: Core Analysis
+Run stale-detection (check decay), reply-suggestion (pending only), blocker-identification (new blockers) in parallel.
+
+### Phase 6: Sentiment Check
+Run sentiment-analysis on new messages only.
+
+### Phase 7: Action Extraction
+Run action-item-extraction on new items.
+
+### Phase 8: Notify
+Send notifications for critical items with confidence >= 0.7 (max 3 notifications).
 
 ## Required Skills
 
 @import ../.claude/commands/update.md
 
-## Output Requirements
+## Confidence Handling
 
-- JSON format
-- Delta counts for each source
-- New findings only
-- Updated cursor timestamps
+- Skip findings with confidence < 0.5 (log for later review)
+- Auto-apply when confidence >= 0.8
+- For confidence 0.5-0.8, apply and log
+
+## Delta Threshold
+
+If delta > 500 items, recommend switching to full-process.
+
+## Output Format
+
+Return JSON with:
+- command: "update"
+- type: "delta"
+- started_at, completed_at timestamps
+- delta: counts of new items by type
+- graph_updates: nodes_added, edges_inferred, duplicates_merged
+- analysis: findings from each skill
+- cursors_updated: true/false
+- low_confidence_skipped: count
 
 ## Efficiency
 
