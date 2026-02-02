@@ -1,0 +1,43 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "command": ".claude/hooks/guard-protected.sh \"$TOOL_INPUT\""
+      },
+      {
+        "matcher": "Bash",
+        "command": ".claude/hooks/validate-command.sh \"$TOOL_INPUT\""
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "command": ".claude/hooks/log-change.sh \"$TOOL_INPUT\" \"$TOOL_OUTPUT\""
+      },
+      {
+        "matcher": "Bash",
+        "command": ".claude/hooks/log-command.sh \"$TOOL_INPUT\" \"$TOOL_OUTPUT\""
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "command": ".claude/hooks/session-summary.sh"
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Task",
+      "TodoWrite"
+    ],
+    "deny": []
+  },
+  "model": {
+    "default": "claude-sonnet-4-20250514"
+  }
+}
