@@ -1,7 +1,7 @@
 ---
 name: graph-update
 description: Upserts entities into the local knowledge graph
-version: 1.0.0
+version: 2.0.0
 trigger:
   - pattern: "update graph"
   - pattern: "upsert"
@@ -10,6 +10,8 @@ tags:
   - graph
   - storage
   - core
+  - kg-enabled
+confidence_threshold: 0.7
 mcp_server: filesystem
 ---
 

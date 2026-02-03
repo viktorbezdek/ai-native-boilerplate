@@ -1,7 +1,7 @@
 ---
 name: fetch-sheets
 description: Fetches business metrics from Google Sheets
-version: 1.0.0
+version: 2.0.0
 trigger:
   - pattern: "fetch sheets"
   - pattern: "get metrics"
@@ -12,6 +12,7 @@ tags:
   - google
   - metrics
   - analytics
+confidence_threshold: 0.7
 mcp_server: google-sheets
 ---
 

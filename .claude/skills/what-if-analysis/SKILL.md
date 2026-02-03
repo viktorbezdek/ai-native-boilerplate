@@ -1,6 +1,16 @@
 ---
 name: what-if-analysis
 description: Performs hypothetical scenario analysis by computing diffs and recomputing inferred properties. Use for decision support and impact prediction.
+version: 2.0.0
+trigger:
+  - pattern: "what if"
+  - pattern: "scenario analysis"
+  - pattern: "hypothetical"
+tags:
+  - kg-enabled
+  - simulation
+  - decision-support
+confidence_threshold: 0.65
 ---
 
 # What-If Analysis

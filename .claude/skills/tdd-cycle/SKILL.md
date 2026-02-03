@@ -1,7 +1,7 @@
 ---
 name: tdd-cycle
 description: Test-Driven Development cycle enforcement skill
-version: 1.0.0
+version: 2.0.0
 trigger:
   - pattern: "/tdd-cycle"
   - pattern: "implement using TDD"
@@ -10,6 +10,7 @@ tags:
   - testing
   - methodology
   - core
+confidence_threshold: 0.7
 ---
 
 # TDD Cycle Skill

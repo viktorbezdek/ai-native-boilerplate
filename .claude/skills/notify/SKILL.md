@@ -1,7 +1,7 @@
 ---
 name: notify
 description: Sends macOS notifications with interactive buttons
-version: 1.0.0
+version: 2.0.0
 trigger:
   - pattern: "notify"
   - pattern: "alert"
@@ -10,6 +10,7 @@ tags:
   - notification
   - macos
   - interaction
+confidence_threshold: 0.7
 ---
 
 # Notification Skill

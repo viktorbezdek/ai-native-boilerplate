@@ -3,27 +3,27 @@
     "PreToolUse": [
       {
         "matcher": "Edit|Write",
-        "command": ".claude/hooks/guard-protected.sh \"$TOOL_INPUT\""
+        "command": "\"$(pwd)/.claude/hooks/guard-protected.sh\" \"$TOOL_INPUT\""
       },
       {
         "matcher": "Bash",
-        "command": ".claude/hooks/validate-command.sh \"$TOOL_INPUT\""
+        "command": "\"$(pwd)/.claude/hooks/validate-command.sh\" \"$TOOL_INPUT\""
       }
     ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
-        "command": ".claude/hooks/log-change.sh \"$TOOL_INPUT\" \"$TOOL_OUTPUT\""
+        "command": "\"$(pwd)/.claude/hooks/log-change.sh\" \"$TOOL_INPUT\" \"$TOOL_OUTPUT\""
       },
       {
         "matcher": "Bash",
-        "command": ".claude/hooks/log-command.sh \"$TOOL_INPUT\" \"$TOOL_OUTPUT\""
+        "command": "\"$(pwd)/.claude/hooks/log-command.sh\" \"$TOOL_INPUT\" \"$TOOL_OUTPUT\""
       }
     ],
     "Stop": [
       {
         "matcher": "",
-        "command": ".claude/hooks/session-summary.sh"
+        "command": "\"$(pwd)/.claude/hooks/session-summary.sh\""
       }
     ]
   },
@@ -33,7 +33,12 @@
       "Glob",
       "Grep",
       "Task",
-      "TodoWrite"
+      "TodoWrite",
+      "Write",
+      "Edit",
+      "Bash",
+      "WebFetch",
+      "AskUserQuestion"
     ],
     "deny": []
   },

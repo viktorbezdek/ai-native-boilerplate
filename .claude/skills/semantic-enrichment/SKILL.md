@@ -1,6 +1,16 @@
 ---
 name: semantic-enrichment
 description: Embeds node properties and infers similarTo relations through clustering. Use when finding semantic similarities or grouping related entities.
+version: 2.0.0
+trigger:
+  - pattern: "embed nodes"
+  - pattern: "semantic similarity"
+  - pattern: "cluster themes"
+tags:
+  - kg-enabled
+  - enrichment
+  - embedding
+confidence_threshold: 0.7
 ---
 
 # Semantic Enrichment

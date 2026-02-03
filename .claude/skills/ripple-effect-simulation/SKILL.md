@@ -1,6 +1,16 @@
 ---
 name: ripple-effect-simulation
 description: Propagates changes through KG using BFS and Monte Carlo simulation. Use when modeling impact of changes or predicting cascade effects.
+version: 2.0.0
+trigger:
+  - pattern: "simulate impact"
+  - pattern: "ripple effect"
+  - pattern: "cascade analysis"
+tags:
+  - kg-enabled
+  - simulation
+  - forecasting
+confidence_threshold: 0.65
 ---
 
 # Ripple Effect Simulation

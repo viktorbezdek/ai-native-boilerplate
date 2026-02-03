@@ -1,6 +1,16 @@
 ---
 name: knowledge-gap-filler
 description: Detects sparse KG areas and suggests MCP re-queries to self-heal the graph. Use when finding incomplete data or improving graph coverage.
+version: 2.0.0
+trigger:
+  - pattern: "find gaps"
+  - pattern: "fill gaps"
+  - pattern: "self-heal graph"
+tags:
+  - kg-enabled
+  - enrichment
+  - self-healing
+confidence_threshold: 0.7
 ---
 
 # Knowledge Gap Filler

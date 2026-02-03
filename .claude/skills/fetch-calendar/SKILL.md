@@ -1,7 +1,7 @@
 ---
 name: fetch-calendar
 description: Fetches events from Google Calendar
-version: 1.0.0
+version: 2.0.0
 trigger:
   - pattern: "fetch calendar"
   - pattern: "get events"
@@ -10,6 +10,7 @@ tags:
   - fetch
   - google
   - calendar
+confidence_threshold: 0.7
 mcp_server: google-workspace
 ---
 

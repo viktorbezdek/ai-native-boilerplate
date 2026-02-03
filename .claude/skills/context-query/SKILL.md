@@ -1,6 +1,16 @@
 ---
 name: context-query
 description: Traverses KG for related nodes/edges using shortest path and influence chain inference. Use when gathering context about an entity, finding relationships, or understanding impact chains.
+version: 2.0.0
+trigger:
+  - pattern: "context query"
+  - pattern: "find relationships"
+  - pattern: "traverse graph"
+tags:
+  - kg-enabled
+  - query
+  - retrieval
+confidence_threshold: 0.7
 ---
 
 # Context Query

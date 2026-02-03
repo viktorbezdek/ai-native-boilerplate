@@ -1,0 +1,30 @@
+# PWI - Personal Work Intelligence System
+# Core graph operations
+networkx>=3.2
+# Probability and statistical analysis
+scipy>=1.12
+sympy>=1.12
+# NLP and ML inference
+transformers>=4.36
+torch>=2.1
+# Embedding and similarity
+sentence-transformers>=2.3
+numpy>=1.26
+# Graph persistence
+sqlite-utils>=3.36
+# Data processing
+pandas>=2.1
+python-dateutil>=2.8
+# API integrations (fallback when MCP unavailable)
+google-auth>=2.25
+google-auth-oauthlib>=1.2
+google-api-python-client>=2.110
+atlassian-python-api>=3.41
+asana>=5.0
+# Visualization
+matplotlib>=3.8
+pyvis>=0.3
+# Testing
+pytest>=7.4
+pytest-cov>=4.1
+pytest-asyncio>=0.23

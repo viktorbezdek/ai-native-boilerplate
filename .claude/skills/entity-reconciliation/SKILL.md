@@ -1,6 +1,16 @@
 ---
 name: entity-reconciliation
 description: Merges duplicate entities using probabilistic matching and updates KG in-place. Use when detecting duplicates, merging entities, or cleaning up the knowledge graph.
+version: 2.0.0
+trigger:
+  - pattern: "reconcile entities"
+  - pattern: "find duplicates"
+  - pattern: "merge entities"
+tags:
+  - kg-enabled
+  - deduplication
+  - data-quality
+confidence_threshold: 0.7
 ---
 
 # Entity Reconciliation

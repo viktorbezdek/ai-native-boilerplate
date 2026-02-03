@@ -1,6 +1,16 @@
 ---
 name: inference-engine
 description: Adds inferred edges to KG (collaboratesWith, similarTo) using co-occurrence and community detection. Use when enriching the graph with implicit relationships.
+version: 2.0.0
+trigger:
+  - pattern: "infer relationships"
+  - pattern: "detect communities"
+  - pattern: "enrich graph"
+tags:
+  - kg-enabled
+  - enrichment
+  - inference
+confidence_threshold: 0.7
 ---
 
 # Inference Engine

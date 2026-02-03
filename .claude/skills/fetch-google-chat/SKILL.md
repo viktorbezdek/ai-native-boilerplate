@@ -1,7 +1,7 @@
 ---
 name: fetch-google-chat
 description: Fetches messages from Google Chat spaces and DMs
-version: 1.0.0
+version: 2.0.0
 trigger:
   - pattern: "fetch chat"
   - pattern: "get messages"
@@ -10,6 +10,7 @@ tags:
   - fetch
   - google
   - communication
+confidence_threshold: 0.7
 mcp_server: google-workspace
 ---
 

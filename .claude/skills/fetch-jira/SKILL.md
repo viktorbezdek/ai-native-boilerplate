@@ -1,7 +1,7 @@
 ---
 name: fetch-jira
 description: Fetches issues and projects from Jira
-version: 1.0.0
+version: 2.0.0
 trigger:
   - pattern: "fetch jira"
   - pattern: "get issues"
@@ -10,6 +10,7 @@ tags:
   - fetch
   - jira
   - work-tracking
+confidence_threshold: 0.7
 mcp_server: jira
 ---
 

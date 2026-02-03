@@ -1,22 +1,67 @@
-# Environment and credentials
+# Environment and secrets
 .env
-.env.*
+.env.local
+.env.*.local
 !.env.example
-credentials/
-tokens/
+*.key
+*.pem
+*.p12
+*.pfx
 
-# Data and graph (local only)
-data/
-graph/
+# Tokens and credentials
+tokens/*.json
+tokens/*.token
+!tokens/.gitkeep
 
-# Logs (keep structure, ignore content)
-logs/*.jsonl
+# Runtime data
+data/*.json
+data/*.csv
+!data/.gitkeep
+
+# Graph database (regenerated via full-process)
+graph/pwi.db
+graph/pwi.db-journal
+graph/memory.db
+graph/nodes/*.json
+graph/edges/*.json
+!graph/nodes/.gitkeep
+!graph/edges/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+venv/
+.venv/
+
+# Node modules (MCP servers)
+node_modules/
+package-lock.json
+
+# Logs (keep directory structure)
+logs/*.json
+logs/*.summary
 logs/*.log
+logs/*.jsonl
 !logs/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Node
-node_modules/
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/

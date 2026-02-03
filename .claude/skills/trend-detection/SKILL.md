@@ -1,6 +1,16 @@
 ---
 name: trend-detection
 description: Aggregates patterns and forecasts bottlenecks using KG historical traversals. Use when analyzing temporal patterns, forecasting issues, or identifying emerging trends across entities.
+version: 2.0.0
+trigger:
+  - pattern: "detect trends"
+  - pattern: "forecast bottleneck"
+  - pattern: "pattern analysis"
+tags:
+  - kg-enabled
+  - mining
+  - forecasting
+confidence_threshold: 0.65
 ---
 
 # Trend Detection

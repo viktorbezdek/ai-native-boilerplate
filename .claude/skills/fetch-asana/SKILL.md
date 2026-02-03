@@ -1,7 +1,7 @@
 ---
 name: fetch-asana
 description: Fetches tasks and projects from Asana
-version: 1.0.0
+version: 2.0.0
 trigger:
   - pattern: "fetch asana"
   - pattern: "get tasks"
@@ -10,6 +10,7 @@ tags:
   - fetch
   - asana
   - project-management
+confidence_threshold: 0.7
 mcp_server: asana
 ---
 

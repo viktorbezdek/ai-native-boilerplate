@@ -1,0 +1,26 @@
+{
+  "name": "pwi-personal-work-intelligence",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal Work Intelligence System - MCP server dependencies",
+  "scripts": {
+    "setup": "npm install && pip install -r requirements.txt",
+    "test": "bash tests/run_all.sh",
+    "test:skills": "bash tests/skills/run_all_skill_tests.sh",
+    "test:python": "pytest tests/ -v",
+    "full-process": "bash scripts/full_process.sh",
+    "update": "bash scripts/update.sh",
+    "validate": "bash scripts/validate_env.sh"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server-filesystem": "^2024.11.0",
+    "@anthropic/mcp-google-workspace": "^0.1.0",
+    "@anthropic/mcp-google-sheets": "^0.1.0",
+    "@anthropic/mcp-jira": "^0.1.0",
+    "@anthropic/mcp-asana": "^0.1.0",
+    "@anthropic/claude-mem": "^0.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
