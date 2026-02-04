@@ -1,0 +1,63 @@
+Execute /full-process command for Personal Work Intelligence System.
+
+## Instructions
+
+Run complete knowledge graph rebuild with all 20 deep analysis skills:
+
+### Phase 1: Parallel Data Fetch
+Fetch data from all configured sources using fetch skills.
+
+### Phase 2: Graph Update
+Update knowledge graph and run entity reconciliation (threshold: 0.7).
+
+### Phase 3: KG Enrichment
+Run inference-engine, knowledge-gap-filler, and semantic-enrichment in parallel.
+
+### Phase 4: Core Analysis
+Run stale-detection, misalignment-check, reply-suggestion in parallel.
+
+### Phase 5: Sentiment & Morale
+Run sentiment-analysis and morale-forecasting in parallel.
+
+### Phase 6: Relationship Mining
+Run blocker-identification, action-item-extraction, trend-detection in parallel.
+
+### Phase 7: Advanced Analysis
+Run context-query, then ripple-effect-simulation, then what-if-analysis sequentially.
+
+### Phase 8: Insights & Visualization
+Run graph-visualization, expertise-mapping, echo-chamber-detection, innovation-opportunity-spotting in parallel.
+
+### Phase 9: Meta-Analysis
+Run self-improvement-loop for system health check.
+
+### Phase 10: Notify
+Send notifications for findings with confidence >= 0.7 and severity high.
+
+## Required Skills
+
+@import ../.claude/commands/full-process.md
+
+## Confidence Handling
+
+- If any skill returns confidence < 0.5, log it and include in summary
+- Auto-execute when confidence >= 0.8
+- For confidence 0.5-0.8, execute but flag for review
+
+## Output Format
+
+Return JSON with:
+- command: "full-process"
+- started_at, completed_at timestamps
+- phases: status of each phase
+- summary: aggregated findings
+- low_confidence_findings: list of uncertain results
+- notifications_sent: count
+
+## Error Handling
+
+- Log errors but continue with other sources
+- Report partial success if some sources fail
+- Retry failed operations once
+
+Execute now.

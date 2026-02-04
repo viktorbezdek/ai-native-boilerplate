@@ -1,46 +1,28 @@
-#!/bin/bash
-# Validate bash commands before execution
-# Blocks dangerous operations
+#!/usr/bin/env bash
+# Validates bash commands before execution
+# Exit codes: 0 = allow, 2 = block
 
-COMMAND="$CLAUDE_BASH_COMMAND"
+INPUT="$1"
+
+# Extract command from JSON input
+COMMAND=$(echo "$INPUT" | grep -oP '"command"\s*:\s*"\K[^"]+' 2>/dev/null || echo "$INPUT")
 
 # Dangerous patterns to block
 DANGEROUS_PATTERNS=(
-  "rm -rf /"
-  "rm -rf /*"
-  "rm -rf ~"
-  "> /dev/sda"
-  "mkfs."
-  "dd if="
-  "DROP DATABASE"
-  "DELETE FROM .* WHERE 1"
-  "TRUNCATE TABLE"
-  "npm publish"
-  "bun publish"
-  "git push.*--force"
-  "git push.*-f"
-  "chmod -R 777"
-  "curl.*| sh"
-  "curl.*| bash"
-  "wget.*| sh"
-  "wget.*| bash"
+    'rm -rf /'
+    'rm -rf ~'
+    ':(){:|:&};:'
+    'mkfs\.'
+    'dd if=/dev/zero'
+    '> /dev/sda'
+    'chmod -R 777 /'
 )
 
 for pattern in "${DANGEROUS_PATTERNS[@]}"; do
-  if [[ "$COMMAND" =~ $pattern ]]; then
-    echo "❌ BLOCKED: Potentially dangerous command detected"
-    echo "   Pattern: $pattern"
-    echo "   Command: $COMMAND"
-    echo ""
-    echo "If this is intentional, run the command manually."
-    exit 1
-  fi
+    if echo "$COMMAND" | grep -qF "$pattern"; then
+        echo "BLOCKED: Dangerous command detected: $pattern"
+        exit 2
+    fi
 done
-
-# Warn about production database operations
-if [[ "$COMMAND" =~ "DATABASE_URL" ]] && [[ "$COMMAND" =~ "prod" ]]; then
-  echo "⚠️  WARNING: Command appears to target production database"
-  echo "   Please verify this is intentional."
-fi
 
 exit 0

@@ -1,166 +1,48 @@
 {
-  "enabledPlugins": {
-    "subtask": true,
-    "claude-mem": true
-  },
   "hooks": {
-    "Setup": [
-      {
-        "hooks": [
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/setup.sh",
-            "type": "command",
-            "timeout": 300
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/claude-mem.sh start",
-            "type": "command",
-            "timeout": 60
-          },
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/claude-mem.sh hook claude-code context",
-            "type": "command",
-            "timeout": 60
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/claude-mem.sh hook claude-code session-init",
-            "type": "command",
-            "timeout": 60
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
-        "hooks": [
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/start-timing.sh",
-            "type": "command"
-          }
-        ],
-        "matcher": ".*"
+        "matcher": "Edit|Write",
+        "command": "\"$(pwd)/.claude/hooks/guard-protected.sh\" \"$TOOL_INPUT\""
       },
       {
-        "hooks": [
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/validate-command.sh",
-            "type": "command"
-          }
-        ],
-        "matcher": "Bash"
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/validate-commit.sh",
-            "type": "command",
-            "timeout": 600
-          }
-        ],
-        "matcher": "Bash"
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/guard-protected.sh",
-            "type": "command"
-          }
-        ],
-        "matcher": "Write|Edit|MultiEdit|Delete"
+        "matcher": "Bash",
+        "command": "\"$(pwd)/.claude/hooks/validate-command.sh\" \"$TOOL_INPUT\""
       }
     ],
     "PostToolUse": [
       {
-        "hooks": [
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/telemetry.sh",
-            "type": "command"
-          },
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/track-execution.sh",
-            "type": "command"
-          },
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/claude-mem.sh hook claude-code observation",
-            "type": "command",
-            "timeout": 120
-          }
-        ],
-        "matcher": ".*"
+        "matcher": "Edit|Write",
+        "command": "\"$(pwd)/.claude/hooks/log-change.sh\" \"$TOOL_INPUT\" \"$TOOL_OUTPUT\""
       },
       {
-        "hooks": [
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/format.sh",
-            "type": "command"
-          },
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/validate-changes.sh",
-            "type": "command",
-            "timeout": 60
-          },
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/run-tests.sh",
-            "type": "command"
-          },
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/track-drift.sh",
-            "type": "command"
-          }
-        ],
-        "matcher": "Write|Edit|MultiEdit"
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/track-quality.sh",
-            "type": "command"
-          }
-        ],
-        "matcher": "Bash"
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/track-drift.sh",
-            "type": "command"
-          }
-        ],
-        "matcher": "TodoWrite"
+        "matcher": "Bash",
+        "command": "\"$(pwd)/.claude/hooks/log-command.sh\" \"$TOOL_INPUT\" \"$TOOL_OUTPUT\""
       }
     ],
     "Stop": [
       {
-        "hooks": [
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/session-summary.sh",
-            "type": "command"
-          },
-          {
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/claude-mem.sh hook claude-code summarize",
-            "type": "command",
-            "timeout": 120
-          }
-        ]
+        "matcher": "",
+        "command": "\"$(pwd)/.claude/hooks/session-summary.sh\""
       }
     ]
   },
-  "claudeMem": {
-    "enabled": true,
-    "dataDir": ".claude/memory",
-    "workerPort": 37778,
-    "scope": "project"
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Task",
+      "TodoWrite",
+      "Write",
+      "Edit",
+      "Bash",
+      "WebFetch",
+      "AskUserQuestion"
+    ],
+    "deny": []
+  },
+  "model": {
+    "default": "claude-sonnet-4-20250514"
   }
 }

@@ -1,0 +1,280 @@
+#!/usr/bin/env bash
+# ─────────────────────────────────────────────────────────────
+# pwi — Personal Work Intelligence wrapper around Claude Code
+#
+# Injects a people-management system prompt and custom agents
+# into Claude Code, turning it from a coding assistant into
+# an autonomous team intelligence advisor.
+#
+# Usage:
+#   pwi                          Interactive session
+#   pwi "How is the team?"       Single query (print mode)
+#   pwi --update                 Run daily delta update
+#   pwi --full                   Run weekly full process
+#   pwi --health                 Team health report
+#   pwi --prep "Sarah"           1:1 prep for a person
+#   pwi --decide "question"      Decision analysis
+#   pwi --digest                 Weekly digest
+#   pwi --radar "James"          Deep-dive on a person
+#   pwi --blockers               Map all blockers
+#   pwi --continue               Continue last session
+# ─────────────────────────────────────────────────────────────
+
+set -euo pipefail
+
+# Resolve paths
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+PROMPTS_DIR="$PROJECT_DIR/prompts"
+SYSTEM_PROMPT_FILE="$PROMPTS_DIR/system.md"
+AGENTS_FILE="$PROMPTS_DIR/agents.json"
+LOG_DIR="$PROJECT_DIR/logs"
+
+# Ensure we're in the project directory (for MCP server resolution)
+cd "$PROJECT_DIR"
+
+# ── Preflight ──────────────────────────────────────────────
+
+if ! command -v claude &>/dev/null; then
+    echo "Error: 'claude' CLI not found in PATH"
+    echo "Install: npm install -g @anthropic-ai/claude-code"
+    exit 1
+fi
+
+if [[ ! -f "$SYSTEM_PROMPT_FILE" ]]; then
+    echo "Error: System prompt not found at $SYSTEM_PROMPT_FILE"
+    exit 1
+fi
+
+mkdir -p "$LOG_DIR"
+
+# ── Load system prompt ─────────────────────────────────────
+
+SYSTEM_PROMPT=$(cat "$SYSTEM_PROMPT_FILE")
+
+# ── Load agents config ─────────────────────────────────────
+
+AGENTS_JSON=""
+if [[ -f "$AGENTS_FILE" ]]; then
+    AGENTS_JSON=$(cat "$AGENTS_FILE")
+fi
+
+# ── Base Claude arguments ──────────────────────────────────
+
+CLAUDE_ARGS=(
+    --system-prompt "$SYSTEM_PROMPT"
+    --allowedTools "Read,Write,Edit,Bash,Glob,Grep,Task,TodoWrite,AskUserQuestion,WebFetch,WebSearch"
+)
+
+if [[ -n "$AGENTS_JSON" ]]; then
+    CLAUDE_ARGS+=(--agents "$AGENTS_JSON")
+fi
+
+# ── Parse arguments ────────────────────────────────────────
+
+show_help() {
+    cat <<'HELP'
+pwi — Personal Work Intelligence
+
+Usage:
+  pwi                          Start interactive session
+  pwi "question"               Ask a question (print mode)
+  pwi --update                 Daily delta update
+  pwi --full                   Weekly full process rebuild
+  pwi --health                 Generate team health report
+  pwi --prep "Name"            Prepare 1:1 with a person
+  pwi --decide "question"      Decision analysis with scenarios
+  pwi --digest                 Weekly intelligence digest
+  pwi --radar "Name"           Deep-dive on a person
+  pwi --blockers               Map all active blockers
+  pwi --continue               Continue last conversation
+  pwi --model <model>          Override model (opus, sonnet)
+  pwi --budget <amount>        Set max budget in USD
+  pwi --verbose                Enable verbose output
+  pwi --help                   Show this help
+
+Examples:
+  pwi "How is Sarah doing?"
+  pwi --prep "James Chen"
+  pwi --decide "Who should lead the auth project?"
+  pwi --radar "Alex" --model opus
+  pwi "What should I worry about this week?"
+
+Environment:
+  PWI_MODEL         Default model (default: claude-sonnet-4-20250514)
+  PWI_MAX_BUDGET    Default budget cap in USD
+  PWI_LOG_DIR       Override log directory
+
+HELP
+}
+
+# Defaults
+MODE="interactive"
+PROMPT=""
+MODEL="${PWI_MODEL:-}"
+BUDGET="${PWI_MAX_BUDGET:-}"
+VERBOSE=""
+CONTINUE=""
+PRINT_MODE=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --help|-h)
+            show_help
+            exit 0
+            ;;
+        --update)
+            MODE="update"
+            shift
+            ;;
+        --full)
+            MODE="full"
+            shift
+            ;;
+        --health)
+            MODE="prompt"
+            PROMPT="Run a complete team health assessment. Use the team-health agent. Generate a full Team Health Report covering morale, blockers, stale items, misalignments, and communication silos. Include confidence scores for all findings."
+            PRINT_MODE="--print"
+            shift
+            ;;
+        --prep)
+            MODE="prompt"
+            shift
+            if [[ $# -eq 0 ]]; then
+                echo "Error: --prep requires a person's name"
+                exit 1
+            fi
+            PROMPT="Prepare me for my 1:1 with $1. Use the one-on-one-prep agent. Generate a complete 1:1 Prep Sheet with talking points, their recent activity, sentiment, blockers, wins, and communication style notes."
+            PRINT_MODE="--print"
+            shift
+            ;;
+        --decide)
+            MODE="prompt"
+            shift
+            if [[ $# -eq 0 ]]; then
+                echo "Error: --decide requires a question"
+                exit 1
+            fi
+            PROMPT="I need a decision analysis: $1. Use the decision-advisor agent. Model at least 2 scenarios with ripple effects. Present a structured Decision Brief with your recommendation and confidence level."
+            PRINT_MODE="--print"
+            shift
+            ;;
+        --digest)
+            MODE="prompt"
+            PROMPT="Generate a weekly intelligence digest. Use the weekly-digest agent. Summarize the top 5 signals from this past week that need my attention, with evidence and recommended actions."
+            PRINT_MODE="--print"
+            shift
+            ;;
+        --radar)
+            MODE="prompt"
+            shift
+            if [[ $# -eq 0 ]]; then
+                echo "Error: --radar requires a person's name"
+                exit 1
+            fi
+            PROMPT="Give me a deep-dive on $1. Use the people-radar agent. Show their trajectory, workload, engagement, communication patterns, and any concerning signals. Include their expertise areas and growth opportunities."
+            PRINT_MODE="--print"
+            shift
+            ;;
+        --blockers)
+            MODE="prompt"
+            PROMPT="Map all active blockers across the team. Use the blocker-buster agent. Show the full dependency chain, who's blocked, cascade impact, and resolution recommendations ranked by downstream impact."
+            PRINT_MODE="--print"
+            shift
+            ;;
+        --continue|-c)
+            CONTINUE="--continue"
+            shift
+            ;;
+        --model|-m)
+            shift
+            MODEL="$1"
+            shift
+            ;;
+        --budget)
+            shift
+            BUDGET="$1"
+            shift
+            ;;
+        --verbose|-v)
+            VERBOSE="--verbose"
+            shift
+            ;;
+        --)
+            shift
+            PROMPT="$*"
+            PRINT_MODE="--print"
+            break
+            ;;
+        -*)
+            echo "Unknown option: $1"
+            echo "Run 'pwi --help' for usage"
+            exit 1
+            ;;
+        *)
+            # Bare argument = prompt in print mode
+            PROMPT="$*"
+            PRINT_MODE="--print"
+            break
+            ;;
+    esac
+done
+
+# ── Add optional flags ─────────────────────────────────────
+
+if [[ -n "$MODEL" ]]; then
+    CLAUDE_ARGS+=(--model "$MODEL")
+fi
+
+if [[ -n "$BUDGET" ]]; then
+    CLAUDE_ARGS+=(--max-budget-usd "$BUDGET")
+fi
+
+if [[ -n "$VERBOSE" ]]; then
+    CLAUDE_ARGS+=($VERBOSE)
+fi
+
+if [[ -n "$CONTINUE" ]]; then
+    CLAUDE_ARGS+=($CONTINUE)
+fi
+
+# ── Execute ────────────────────────────────────────────────
+
+case "$MODE" in
+    interactive)
+        # Interactive session — no --print flag
+        exec claude "${CLAUDE_ARGS[@]}"
+        ;;
+
+    update)
+        echo "┌─────────────────────────────────────┐"
+        echo "│  PWI Daily Update                   │"
+        echo "└─────────────────────────────────────┘"
+        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+        exec claude "${CLAUDE_ARGS[@]}" \
+            --print \
+            --output-format json \
+            -p "Run /update — daily delta sync. Fetch new data from all sources since last cursor, update the knowledge graph, run core analysis (stale-detection, blocker-identification, sentiment-analysis, reply-suggestion, action-item-extraction), and notify me of anything critical. Output a structured delta report." \
+            > "$LOG_DIR/update_$TIMESTAMP.json" 2>&1
+        ;;
+
+    full)
+        echo "┌─────────────────────────────────────┐"
+        echo "│  PWI Full Process                   │"
+        echo "└─────────────────────────────────────┘"
+        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+        exec claude "${CLAUDE_ARGS[@]}" \
+            --print \
+            --output-format json \
+            -p "Run /full-process — complete knowledge graph rebuild. Fetch all data from all 8 sources, rebuild graph, run all 20 analysis skills in pipeline order, generate comprehensive team health report. Include morale map, blocker chains, expertise coverage, communication silo analysis, and prioritized action items." \
+            > "$LOG_DIR/full_process_$TIMESTAMP.json" 2>&1
+        ;;
+
+    prompt)
+        if [[ -n "$PRINT_MODE" ]]; then
+            exec claude "${CLAUDE_ARGS[@]}" --print -p "$PROMPT"
+        else
+            exec claude "${CLAUDE_ARGS[@]}" -p "$PROMPT"
+        fi
+        ;;
+esac

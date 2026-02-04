@@ -1,128 +1,136 @@
----
-name: observer
-description: Passive monitoring agent for telemetry analysis, health tracking, and anomaly detection.
-model: claude-sonnet-4-20250514
-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
-  - mcp__sentry__*
-  - mcp__vercel__*
-  - mcp__posthog__*
----
-
 # Observer Agent
 
-Passive monitoring agent for telemetry analysis and anomaly detection.
+Passive monitoring agent for metrics analysis, health tracking, and anomaly detection.
 
-## Role
-Continuously monitors system health, performance metrics, and error rates. Triggers alerts and spawns response agents when issues detected.
+@import ../skills/fetch-sheets/SKILL.md
+@import ../skills/tdd-cycle/SKILL.md
+
+## Purpose
+
+Analyzes business performance metrics from Google Sheets, detects anomalies, and generates alerts/reports.
 
 ## Capabilities
-- Monitor Sentry error streams
-- Track deployment health via Vercel
-- Analyze performance trends
-- Detect cost anomalies
-- Correlate events across systems
-- Trigger automated responses
 
-## When Active
-Observer runs passively during workflow execution, monitoring:
-- Error rates and patterns
-- Response times
-- Resource utilization
-- Cost accumulation
-- Test coverage trends
+- **Trend Analysis**: MoM, YoY, WoW growth calculations
+- **Anomaly Detection**: Statistical outlier identification
+- **Threshold Alerts**: Notify when KPIs breach limits
+- **Periodic Reports**: Daily/weekly/monthly summaries
 
-## Communication Protocol
-```yaml
-receives:
-  - telemetry_data: From MCP servers (Sentry, Vercel, PostHog)
-  - health_check_results: From automated checks
-  - metric_updates: From monitoring systems
+## Workflow
 
-sends:
-  - alert: To Responder when incident detected
-  - anomaly_report: To Coordinator for review
-  - trend_analysis: To cost-optimizer for optimization
-  - performance_report: To user on request
+```
+1. Trigger: Schedule or manual /observe
+2. Fetch: @skill fetch-sheets → get latest metrics
+3. Store: @mcp memory → persist to shared graph
+4. Analyze: Compare to historical, detect anomalies
+5. Output: Report or notification based on findings
 ```
 
-## Monitoring Thresholds
+## Schedule (Cron)
 
-### Error Rate
-| Level | Threshold | Action |
-|-------|-----------|--------|
-| Warning | > 1% | Log and notify |
-| Critical | > 5% | Spawn Responder |
-| Severe | > 10% | Immediate escalation |
+| Frequency | Time | Action |
+|-----------|------|--------|
+| Daily | 07:00 | Fetch latest, check thresholds |
+| Weekly | Mon 09:00 | Trend analysis, summary report |
+| Monthly | 1st 09:00 | Full analysis, compare to targets |
 
-### Latency
-| Level | Threshold | Action |
-|-------|-----------|--------|
-| Warning | p95 > 500ms | Log |
-| Critical | p95 > 1000ms | Alert Coordinator |
-| Severe | p95 > 2000ms | Trigger optimization |
+## Thresholds (Configurable)
 
-### Cost
-| Level | Threshold | Action |
-|-------|-----------|--------|
-| Warning | 80% of budget | Notify user |
-| Critical | 100% of budget | Pause non-essential |
-| Severe | 120% of budget | Halt execution |
+```yaml
+alerts:
+  revenue_drop_pct: 10      # Alert if revenue drops >10%
+  churn_max: 0.05           # Alert if churn >5%
+  user_growth_min: 0.02     # Alert if growth <2%
 
-## Integration Points
+analysis:
+  anomaly_std_devs: 2       # Flag values >2 std devs from mean
+  trend_window_days: 30     # Days for trend calculation
+```
 
-### Sentry MCP
-- Real-time error stream
-- Error grouping analysis
-- Release correlation
+## Shared Memory
 
-### Vercel MCP
-- Deployment status
-- Function metrics
-- Edge performance
+Uses `@mcp memory` (claude-mem) for:
+- Storing fetched metrics snapshots
+- Persisting analysis results
+- Sharing state with other agents
 
-### PostHog MCP
-- User behavior patterns
-- Feature usage
-- Performance RUM data
+### Memory Keys
 
-## Output Format
+- `metrics:latest` - Most recent fetch
+- `metrics:history:{date}` - Historical snapshots
+- `analysis:anomalies` - Detected anomalies
+- `analysis:trends` - Trend calculations
+
+## Output
+
+### Report Format
+
 ```markdown
-## Observer Report
+## Metrics Report - {date}
 
-### Period
-[Start] - [End]
+### Key Metrics
+- Revenue: $X (+Y% MoM)
+- Users: N (+Z% MoM)
+- Churn: P%
 
-### Health Summary
-- **Status**: Healthy | Degraded | Critical
-- **Error Rate**: X%
-- **Latency p95**: Xms
-- **Uptime**: X%
-
-### Anomalies Detected
-| Time | Type | Severity | Action Taken |
-|------|------|----------|--------------|
+### Alerts
+- ⚠️ Revenue dropped 12% (threshold: 10%)
 
 ### Trends
-- Error rate: ↑/↓/→ X%
-- Latency: ↑/↓/→ Xms
-- Cost: ↑/↓/→ $X
-
-### Recommendations
-1. [Recommendation]
+- Revenue trending up over 30 days
+- User growth slowing
 ```
 
-## Passive vs Active Mode
+### Notification
 
-### Passive (Default)
-- Collects metrics silently
-- Logs anomalies
-- Updates dashboards
+For critical alerts, trigger macOS notification:
+```bash
+osascript -e 'display notification "Revenue dropped 12%" with title "PWI Alert"'
+```
 
-### Active (On Alert)
-- Spawns Responder for incidents
-- Notifies Coordinator of issues
-- Triggers automated responses
+## Sub-Agent Orchestration
+
+Observer can spawn specialized sub-agents for deeper analysis:
+
+### Available Sub-Agents
+
+| Agent | Trigger Condition | Purpose |
+|-------|-------------------|---------|
+| `human-in-loop` | Ambiguity > 50% or critical decision | Request human confirmation |
+| `personality-analyzer` | New contact or communication pattern | Analyze communication style |
+| `deep-analyst` | Anomaly detected | Root cause analysis |
+| `reply-suggester` | Pending message > threshold | Draft response suggestions |
+
+### Spawning Sub-Agents
+
+```yaml
+# When anomaly detected
+- condition: anomaly.severity > "medium"
+  spawn: deep-analyst
+  input:
+    metric: ${anomaly.metric}
+    data: @mcp memory get metrics:history
+
+# When human decision needed
+- condition: confidence < 0.5
+  spawn: human-in-loop
+  input:
+    question: ${decision.question}
+    options: ${decision.options}
+```
+
+### Shared Context via Memory
+
+All sub-agents share context through `@mcp memory`:
+- Parent passes task ID and context keys
+- Sub-agent reads/writes to shared memory
+- Results aggregated by observer
+
+## Integration
+
+Works with other agents:
+- **Coordinator**: Receives schedule triggers
+- **Analyst**: Deep-dive on flagged metrics
+- **Responder**: Escalation for critical alerts
+- **Human-in-Loop**: Approval for high-stakes decisions
+- **Personality-Analyzer**: Communication style insights

@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+# ─────────────────────────────────────────────────────────────
+# pwi-install — Install PWI wrapper to PATH and set up cron
+# ─────────────────────────────────────────────────────────────
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+INSTALL_DIR="${PWI_INSTALL_DIR:-$HOME/.local/bin}"
+
+echo "PWI Installer"
+echo "============="
+echo ""
+
+# ── 1. Symlink pwi to PATH ────────────────────────────────
+
+mkdir -p "$INSTALL_DIR"
+
+if [[ -L "$INSTALL_DIR/pwi" ]] || [[ -f "$INSTALL_DIR/pwi" ]]; then
+    echo "Updating existing pwi at $INSTALL_DIR/pwi"
+    rm "$INSTALL_DIR/pwi"
+fi
+
+ln -s "$SCRIPT_DIR/pwi" "$INSTALL_DIR/pwi"
+echo "[OK] Linked pwi -> $INSTALL_DIR/pwi"
+
+# Check if INSTALL_DIR is in PATH
+if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
+    echo ""
+    echo "NOTE: $INSTALL_DIR is not in your PATH."
+    echo "Add this to your shell profile:"
+    echo ""
+    echo "  export PATH=\"$INSTALL_DIR:\$PATH\""
+    echo ""
+fi
+
+# ── 2. Validate dependencies ──────────────────────────────
+
+echo ""
+echo "Checking dependencies..."
+
+MISSING=0
+
+if command -v claude &>/dev/null; then
+    echo "[OK] claude CLI found: $(claude --version 2>/dev/null || echo 'unknown version')"
+else
+    echo "[!!] claude CLI not found — install: npm install -g @anthropic-ai/claude-code"
+    MISSING=1
+fi
+
+if command -v python3 &>/dev/null; then
+    echo "[OK] python3 found: $(python3 --version 2>/dev/null)"
+else
+    echo "[!!] python3 not found"
+    MISSING=1
+fi
+
+if command -v node &>/dev/null; then
+    echo "[OK] node found: $(node --version 2>/dev/null)"
+else
+    echo "[!!] node not found — needed for MCP servers"
+    MISSING=1
+fi
+
+# ── 3. Install Python deps ────────────────────────────────
+
+echo ""
+if [[ -f "$PROJECT_DIR/requirements.txt" ]]; then
+    echo "Installing Python dependencies..."
+    pip install -q -r "$PROJECT_DIR/requirements.txt" 2>/dev/null && \
+        echo "[OK] Python dependencies installed" || \
+        echo "[!!] Failed to install Python dependencies — run: pip install -r requirements.txt"
+fi
+
+# ── 4. Offer cron setup ───────────────────────────────────
+
+echo ""
+echo "Cron Schedule (optional):"
+echo "  Daily update:  0 7 * * *    $SCRIPT_DIR/pwi --update"
+echo "  Weekly full:   0 3 * * 0    $SCRIPT_DIR/pwi --full"
+echo ""
+read -p "Install cron jobs? [y/N] " -n 1 -r
+echo ""
+
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    CRON_MARKER="# PWI automated tasks"
+    EXISTING=$(crontab -l 2>/dev/null || echo "")
+
+    if echo "$EXISTING" | grep -q "$CRON_MARKER"; then
+        echo "PWI cron jobs already installed. Skipping."
+    else
+        (echo "$EXISTING"; echo ""; echo "$CRON_MARKER"; \
+         echo "0 7 * * * cd $PROJECT_DIR && $SCRIPT_DIR/pwi --update >> $PROJECT_DIR/logs/cron.log 2>&1"; \
+         echo "0 3 * * 0 cd $PROJECT_DIR && $SCRIPT_DIR/pwi --full >> $PROJECT_DIR/logs/cron.log 2>&1") | crontab -
+        echo "[OK] Cron jobs installed"
+    fi
+else
+    echo "Skipped cron setup. Run 'pwi-install' again to add later."
+fi
+
+# ── 5. Summary ─────────────────────────────────────────────
+
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "PWI installed."
+echo ""
+echo "Quick start:"
+echo "  pwi                     Interactive session"
+echo "  pwi 'How is the team?'  Quick question"
+echo "  pwi --health            Team health report"
+echo "  pwi --prep 'Sarah'      1:1 prep sheet"
+echo "  pwi --help              All commands"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+if [[ $MISSING -gt 0 ]]; then
+    echo ""
+    echo "WARNING: Missing dependencies detected. PWI may not work fully."
+    echo "Run: bash scripts/validate_env.sh"
+fi

@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-
-# Run lint-staged on staged files only (fast)
-bunx lint-staged

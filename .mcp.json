@@ -1,52 +1,48 @@
 {
   "mcpServers": {
-    "github": {
+    "google-workspace": {
       "command": "npx",
-      "args": ["-y", "@anthropic-ai/mcp-server-github"],
+      "args": ["@anthropic/mcp-google-workspace"],
       "env": {
-        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+        "GOOGLE_CREDENTIALS_PATH": "${GOOGLE_CREDENTIALS_PATH}",
+        "GOOGLE_TOKEN_PATH": "${GOOGLE_TOKEN_PATH:-./tokens/google-token.json}"
       }
     },
-    "stripe": {
+    "google-sheets": {
       "command": "npx",
-      "args": ["-y", "@stripe/mcp", "--tools=all"],
+      "args": ["@anthropic/mcp-google-sheets"],
       "env": {
-        "STRIPE_SECRET_KEY": "${STRIPE_SECRET_KEY}"
+        "GOOGLE_CREDENTIALS_PATH": "${GOOGLE_CREDENTIALS_PATH}",
+        "GOOGLE_TOKEN_PATH": "${GOOGLE_TOKEN_PATH:-./tokens/google-token.json}",
+        "METRICS_SPREADSHEET_ID": "${METRICS_SPREADSHEET_ID}"
       }
     },
-    "postgres": {
+    "jira": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-postgres", "${DATABASE_URL}"]
-    },
-    "puppeteer": {
-      "command": "npx",
-      "args": ["-y", "@anthropic-ai/mcp-server-puppeteer"]
-    },
-    "sentry": {
-      "command": "npx",
-      "args": ["-y", "@anthropic-ai/mcp-server-sentry"],
+      "args": ["@anthropic/mcp-jira"],
       "env": {
-        "SENTRY_AUTH_TOKEN": "${SENTRY_AUTH_TOKEN}",
-        "SENTRY_ORG": "${SENTRY_ORG}",
-        "SENTRY_PROJECT": "${SENTRY_PROJECT}"
+        "JIRA_HOST": "${JIRA_HOST}",
+        "JIRA_EMAIL": "${JIRA_EMAIL}",
+        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}"
       }
     },
-    "vercel": {
+    "asana": {
       "command": "npx",
-      "args": ["-y", "@anthropic-ai/mcp-server-vercel"],
+      "args": ["@anthropic/mcp-asana"],
       "env": {
-        "VERCEL_TOKEN": "${VERCEL_TOKEN}",
-        "VERCEL_TEAM_ID": "${VERCEL_TEAM_ID}"
+        "ASANA_ACCESS_TOKEN": "${ASANA_ACCESS_TOKEN}",
+        "ASANA_WORKSPACE_GID": "${ASANA_WORKSPACE_GID}"
       }
     },
-    "posthog": {
+    "filesystem": {
       "command": "npx",
-      "args": ["-y", "@anthropic-ai/mcp-server-posthog"],
-      "env": {
-        "POSTHOG_API_KEY": "${POSTHOG_API_KEY}",
-        "POSTHOG_HOST": "${POSTHOG_HOST:-https://app.posthog.com}",
-        "POSTHOG_PROJECT_ID": "${POSTHOG_PROJECT_ID}"
-      }
+      "args": ["@modelcontextprotocol/server-filesystem", "./graph", "./logs", "./data"],
+      "env": {}
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["@anthropic/claude-mem", "--db", "./graph/memory.db"],
+      "env": {}
     }
   }
 }

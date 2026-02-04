@@ -1,42 +1,45 @@
-#!/bin/bash
-# Guard protected files from modification
-# Blocks writes to sensitive files
+#!/usr/bin/env bash
+# Protected file guard hook
+# Blocks edits to sensitive files
+# Exit codes: 0 = allow, 2 = block (with message)
 
-FILE="$CLAUDE_FILE_PATH"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
 
-# Protected file patterns
+INPUT="$1"
+
+# Extract file_path from JSON input
+FILE_PATH=$(echo "$INPUT" | grep -oP '"file_path"\s*:\s*"\K[^"]+' 2>/dev/null || echo "$INPUT")
+
+# Protected patterns (blocked)
 PROTECTED_PATTERNS=(
-  ".env"
-  ".env.*"
-  "*.pem"
-  "*.key"
-  "*.cert"
-  "secrets/*"
-  "drizzle/migrations/*"
-  "node_modules/*"
-  ".git/*"
-  "bun.lockb"
+    '\.env$'
+    '\.env\.'
+    '\.key$'
+    '\.pem$'
+    '\.p12$'
+    '\.pfx$'
+    'credentials'
+    'secrets'
+    '/migrations/'
+    '\.lock$'
+    '/tokens/'
+    '\.token$'
+    '\.mcp\.json$'
+    'google-oauth'
+    'api[_-]token'
+    'access[_-]token'
 )
 
-# Get relative path from project root
-RELATIVE_PATH="${FILE#$CLAUDE_PROJECT_DIR/}"
-
+# Check if file matches any protected pattern
 for pattern in "${PROTECTED_PATTERNS[@]}"; do
-  # Use bash pattern matching
-  if [[ "$RELATIVE_PATH" == $pattern ]]; then
-    echo "❌ BLOCKED: Cannot modify protected file"
-    echo "   File: $RELATIVE_PATH"
-    echo "   Pattern: $pattern"
-    echo ""
-    echo "Protected files include:"
-    echo "  - Environment files (.env*)"
-    echo "  - Security credentials (*.pem, *.key)"
-    echo "  - Applied migrations (drizzle/migrations/*)"
-    echo "  - Dependencies (node_modules/*)"
-    echo ""
-    echo "Modify these files manually if needed."
-    exit 1
-  fi
+    if echo "$FILE_PATH" | grep -qEi "$pattern"; then
+        echo "BLOCKED: Cannot edit protected file: $FILE_PATH"
+        echo "Pattern matched: $pattern"
+        echo "To modify protected files, get explicit user permission first."
+        exit 2
+    fi
 done
 
+# File is not protected, allow edit
 exit 0
